@@ -1,0 +1,104 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Waiting For Data From A Navigation Destination") {
+        Closing the gap between actions and their effects.
+        
+        @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
+    }
+    
+    @Section(title: "The Naive Approach") {
+        
+        Sometimes an action triggers a flow that requires user input or some form of other delayed and disconnected data to complete. An example of this would be a confirmation dialog for a deletion process.
+        
+        Such a dialog would typically be triggered from within a `Coordinator`'s ``Puddles/Coordinator/handleAction(_:)-4le7d`` method and finished within the dialog's completion handlers. This logically separates the deletion flow and makes it harder to reason about the code. Let's have a look at an example to see the solution to this problem.
+        
+        @Steps {            
+            @Step {
+                We start by adding a simple view containing a button that sends an action to its `Coordinator` via a ``Puddles/ViewInterface``.
+                
+                The action is supposed to represent a delete intention. To make sure the button hasn't been accidentally tapped, the app should display a confirmation dialog before actually deleting something.
+                
+                @Code(name: "MyView.swift", file: "expectations-01-01")
+            }
+            
+            @Step {
+                Next, we create a `Coordinator` for the view. 
+                                
+                @Code(name: "MyCoordinator.swift", file: "expectations-01-02")
+            }
+            
+            We need a state that's going to drive the confirmation dialog appearance, as well as the dialog view itself, which is an ``Puddles/Alert`` that we place inside the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
+            
+            @Step {
+                Add `isShowingConfirmationAlert` and an ``Puddles/Alert`` to the `Coordinator`.
+                
+                ``Puddles/Alert`` is only one of the available ``Puddles/NavigationPattern``s. Others include ``Puddles/Sheet``, ``Puddles/Push`` and more.
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-01-03")
+            }
+            @Step {
+                Then we have to trigger the state whenever a `deleteButtonTapped` action has been sent.
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-01-04")
+            }
+            
+            Finally, we need to add the actual deletion logic that should be triggered upon confirmation. 
+            
+            @Step {
+                We add a `delete()` method and call it in the action handler of the confirmation button inside the alert.
+                
+                In this case, the cancel button does not need an action, so we can leave it empty.
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-01-05")
+            }
+            
+            That's it! However, in Section 2, we will take a look at a difference approach. 
+        }
+    }
+    
+    @Section(title: "A Better Approach") {
+        The approach in Section 1 is fine, but it has a significant weakness: We ended up separating logically connected functionality. 
+        
+        The call to `delete()` is still an effect of the `deleteButtonTapped` action that we handle in `handleAction(_:)`.
+        The code, however, is split up, since the confirmation dialog with its completion handlers is defined someplace else.
+        
+        That's why the `Coordinator` package introduces a concept called expectations. An ``Puddles/Expectation`` is a type that can be used to trigger the collection of some kind of data (like a `Bool` coming from a confirmation dialog) and asynchronously `await` its retrieval in-place, without ever leaving the scope.
+        
+        @Steps {
+            
+            Let's modify the example from Section 1 to use expectations.
+            
+            @Step {
+                Go back to `MyCoordinator.swift`. 
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-02-01")
+            }
+            
+            @Step {
+                Replace `isShowingConfirmationAlert` with a new property of type `Expectation<Bool>`, 
+                since we expect to collect a boolean whenever we trigger the confirmation dialog.
+                
+                Because a confirmation dialog cannot be externally cancelled by the user (like a dismissible sheet, for instance), we initialize the expectation with the promise of a guaranteed result, calling ``Puddles/Expectation/guaranteedCompletion()``. When no such guarantee is possible or reasonable, there is another initializer ``Puddles/Expectation/userCancellable(resultOnUserCancel:)`` that let's us specify what should happen when the expectation gets cancelled by the user or through other means.
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-02-02")
+            }            
+            
+            @Step {
+                Next, wrap the ``Puddles/Alert`` in a new type called ``Puddles/Expecting``. It takes a binding to an expectation as its argument and provides us with a closure that we can use to display any kind of navigation pattern.
+                
+                The closure has two arguments. First, it gives us a binding to an `isActive` state that we can pass to the presentation. It also gives us an expectation resolver that we can use to complete (or fulfill) the expectation.
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-02-03")
+            }
+            
+            Finally, we can modify the `handleAction(_:)` method to take advantage of the new expectation.
+            
+            @Step {
+                To show the confirmation alert, add a call to ``Puddles/Expectation/show()`` on the expectation. Then we can simply `await` the result through its ``Puddles/Expectation/result`` property. Lastly, we call `delete()` if necessary.
+                
+                The entire logical flow caused by the `deleteButtonTapped` action now takes place inside the same call to `handleAction(_:)`.
+                
+                @Code(name: "MyCoordinator.swift", file: "expectations-02-04")
+            }
+        }
+    }
+}

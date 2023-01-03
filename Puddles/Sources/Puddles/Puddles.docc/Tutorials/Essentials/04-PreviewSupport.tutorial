@@ -1,0 +1,51 @@
+@Tutorial(time: 5) {
+    @Intro(title: "Supporting Previews") {
+        Previewing complex and data-driven views can be troublesome and annoying. The ``Puddles/Preview`` helper, along with the architecture that `Puddles` is built upon, tries to make it as easy and yet powerful as possible.
+        @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
+    }
+    
+    @Section(title: "Adding Previews Support") {
+        
+        In the previous tutorials, we have built a simple example app with a single `HomeView` that contains a counter. Let's add support for SwiftUI previews so that we can not only see the view from within Xcode, but also fully interact with it.
+        
+        The problem with data-driven views, especially ones with more complex behavior, is that previews can't hold and manipulate state. The solution, then, is to use a wrapper view that takes care of it. That's where ``Puddles/Preview`` comes into play. Thanks to the unidirectional data flow through view interfaces, each preview can act as an impromptu `Coordinator` and listen and react to any actions coming from the view. This way, sample or mock data can be provided in a very easy way, while also allowing to morph the view's functionality to make it properly useful in Previews.
+        
+        @Steps {
+            @Step {
+                Open `HomeView` from the previous tutorials.
+       
+                @Code(name: "HomeView.swift", file: "PreviewSupport-01-01")
+            }
+            
+            @Step {
+                Add the default Previews object.
+                
+                The problem with this is that we cannot actually use the counter in the view. Pressing the button does nothing.
+       
+                @Code(name: "HomeView.swift", file: "PreviewSupport-01-02")
+            }
+            
+            Instead, we are going to use ``Puddles/Preview`` .
+            
+            @Step {
+                Wrap the view with a ``Puddles/Preview`` view, passing in `HomeView` and an instance of its interface.
+                
+                `Preview` connects with the interface and calls the provided closure when an Action is sent. In that closure, you have access to the interface object and can manipulate the view's state.
+                @Code(name: "HomeView.swift", file: "PreviewSupport-01-03")
+            }
+            
+            @Step {
+                To load or set initial data, you can add the ``Puddles/Preview/onStart(perform:)`` modifier, which calls the provided closure when the view appears.
+                
+                Tip: See ``Puddles/Coordinator/start()-e3dl`` for more information on how the `start()` of a `Coordinator` is defined.
+       
+                @Code(name: "HomeView.swift", file: "PreviewSupport-01-04")
+            }
+            @Step {
+                If you want to add preview-specific debug functionality, you can use the ``Puddles/Preview/overlay(alignment:overlayContent:)`` view modifier overload which lets you return a view that is put on top of the preview, while also providing you with access to the view interface.
+       
+                @Code(name: "HomeView.swift", file: "PreviewSupport-01-05")
+            }
+        }
+    }
+}

@@ -1,0 +1,67 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Coordinator-View Interactions") {
+        Communication between a view and its `Coordinator` should be unidirectional.
+        @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
+    }
+    
+    @Section(title: "Expanding The View Interface") {
+        
+        In the previous tutorial, we built a simple counter view that communicated with the interface to modify its own state. In the `Coordinator` pattern, this is discouraged.
+        
+        Views should not modify their own public state. Instead, they define signals (called actions) that their `Coordinator` can intercept and act upon.
+        
+        This can be achieved through the ``Puddles/ViewInterface`` protocol. It exposes a property ``Puddles/ViewInterface/actionPublisher`` that consumes an `Action` (usually an `enum`). A `Coordinator` automatically subscribes to that publisher and calls a ``Puddles/Coordinator/handleAction(_:)-4le7d`` method that we can implement to react to any actions sent by the view. Inside that method, we would modify the view's state.
+        
+        Adding this to the example app is easy.
+        
+        @Steps {
+            @Step {
+                Open `HomeView` from the previous tutorial.
+       
+                @Code(name: "HomeView.swift", file: "02-ViewInteractions-01-01") {
+                    @Image(source: "02-ViewInteractions-01-01_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                }
+            }
+            
+            @Step {
+                Add an `Action` enum and set it as the type that the `actionPublisher` emits. 
+       
+                @Code(name: "HomeView.swift", file: "02-ViewInteractions-01-02")
+            }
+            
+            @Step {
+                Replace the call to `buttonTapped()` with a call to send the action `.buttonTapped`.
+                
+                The view is now fully unaware of its context or consequences for its actions. This is great, because we can now place it anywhere in the app and let the responsible `Coordinator` decide what should happen. 
+       
+                @Code(name: "HomeView.swift", file: "02-ViewInteractions-01-03")
+            }
+            
+            Now we need to listen to the sent actions in the `Coordinator`.
+            
+            @Step {
+                Go back to `Root.swift`.
+       
+                @Code(name: "Root.swift", file: "02-ViewInteractions-01-04")
+            }
+            
+            Setting the `Action` type in the view interface triggers a new protocol requirement in the `Coordinator`. We now need to provide a ``Puddles/Coordinator/handleAction(_:)-4le7d`` method to handle all incoming actions from the view.
+            
+            @Step {
+                Add the ``Puddles/Coordinator/handleAction(_:)-38d52`` method.
+       
+                @Code(name: "Root.swift", file: "02-ViewInteractions-01-05")
+            }
+            
+            @Step {
+                We can now switch over all actions and update the view's state through its interface. This is similar to before, but now we do it from within the `Coordinator`.
+       
+                The result is identical to the one we built in the previous tutorial, but much cleaner and modular.
+       
+                @Code(name: "Root.swift", file: "02-ViewInteractions-01-06") {
+                    @Image(source: "02-ViewInteractions-02-06_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+@Tutorials(name: "Coordinator") {
+    @Intro(title: "Meet Puddles") {
+        An architectural pattern for apps built on the SwiftUI lifecycle. It helps separating navigation and logic from the views.
+        @Image(source: "logo.png", alt: "An illustration of a sleeping sloth, hanging from a tree branch.")
+    }
+    
+    @Chapter(name: "Starting With Puddles") {
+        This chapter describes the fundamental principles that make the `Puddles` package work.
+        
+        @Image(source: "logo.png", alt: "The logo of the Puddles package.")
+        @TutorialReference(tutorial: "doc:01-Introduction")
+        @TutorialReference(tutorial: "doc:02-ViewInteraction")
+        @TutorialReference(tutorial: "doc:03-BasicNavigation")
+        @TutorialReference(tutorial: "doc:04-PreviewSupport")
+        @TutorialReference(tutorial: "doc:05-Expectations")
+        @TutorialReference(tutorial: "doc:06-ProvidingData")
+    }
+    
+}

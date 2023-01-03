@@ -1,0 +1,81 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Adding Navigation To The Coordinator") {
+        Navigation is fully handled by the `Coordinator`, so any `sheet`s, `alert`s or `NavigationLink`s should be defined in the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
+        @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
+    }
+    
+    @Section(title: "Adding a Sheet Presentation") {
+        
+        Let's modify the example app from the previous tutorials so that it opens a sheet when the button has been tapped 42 times.
+        
+        For this, we will implement a ``Puddles/NavigationPattern`` using the ``Puddles/Coordinator/navigation()`` method in our `Coordinator`. 
+        
+        @Steps {
+            @Step {
+                Go to `Root.swift`.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-01-01") {
+                    @Image(source: "03-BasicNavigation-01-01_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                }
+            }
+            
+            @Step {
+                Add a new state that drives the presentation of the sheet and trigger it when the count has reached 42.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-01-02")
+            }
+            
+            @Step {
+                Add a ``Puddles/Sheet`` to to the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
+                
+                The ``Puddles/Coordinator/navigation()`` method functions much like a `ViewBuilder`, just with navigation patterns instead of views. Simply list all the patterns you'd like to add and the `Coordinator` will take care of the rest.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-01-03") {
+                    @Image(source: "03-BasicNavigation-01-03_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                }
+            }
+        }
+    }
+    
+    @Section(title: "Adding a NavigationLink") {
+        
+        Say we wanted to turn the sheet presentation into a navigation push instead. Let's do that.
+        
+        @Steps {
+            @Step {
+                Go to `Root.swift`.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-02-01")
+            }
+            
+            @Step {
+                Turn the ``Puddles/Sheet`` into a ``Puddles/Push``.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-02-02")
+            }
+            
+            Next, we need to wrap the `Coordinator` in a `NavigationView` so that the `Push` actually has an effect.
+            
+            @Step {
+                Implement the ``Puddles/Coordinator/modify(coordinator:)-19rqn`` method that provides you with the `Coordinator` content view. Wrap that view with a `NavigationView`.
+                
+                That's it! Launch the app and check if it worked.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-02-03") {
+                    @Image(source: "03-BasicNavigation-02-03_image", alt: "A screenshot of an iPhone running the app. It shows the detail view as a push.")
+                }
+            }
+            
+            To keep views agnostic of their environment and context, and to keep them reusable in different places, it is recommended to put things like `navigationTitle` or a `toolbar` in the responsible `Coordinator`, in this case `Root`.
+            
+            @Step {
+                Add a `navigationTitle`.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-02-04") {
+                    @Image(source: "03-BasicNavigation-02-04_image", alt: "A screenshot of an iPhone running the app. It shows the home view with the newly added navigation title.")
+                }
+            }            
+            
+        }
+    }
+}

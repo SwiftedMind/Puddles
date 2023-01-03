@@ -1,0 +1,85 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Building The First Coordinator") {
+        Building an app using `Puddles` is easy and fast.
+        @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
+    }
+    
+    @Section(title: "The Root Coordinator") {
+        
+        The first step is to setup a root ``Puddles/Coordinator`` that acts as the entry point of the app.
+        
+        @Steps {
+            @Step {
+                Create a new struct and conform it to ``Puddles/Coordinator``.
+       
+                @Code(name: "Root.swift", file: "essentials-01-01")
+            }
+            
+            @Step {
+                Add the two required methods to `Root`.
+                
+                We'll add navigation later.
+                @Code(name: "Root.swift", file: "essentials-01-02")
+            }
+            
+            That's the most basic `Coordinator` possible. We can now set it as the app's entry point.
+            
+            @Step {
+                Set `Root` as the root view of the app and run it.
+                @Code(name: "YourApp.swift", file: "essentials-01-03") {
+                    @Image(source: "tutorial_essentials_01_02", alt: "A screenshot of an iPhone running the app. It shows the text 'Hello, World'.")
+                }
+            }
+            
+            In the next section, we will add a dedicated entry view for the `Coordinator`.
+        }
+    }
+    
+    @Section(title: "The Home View") {
+        We will now add a dedicated home view that we can use in `Root` (or any other `Coordinator` later on).
+        
+        @Steps {
+            @Step {
+                Create a new SwiftUI view called `HomeView`.
+                @Code(name: "HomeView.swift", file: "essentials-02-01")
+            }
+            
+            Next, the view needs a place to hold public state that can be created by and managed through a `Coordinator`. This is done via a ``Puddles/ViewInterface``, which is a wrapper around `ObservableObject`.
+            
+            @Step {
+                Add a view interface to `HomeView`.
+                
+                The ``Puddles/ViewInterface`` protocol requires a property `actionPublisher` which will be discussed in <doc:02-ViewInteraction>. For now, simply add the property to the interface.
+                
+                @Code(name: "HomeView.swift", file: "essentials-02-02")
+            }
+                    
+            @Step {
+                Add a simple view that shows a button and a label stating how many times the button has been tapped.
+                @Code(name: "HomeView.swift", file: "essentials-02-03") {
+                    @Image(source: "tutorial_01_essentials_02_03", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                }
+            }
+            
+            @Step {
+                For now, we connect the button action to the interface, so that the value increases with each tap.
+                
+                This approach is not encouraged, since all communication should go through a `Coordinator` in a unidirectional flow of data. In the next tutorial, we will replace the method inside the interface with something better.
+                @Code(name: "HomeView.swift", file: "essentials-02-04")  {
+                    @Image(source: "tutorial_01_essentials_02_04", alt: "A screenshot of an iPhone running the app. It shows the home view, now with a working button.")
+                }
+            }
+            
+            @Step {
+                Go back to `Root.swift`.
+                @Code(name: "Root.swift", file: "essentials-02-05")
+            }
+            
+            @Step {
+                Add the newly created `HomeView` and set it as the coordinator's entry view.
+                @Code(name: "Root.swift", file: "essentials-02-06")
+            }
+            
+        }
+    }
+}
