@@ -4,7 +4,7 @@ import Puddles
 struct Root: Coordinator {
     @StateObject var interface: HomeView.Interface = .init()
 
-    @State private var isShowingSheet: Bool = false
+    @State private var isShowingPage: Bool = false
 
     var entryView: some View {
         HomeView(interface: interface)
@@ -31,7 +31,7 @@ struct Root: Coordinator {
         case .buttonTapped:
             interface.buttonTapCount += 1
             if interface.buttonTapCount == 42 {
-                isShowingSheet = true
+                isShowingPage = true
             }
         }
     }

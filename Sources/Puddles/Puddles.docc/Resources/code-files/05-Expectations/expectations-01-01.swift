@@ -1,5 +1,6 @@
 import SwiftUI
 import Puddles
+import Combine
 
 struct MyView: View {
     @ObservedObject var interface: Interface

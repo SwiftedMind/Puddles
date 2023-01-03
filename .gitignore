@@ -89,3 +89,4 @@ fastlane/test_output
 
 iOSInjectionProject/
 .swiftpm/xcode/package.xcworkspace/xcuserdata
+.swiftpm/xcode/xcuserdata/*
