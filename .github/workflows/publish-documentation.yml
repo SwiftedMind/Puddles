@@ -7,7 +7,7 @@ on:
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pages"
+  group: docs-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   # Single deploy job since we're just deploying
@@ -20,8 +20,6 @@ jobs:
 
       - name: Checkout Package
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Checkout gh-pages Branch
         uses: actions/checkout@v2
@@ -33,16 +31,15 @@ jobs:
         run: >
           rm -rf docs-out/.git;
           rm -rf docs-out/main;
-            echo "⏳ Generating documentation for ComposableArchitecture @ "$tag" release.";
-              rm -rf "docs-out";
-              git checkout .;
-              swift package \
-                --allow-writing-to-directory docs-out \
-                generate-documentation \
-                --target Puddles \
-                --output-path docs-out \
-                --transform-for-static-hosting \
-                --hosting-base-path /puddles;
+          rm -rf "docs-out";
+        
+          swift package \
+            --allow-writing-to-directory docs-out \
+            generate-documentation \
+            --target Puddles \
+            --output-path docs-out \
+            --transform-for-static-hosting \
+            --hosting-base-path /Puddles;
 
       - name: Fix permissions
         run: 'sudo chown -R $USER docs-out'
