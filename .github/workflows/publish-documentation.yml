@@ -39,9 +39,9 @@ jobs:
             --allow-writing-to-directory docs-out \
             generate-documentation \
             --target Puddles \
-            --output-path docs-out/. \
+            --output-path docs-out \
             --transform-for-static-hosting \
-            --hosting-base-path /puddles;
+            --hosting-base-path /Puddles;
 
       - name: Fix permissions
         run: 'sudo chown -R $USER docs-out'
