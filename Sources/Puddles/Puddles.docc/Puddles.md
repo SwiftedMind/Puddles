@@ -1,10 +1,11 @@
 # ``Puddles``
 
-THIS IS A CHANGE
 
 An architectural pattern for apps built on the SwiftUI lifecycle. It helps separating navigation and logic from the views.
 
 ## Overview
+
+THIS IS A CHANGE
 
 Modularizing SwiftUI apps in a way that views are agnostic of their navigational context has been a challenging problem since its release. This package is an attempt at a solution.
 
