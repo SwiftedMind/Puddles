@@ -38,6 +38,10 @@ struct YourApp: App {
 }
 ```
 
+## Documentation
+
+The documentation for `Puddles` can be found here: https://havingthought.github.io/Puddles/documentation/puddles/
+
 ## License
 
 MIT License
