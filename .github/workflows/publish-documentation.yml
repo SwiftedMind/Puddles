@@ -33,15 +33,22 @@ jobs:
           ref: gh-pages
           path: docs-out
 
-      - name: Build Documentation
+      - name: Build documentation
         run: >
-        swift package \
+          rm -rf docs-out/.git;
+          rm -rf docs-out/main;
+          do
+            echo "⏳ Generating documentation for ComposableArchitecture @ "$tag" release.";
+              rm -rf "docs-out";
+              git checkout .;
+              swift package \
                 --allow-writing-to-directory docs-out \
                 generate-documentation \
                 --target Puddles \
-                --output-path docs-out/ \
+                --output-path docs-out \
                 --transform-for-static-hosting \
-                --hosting-base-path /puddles \
+                --hosting-base-path /puddles;
+          done
 
       - name: Fix permissions
         run: 'sudo chown -R $USER docs-out'
