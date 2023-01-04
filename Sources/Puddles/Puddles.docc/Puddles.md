@@ -5,10 +5,6 @@ An architectural pattern for apps built on the SwiftUI lifecycle. It helps separ
 
 ## Overview
 
-THIS IS A CHANGE
-Second Change
-Third Change
-
 Modularizing SwiftUI apps in a way that views are agnostic of their navigational context has been a challenging problem since its release. This package is an attempt at a solution.
 
 The idea is to structure the app into modules that are each fully managed by a ``Puddles/Coordinator``, who takes care of data management and navigation, similar but not identical to the traditional `UIKit`-based Coordinator pattern. However, unlike other approaches, for example [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture), `Puddles` is trying to be as flexible and dynamic as possible. Every app is unique and requires specific ways of doing things, and being locked into a very strict architecture can quickly become frustrating. 
