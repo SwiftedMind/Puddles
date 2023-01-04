@@ -20,22 +20,28 @@ jobs:
 
       - name: Checkout Package
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Checkout gh-pages Branch
         uses: actions/checkout@v2
         with:
           ref: gh-pages
+          path: docs-out
 
       - name: Build documentation
         run: >
-              swift package \
-                generate-documentation \
-                --target Puddles \
-                --output-path . \
-                --transform-for-static-hosting \
-                --hosting-base-path /puddles;
+          rm -rf docs-out/.git;
+          rm -rf docs-out/main;
+          rm -rf "docs-out";
+          
+          git checkout .;
+        
+          swift package \
+            --allow-writing-to-directory docs-out \
+            generate-documentation \
+            --target Puddles \
+            --output-path docs-out/. \
+            --transform-for-static-hosting \
+            --hosting-base-path /puddles;
 
       - name: Fix permissions
         run: 'sudo chown -R $USER docs-out'
@@ -44,5 +50,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
           branch: gh-pages
-          folder: .
+          folder: docs-out
           single-commit: true
