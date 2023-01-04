@@ -1,12 +1,13 @@
-# Puddles
 
-An architectural pattern for apps built on the SwiftUI lifecycle. It helps separating navigation and logic from the views.
+![banner](https://user-images.githubusercontent.com/7083109/210643109-93cccd3f-9d5f-4517-87da-6c2529de0f41.png)
 
-## Overview
+## What is Puddles?
 
-Modularizing SwiftUI apps in a way that views are agnostic of their navigational context has been a challenging problem since its release. This package is an attempt at a solution.
+Finding a solid foundation to build well-structured apps based on the SwiftUI lifecycle has been a challenging problem since the framework's release. While SwiftUI excels at fast paced composition of view hierarchies, it is surprisingly easy to create lots of hard couplings between logic and UI, making it virtually impossible to keep a project modular and structured. 
 
-The idea is to structure the app into modules that are each fully managed by a ``Puddles/Coordinator``, who takes care of data management and navigation, similar but not identical to the traditional `UIKit`-based Coordinator pattern. However, unlike other approaches, `Puddles` is trying to be as flexible and dynamic as possible. Every app is unique and requires specific ways of doing things, and being locked into a very strict architecture can quickly become frustrating. 
+Navigation and data management in particular have been troublesome. Both should not be part of UI code since a view is supposed to be agnostic of its context. However, moving the logic too far away means losing out on all the great features that SwiftUI offers, like the `Environment`. `Puddles` strives to strike that balance.
+
+The idea is to structure the app into modules, screens or features, that are each fully managed by a `Coordinator`, who takes care of data management and navigation. However, `Puddles` is trying to be as flexible and dynamic as possible. Every app is unique and requires specific ways of doing things, and being locked into a very strict architecture can quickly become frustrating. 
 
 `Puddles` attempts to offer a helpful guidance and structure for your app, but does not force you into anything. It is built to be fully compatible with any other SwiftUI project, allowing you to incrementally adopt `Puddles` in existing projects, as well as link to any traditional SwiftUI view from within the scope of a `Puddle` `Coordinator`.
 
