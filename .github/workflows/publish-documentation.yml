@@ -46,6 +46,11 @@ jobs:
             --output-path docs-out \
             --transform-for-static-hosting \
             --hosting-base-path /Puddles;
+            
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: docs-out
 
       - name: Fix permissions
         run: 'sudo chown -R $USER docs-out'
