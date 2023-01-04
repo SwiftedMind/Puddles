@@ -13,6 +13,9 @@ jobs:
   # Single deploy job since we're just deploying
   deploy:
     runs-on: macos-12
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
 
       - name: Select Xcode 14.1
@@ -44,9 +47,6 @@ jobs:
       - name: Fix permissions
         run: 'sudo chown -R $USER docs-out'
 
-      - name: Publish documentation to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.7
-        with:
-          branch: gh-pages
-          folder: docs-out
-          single-commit: true
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
