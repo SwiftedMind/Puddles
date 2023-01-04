@@ -3,6 +3,8 @@ import SwiftUI
 // MARK: - FullscreenCover isActive
 
 /// Presents a modal view that covers as much of the screen as possible when binding to a Boolean value you provide is true.
+@available(iOS 15, *)
+@available(macOS, unavailable)
 public struct FullscreenCover<Destination: View>: NavigationPattern {
     @Binding var isActive: Bool
     @ViewBuilder var destination: () -> Destination
@@ -16,6 +18,8 @@ public struct FullscreenCover<Destination: View>: NavigationPattern {
     }
 }
 
+@available(iOS 15, *)
+@available(macOS, unavailable)
 public extension FullscreenCover {
     var body: some View {
         Color.clear
@@ -28,6 +32,8 @@ public extension FullscreenCover {
 // MARK: - FullscreenCover item
 
 /// Presents a modal view that covers as much of the screen as possible using the binding you provide as a data source for the sheet’s content.
+@available(iOS 15, *)
+@available(macOS, unavailable)
 public struct FullscreenCoverItem<Item: Identifiable, Destination: View>: NavigationPattern {
     @Binding var item: Item?
     @ViewBuilder var destination: (Item) -> Destination
@@ -41,6 +47,8 @@ public struct FullscreenCoverItem<Item: Identifiable, Destination: View>: Naviga
     }
 }
 
+@available(iOS 15, *)
+@available(macOS, unavailable)
 public extension FullscreenCoverItem {
     var body: some View {
         Color.clear
