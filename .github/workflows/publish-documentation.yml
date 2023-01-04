@@ -27,20 +27,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: gh-pages
-          path: docs-out
 
       - name: Build documentation
         run: >
-          rm -rf docs-out/.git;
-          rm -rf docs-out/main;
-            echo "⏳ Generating documentation for ComposableArchitecture @ "$tag" release.";
-              rm -rf "docs-out";
-              git checkout .;
               swift package \
-                --allow-writing-to-directory docs-out \
                 generate-documentation \
                 --target Puddles \
-                --output-path docs-out \
+                --output-path . \
                 --transform-for-static-hosting \
                 --hosting-base-path /puddles;
 
@@ -51,5 +44,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
           branch: gh-pages
-          folder: docs-out
+          folder: .
           single-commit: true
