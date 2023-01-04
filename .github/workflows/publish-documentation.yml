@@ -54,6 +54,7 @@ jobs:
       - name: Publish documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
+          ACCESS_TOKEN: ${{ secrets.GH_DOCS }}
           branch: gh-pages
           folder: docs-out
           single-commit: true
