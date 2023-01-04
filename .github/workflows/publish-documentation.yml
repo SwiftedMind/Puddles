@@ -4,11 +4,7 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+
 # Allow one concurrent deployment
 concurrency:
   group: "pages"
@@ -54,7 +50,6 @@ jobs:
       - name: Publish documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
-          ACCESS_TOKEN: ${{ secrets.GH_DOCS }}
           branch: gh-pages
           folder: docs-out
           single-commit: true
