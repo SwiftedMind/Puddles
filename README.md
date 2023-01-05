@@ -1,6 +1,8 @@
 <img src="https://user-images.githubusercontent.com/7083109/210643109-93cccd3f-9d5f-4517-87da-6c2529de0f41.png" width="50%">
 
 ## What is Puddles?
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/SwiftedMind/Puddles)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SwiftedMind/Puddles)
 
 > **Warning**
 > Puddles is still in early development. Things will break, so please use this carefully and at your own risk. Feedback is always appreciated.
