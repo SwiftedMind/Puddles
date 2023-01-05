@@ -1,6 +1,8 @@
 <img src="https://user-images.githubusercontent.com/7083109/210643109-93cccd3f-9d5f-4517-87da-6c2529de0f41.png" width="50%">
 
 ## What is Puddles?
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/SwiftedMind/Puddles)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SwiftedMind/Puddles)
 
 > **Warning**
 > Puddles is still in early development. Things will break, so please use this carefully and at your own risk. Feedback is always appreciated.
@@ -37,10 +39,10 @@ You will also need Swift 5.7 to compile the package.
 The package is installed through the Swift Package Manager. Simply add the following line to your `Package.swift` dependencies:
 
 ```swift
-.package(url: "https://github.com/HavingThought/Puddles", from: "0.1.0")
+.package(url: "https://github.com/SwiftedMind/Puddles", from: "0.1.0")
 ```
 
-Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/HavingThought/Puddles" into the search field at the top. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
+Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
 
 ### First Steps
 
@@ -73,10 +75,10 @@ struct YourApp: App {
 ## Documentation
 
 The documentation for Puddles can be found here:
-https://havingthought.github.io/Puddles/documentation/puddles/
+https://swiftedmind.github.io/Puddles/documentation/puddles/
 
 Tutorials can be found here:
-https://havingthought.github.io/Puddles/tutorials/puddlestutorials
+https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials
 
 ## The Puddles Architecture
 
