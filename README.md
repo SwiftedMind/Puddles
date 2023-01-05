@@ -73,10 +73,10 @@ struct YourApp: App {
 ## Documentation
 
 The documentation for Puddles can be found here:
-https://havingthought.github.io/Puddles/documentation/puddles/
+https://swiftedmind.github.io/Puddles/documentation/puddles/
 
 Tutorials can be found here:
-https://havingthought.github.io/Puddles/tutorials/puddlestutorials
+https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials
 
 ## The Puddles Architecture
 
