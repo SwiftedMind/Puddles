@@ -22,7 +22,7 @@ struct Root: Coordinator {
         case .buttonTapped:
             interface.buttonTapCount += 1
             if interface.buttonTapCount == 42 {
-							isShowingPage = true
+								isShowingPage = true
             }
         }
     }
