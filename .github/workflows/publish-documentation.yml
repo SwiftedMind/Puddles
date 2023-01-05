@@ -1,9 +1,8 @@
 # Name your workflow.
 name: Deploy Documentation
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+  release:
+    types: [published]
 
 # Allow one concurrent deployment
 concurrency:
