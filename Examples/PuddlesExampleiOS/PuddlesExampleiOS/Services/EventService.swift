@@ -41,6 +41,8 @@ public final class MockEventService: EventService {
     public let interface: Interface<EventServiceAction> = .init()
 
     private var events: [Event] = []
+
+    // Bad. multiple searches in the app will all go through this one channel, they all need their own! But how?
     private var channel: AsyncChannel<String> = .init()
 
     public init() {}

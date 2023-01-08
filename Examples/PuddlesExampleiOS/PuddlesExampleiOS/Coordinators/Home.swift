@@ -42,13 +42,7 @@ struct Home: Coordinator {
                 searchQuery: searchQuery
             )
         )
-    }
-
-    func modify(coordinator: CoordinatorContent) -> some View {
-        NavigationView {
-            coordinator
-                .navigationTitle("Events")
-        }
+        .navigationTitle("Events")
     }
 
     func navigation() -> some NavigationPattern {

@@ -30,6 +30,7 @@
 		9531A73929681866009D7688 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9531A73C29681866009D7688 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9531A74329681889009D7688 /* Puddles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Puddles; path = ../..; sourceTree = "<group>"; };
+		958AF81C296AF6E9004F8E61 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9594A765296819B700063CE7 /* Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root.swift; sourceTree = "<group>"; };
 		9594A76729681A2300063CE7 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		9594A76B29681AA500063CE7 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				9531A73529681866009D7688 /* ExampleApp.swift */,
+				958AF81C296AF6E9004F8E61 /* README.md */,
 				9594A7802968BF1100063CE7 /* Helper */,
 				9594A7782968B3D100063CE7 /* Models */,
 				9594A7752968A2F200063CE7 /* Services */,
