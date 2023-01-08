@@ -1,9 +1,5 @@
 import SwiftUI
 
-/*
- previews broken
- */
-
 /// A SwiftUI previews helper type allowing to take advantage of view interfacing by providing an in-place mechanism of reacting to the view's actions.
 ///
 /// - Important: This is only meant to be used within previews!
@@ -28,18 +24,6 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
         self._state = .init(wrappedValue: state())
         self._interface = .init(wrappedValue: .init())
         self.content = { content($0, $1.wrappedValue) }
-        self.actionHandler = actionHandler
-        self.overlay = {_ in EmptyView() }
-    }
-
-    public init(
-        _ content: Content.Type,
-        state: @autoclosure  @escaping () -> ViewState,
-        actionHandler: @escaping (_ action: Action, _ state: inout ViewState) async -> Void
-    ) where Content: InterfacingView, Content.Interface == ViewInterface, Content.ViewState == ViewState, Overlay == EmptyView {
-        self._state = .init(wrappedValue: state())
-        self._interface = .init(wrappedValue: .init())
-        self.content = { Content.init(interface: $0, state: $1.wrappedValue) }
         self.actionHandler = actionHandler
         self.overlay = {_ in EmptyView() }
     }

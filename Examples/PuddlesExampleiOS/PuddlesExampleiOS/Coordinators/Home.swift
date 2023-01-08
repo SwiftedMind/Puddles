@@ -31,30 +31,29 @@ struct Home: Coordinator {
 
     let events: HomeView.EventsLoadingState
     let searchResults: HomeView.SearchResultsLoadingState
-    @State var sorting: Bool = true
-	@State var searchQuery: String = ""
+    @State var searchQuery: String = ""
 
-	var entryView: some View {
-		HomeView(
-			interface: viewInterface,
+    var entryView: some View {
+        HomeView(
+            interface: viewInterface,
             state: .init(
                 events: events,
                 searchResults: searchResults,
-                sorting: sorting,
                 searchQuery: searchQuery
             )
-		)
-	}
+        )
+    }
 
     func modify(coordinator: CoordinatorContent) -> some View {
         NavigationView {
             coordinator
+                .navigationTitle("Events")
         }
     }
 
-	func navigation() -> some NavigationPattern {
+    func navigation() -> some NavigationPattern {
 
-	}
+    }
 
     func interfaces() -> some InterfaceObservation {
         AsyncInterfaceObserver(viewInterface) { action in
@@ -77,8 +76,8 @@ struct Home: Coordinator {
 
 extension Home {
 
-	enum Action {
-		case searchQueryUpdated(String)
-	}
+    enum Action {
+        case searchQueryUpdated(String)
+    }
 
 }

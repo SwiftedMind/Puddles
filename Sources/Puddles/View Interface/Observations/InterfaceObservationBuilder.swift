@@ -12,7 +12,7 @@ import SwiftUI
     ) -> some View {
         content
     }
-
+    
     public static func buildPartialBlock(
         first content: some InterfaceObservation
     ) -> some InterfaceObservation {

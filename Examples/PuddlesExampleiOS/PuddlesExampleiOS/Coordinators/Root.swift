@@ -25,15 +25,15 @@ import Puddles
 
 struct Root: Coordinator {
     @EnvironmentObject private var services: Services
-	@StateObject private var interface: Interface<Home.Action> = .init()
-
+    @StateObject private var interface: Interface<Home.Action> = .init()
+    
     @State private var events: HomeView.EventsLoadingState = .loaded(.repeating(.random, count: 5))
     @State private var searchResults: HomeView.SearchResultsLoadingState = .initial
-
-	var entryView: some View {
-		Home(interface: interface, events: events, searchResults: searchResults)
-	}
-
+    
+    var entryView: some View {
+        Home(interface: interface, events: events, searchResults: searchResults)
+    }
+    
     func start() async {
         do {
             self.events = .loading
@@ -41,11 +41,11 @@ struct Root: Coordinator {
             self.events = .loaded(events)
         } catch {}
     }
-
+    
     func navigation() -> some NavigationPattern {
-
+        
     }
-
+    
     func interfaces() -> some InterfaceObservation {
         AsyncInterfaceObserver(interface) { action in
             await handleViewAction(action)
@@ -54,15 +54,15 @@ struct Root: Coordinator {
             await handleEventServiceAction(action)
         }
     }
-
-	func handleViewAction(_ action: Home.Action) async {
-		switch action {
-		case .searchQueryUpdated(let query):
+    
+    func handleViewAction(_ action: Home.Action) async {
+        switch action {
+        case .searchQueryUpdated(let query):
             // Submit query to the event service, which debounces the search
             await services.events.submitSearchQuery(query)
-		}
-	}
-
+        }
+    }
+    
     private func handleEventServiceAction(_ action: EventServiceAction) async {
         switch action {
         case .eventSearchChanged(let state):
@@ -76,5 +76,5 @@ struct Root: Coordinator {
             }
         }
     }
-
+    
 }

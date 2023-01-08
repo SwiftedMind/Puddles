@@ -27,8 +27,8 @@ import Combine
 struct HomeView: View {
     @ObservedObject var interface: Interface<Action>
     var state: ViewState
-
-	var body: some View {
+    
+    var body: some View {
         content
             .searchable(text: Binding(get: {
                 state.searchQuery
@@ -38,7 +38,7 @@ struct HomeView: View {
             .animation(.default, value: state.events)
             .animation(.default, value: state.searchResults)
     }
-
+    
     @ViewBuilder private var content: some View {
         if state.searchQuery.isEmpty {
             eventsContent
@@ -46,7 +46,7 @@ struct HomeView: View {
             searchContent
         }
     }
-
+    
     @ViewBuilder private var eventsContent: some View {
         List {
             Text("List:")
@@ -61,12 +61,12 @@ struct HomeView: View {
                         }
                     }
                 }
-
+                
             }
         }
         .listStyle(.insetGrouped)
     }
-
+    
     @ViewBuilder private var searchContent: some View {
         Section {
             switch state.searchResults {
@@ -76,9 +76,9 @@ struct HomeView: View {
                 List {
                     ForEach(points) { event in
                         Button(event.name) {
-
+                            
                         }
-
+                        
                     }
                     .listStyle(.insetGrouped)
                 }
@@ -88,35 +88,33 @@ struct HomeView: View {
 }
 
 extension HomeView {
-
+    
     typealias EventsLoadingState = LoadingState<[Event], Never>
     typealias SearchResultsLoadingState = LoadingState<[Event], Never>
-
+    
     struct ViewState {
         var events: EventsLoadingState = .initial
         var searchResults: SearchResultsLoadingState = .initial
-        var sorting: Bool = true
         var searchQuery: String = ""
-
+        
         static var mock: ViewState {
             .init(
                 events: .loaded([.mock]),
                 searchResults: .loaded([.random]),
-                sorting: true,
                 searchQuery: ""
             )
         }
     }
-
-	enum Action {
+    
+    enum Action {
         case eventTapped(Event)
         case searchQueryUpdated(String)
-	}
-
+    }
+    
 }
 
 struct HomeView_Previews: PreviewProvider {
-	static var previews: some View {
+    static var previews: some View {
         NavigationView {
             Preview(HomeView.init, state: .mock) { action, state in
                 switch action {
