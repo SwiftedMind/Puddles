@@ -18,21 +18,11 @@ public protocol Coordinator: View {
     /// The implementation can be empty to define an empty navigation.
     associatedtype NavigationContent: NavigationPattern
 
-    /// The `Interface` is an `ObservableObject` that provides the means of sending signals to a ``Puddles/Coordinator``.
-    ///
-    /// A view interface provides a (usually one-way) communication from
-    /// the ``Puddles/Coordinator/entryView-swift.property`` to the ``Puddles/Coordinator`` itself
-    /// by sending signals that can be handled by implementing the ``Puddles/Coordinator/handleAction(_:)-4le7d`` method.
-    ///
-    /// This can be inferred by providing an `interface` property of a concrete view interface.
-    associatedtype Interface: ViewInterface
+    associatedtype Interfaces: InterfaceObservation
 
     /// The final `View` type for the ``Puddles/Coordinator``,
     /// which is determined by the ``Puddles/Coordinator/modify(coordinator:)-19rqn`` method.
     associatedtype FinalBody: View
-
-    /// A shortcut to `Interface.Action`.
-    typealias Action = Interface.Action
 
     /// A representation of the fully configured coordinator content.
     ///
@@ -66,6 +56,8 @@ public protocol Coordinator: View {
     /// - Returns: The navigation content for the ``Puddles/Coordinator``.
     @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
+    @InterfaceObservationBuilder @MainActor func interfaces() -> Interfaces
+
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
     ///
@@ -90,23 +82,11 @@ public protocol Coordinator: View {
     /// - Returns: A view that modifies the provided coordinator.
     @ViewBuilder @MainActor func modify(coordinator: CoordinatorContent) -> FinalBody
 
-    /// An interface, usually connected to the ``Puddles/Coordinator``s `entryView`.
-    @MainActor var interface: Interface { get }
-
-    /// A method you can provide to handle incoming actions from the  ``Puddles/Coordinator``'s ``Puddles/Coordinator/interface-swift.property-4rvqq``.
-    ///
-    /// For every action, an anonymous "fire-and-forget" Task is created, from which this method is asynchronously called.
-    /// Therefore, it is safe to delay any effects or start asynchronous tasks for each action. The main actor will not be blocked.
-    ///
-    /// When no ``Puddles/Coordinator/interface-swift.property-4rvqq`` is provided, this method has an empty default implementation.
-    /// - Parameter action: The action sent from the `interface`.
-    @MainActor func handleAction(_ action: Action) async
-
     /// A method that is called when the coordinator has first appeared.
     ///
     /// The parent task is bound to the Coordinator's lifetime and is cancelled once it ends.
     /// Keep in mind, that it is up to the implementation to check for cancellations!
-    /// 
+    ///
     /// - Important: This method is intentionally *not* called `onAppear()`.
     /// It does not behave like the `.onAppear(perform:)` view modifier,
     /// which can be called multiple times during the lifetime of the view.
@@ -134,12 +114,7 @@ public extension Coordinator {
             coordinator: CoordinatorBody(
                 entryView: entryView,
                 navigation: navigation(),
-                interface: interface,
-                actionHandler: { action in
-                    Task {
-                        await handleAction(action)
-                    }
-                },
+                interfaces: interfaces(),
                 firstAppearHandler: {
                     await start()
                 },
@@ -157,15 +132,4 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
-
-    // Default implementation for the view interface, inserting an empty one.
-    @MainActor var interface: EmptyViewInterface {
-        EmptyViewInterface()
-    }
-}
-
-public extension Coordinator where Interface: ViewInterface<NoAction> {
-    // If there is no interface provided by the user, or if its action is a NoAction,
-    // we don't need to force them to implement this method, so an empty default is provided.
-    @MainActor func handleAction(_ action: Action) async {}
 }
