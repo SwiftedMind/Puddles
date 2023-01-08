@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct ExampleApp: App {
+    @StateObject private var services: Services = .real
+    @State var isShowing: Bool = true
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Root()
+                .environmentObject(services)
         }
     }
 }
