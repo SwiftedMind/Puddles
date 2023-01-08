@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct EmptyInterfaceDescription: InterfaceDescription {
+public struct EmptyInterfaceObservation: InterfaceObservation {
 
     public var body: some View {
         EmptyView()

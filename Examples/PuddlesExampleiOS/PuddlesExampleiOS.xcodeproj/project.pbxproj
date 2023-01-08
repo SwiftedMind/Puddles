@@ -21,7 +21,7 @@
 		9594A77F2968BEC700063CE7 /* Faker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A77E2968BEC700063CE7 /* Faker.swift */; };
 		9594A7822968BF1D00063CE7 /* Array+repeating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A7812968BF1D00063CE7 /* Array+repeating.swift */; };
 		9594A7842968BFE900063CE7 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A7832968BFE900063CE7 /* Services.swift */; };
-		9594A7862968C3B900063CE7 /* Fetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A7852968C3B900063CE7 /* Fetchable.swift */; };
+		9594A7862968C3B900063CE7 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A7852968C3B900063CE7 /* LoadingState.swift */; };
 		9594A7892969750400063CE7 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 9594A7882969750400063CE7 /* AsyncAlgorithms */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +40,7 @@
 		9594A77E2968BEC700063CE7 /* Faker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Faker.swift; sourceTree = "<group>"; };
 		9594A7812968BF1D00063CE7 /* Array+repeating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+repeating.swift"; sourceTree = "<group>"; };
 		9594A7832968BFE900063CE7 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
-		9594A7852968C3B900063CE7 /* Fetchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchable.swift; sourceTree = "<group>"; };
+		9594A7852968C3B900063CE7 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,7 +153,7 @@
 			children = (
 				9594A77E2968BEC700063CE7 /* Faker.swift */,
 				9594A7812968BF1D00063CE7 /* Array+repeating.swift */,
-				9594A7852968C3B900063CE7 /* Fetchable.swift */,
+				9594A7852968C3B900063CE7 /* LoadingState.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -242,7 +242,7 @@
 				9594A76829681A2300063CE7 /* Home.swift in Sources */,
 				9594A76C29681AA500063CE7 /* HomeView.swift in Sources */,
 				9594A766296819B700063CE7 /* Root.swift in Sources */,
-				9594A7862968C3B900063CE7 /* Fetchable.swift in Sources */,
+				9594A7862968C3B900063CE7 /* LoadingState.swift in Sources */,
 				9594A7842968BFE900063CE7 /* Services.swift in Sources */,
 				9594A77A2968B41B00063CE7 /* Event.swift in Sources */,
 				9594A7772968A3C400063CE7 /* EventService.swift in Sources */,

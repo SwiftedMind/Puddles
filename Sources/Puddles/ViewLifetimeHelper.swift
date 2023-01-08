@@ -21,12 +21,12 @@ struct ViewLifetimeHelper: View {
     }
 }
 
-@MainActor private final class LifetimeViewModel: ObservableObject {
+private final class LifetimeViewModel: ObservableObject {
 
     private var task: Task<Void, Never>
 
-    var onInit: () async -> Void
-    var onDeinit: () -> Void
+    @MainActor var onInit: () async -> Void
+    @MainActor var onDeinit: () -> Void
 
     @MainActor init(
         onInit: @escaping () async -> Void,

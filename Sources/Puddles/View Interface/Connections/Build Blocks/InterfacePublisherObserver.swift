@@ -2,15 +2,15 @@ import SwiftUI
 import Combine
 
 @MainActor
-public struct InterfacePublisherObserver<Action, I: Interface<Action>, P: Publisher<Action, Never>>: InterfaceDescription {
+public struct InterfacePublisherObserver<Action, I: Interface<Action>, P: Publisher<Action, Never>>: InterfaceObservation {
     var interface: I
     var publisher: P
-    var actionHandler:  @Sendable (_ action: Action) -> Void
+    var actionHandler: @MainActor (_ action: Action) -> Void
 
     public init(
         _ interface: I,
         publisher: (_ publisher: PassthroughSubject<Action, Never>) -> P,
-        actionHandler: @Sendable @escaping (_ action: Action) -> Void
+        actionHandler: @MainActor @escaping (_ action: Action) -> Void
     ) {
         self.interface = interface
         self.publisher = publisher(interface.actionPublisher)

@@ -18,7 +18,7 @@ public protocol Coordinator: View {
     /// The implementation can be empty to define an empty navigation.
     associatedtype NavigationContent: NavigationPattern
 
-    associatedtype Interfaces: InterfaceDescription
+    associatedtype Interfaces: InterfaceObservation
 
     /// The final `View` type for the ``Puddles/Coordinator``,
     /// which is determined by the ``Puddles/Coordinator/modify(coordinator:)-19rqn`` method.
@@ -56,7 +56,7 @@ public protocol Coordinator: View {
     /// - Returns: The navigation content for the ``Puddles/Coordinator``.
     @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
-    @InterfaceDescriptionBuilder @MainActor func interfaces() -> Interfaces
+    @InterfaceObservationBuilder @MainActor func interfaces() -> Interfaces
 
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.

@@ -21,19 +21,37 @@
 //
 
 import Foundation
+import Puddles
+import AsyncAlgorithms
 
-public protocol EventService {
-    @Sendable func events() async throws -> [Event]
-    @Sendable func searchEvents(query: String) async throws -> [Event]
+public enum EventServiceAction {
+    case eventSearchChanged(LoadingState<[Event], Swift.Error>)
 }
 
-public final class RealEventService: EventService {
+public protocol EventService {
+    @MainActor var interface: Interface<EventServiceAction> { get }
+    @MainActor func start() async
+    @Sendable func events() async throws -> [Event]
+    @Sendable func submitSearchQuery(_ query: String) async
+}
+
+public final class MockEventService: EventService {
+
+    @MainActor
+    public let interface: Interface<EventServiceAction> = .init()
 
     private var events: [Event] = []
+    private var channel: AsyncChannel<String> = .init()
 
-    public init() {
-        Task.detached {
-            self.events = try await self.events()
+    public init() {}
+
+    @MainActor
+    public func start() async {
+        for await _ in channel.debounce(for: .seconds(0.5)) {
+            if Task.isCancelled { return }
+            interface.sendAction(.eventSearchChanged(.loading))
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            interface.sendAction(.eventSearchChanged(.loaded(.repeating(.random, count: 2))))
         }
     }
 
@@ -43,14 +61,14 @@ public final class RealEventService: EventService {
     }
 
     @MainActor
-    public func searchEvents(query: String) async throws -> [Event] {
-        []
+    public func submitSearchQuery(_ query: String) async {
+        await channel.send(query)
     }
 }
 
-extension EventService where Self == RealEventService {
-    public static var real: EventService {
-        RealEventService()
+extension EventService where Self == MockEventService {
+    public static var mock: EventService {
+        MockEventService()
     }
 }
 

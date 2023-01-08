@@ -25,7 +25,7 @@ import Puddles
 import Combine
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface
+    @ObservedObject var interface: Interface<Action>
     var state: ViewState
 
 	var body: some View {
@@ -33,10 +33,9 @@ struct HomeView: View {
             .searchable(text: Binding(get: {
                 state.searchQuery
             }, set: { newValue in
-                interface.searchQueryUpdated.send(newValue)
-//                searchInterface.sendAction(.queryUpdated(query: newValue))
+                interface.sendAction(.searchQueryUpdated(newValue))
             }))
-            .animation(.default, value: state.points)
+            .animation(.default, value: state.events)
             .animation(.default, value: state.searchResults)
     }
 
@@ -52,15 +51,14 @@ struct HomeView: View {
         List {
             Text("List:")
             Section {
-                switch state.points {
+                switch state.events {
                 case .initial, .loading:
                     ProgressView()
                 case .loaded(let points):
                     ForEach(points) { event in
                         Button(event.name) {
-                            interface.eventTapped.send(event)
+                            interface.sendAction(.eventTapped(event))
                         }
-
                     }
                 }
 
@@ -70,47 +68,39 @@ struct HomeView: View {
     }
 
     @ViewBuilder private var searchContent: some View {
-        List {
-            Text("List:")
-            Section {
-                switch state.searchResults {
-                case .initial, .loading:
-                    ProgressView()
-                case .loaded(let points):
+        Section {
+            switch state.searchResults {
+            case .initial, .loading:
+                ProgressView()
+            case .loaded(let points):
+                List {
                     ForEach(points) { event in
                         Button(event.name) {
-                            interface.general.send(.a(.mock))
-                        }
-                    }
-                }
 
+                        }
+
+                    }
+                    .listStyle(.insetGrouped)
+                }
             }
         }
-        .listStyle(.insetGrouped)
     }
 }
 
 extension HomeView {
 
-    @MainActor final class Interface: ObservableObject {
-        @Action<Event> var eventTapped
-        @Action<String> var searchQueryUpdated
-        @Action<Test> var general
-    }
-
-    enum Test {
-        case a(Event)
-    }
+    typealias EventsLoadingState = LoadingState<[Event], Never>
+    typealias SearchResultsLoadingState = LoadingState<[Event], Never>
 
     struct ViewState {
-        var points: LoadingState<[Event], Never> = .initial
-        var searchResults: LoadingState<[Event], Never> = .initial
+        var events: EventsLoadingState = .initial
+        var searchResults: SearchResultsLoadingState = .initial
         var sorting: Bool = true
         var searchQuery: String = ""
 
         static var mock: ViewState {
             .init(
-                points: .loaded([.mock]),
+                events: .loaded([.mock]),
                 searchResults: .loaded([.random]),
                 sorting: true,
                 searchQuery: ""
@@ -118,25 +108,25 @@ extension HomeView {
         }
     }
 
-//	enum Action {
-//        case eventTapped(Event)
-//	}
+	enum Action {
+        case eventTapped(Event)
+        case searchQueryUpdated(String)
+	}
 
 }
 
-//struct HomeView_Previews: PreviewProvider {
-//	static var previews: some View {
-//        NavigationView {
-//            Preview(HomeView.init, state: .mock) { action, state in
-//                switch action {
-//                case .eventTapped:
-//                    state.points = .loaded(state.points.value! + [.random])
-////                case .searchQueryUpdated(query: let query):
-////                    // Debouncing, how?
-////                    state.searchQuery = query
-//                }
-//            }
-//            .navigationTitle("Events")
-//        }
-//    }
-//}
+struct HomeView_Previews: PreviewProvider {
+	static var previews: some View {
+        NavigationView {
+            Preview(HomeView.init, state: .mock) { action, state in
+                switch action {
+                case .eventTapped:
+                    state.events = .loaded(state.events.value! + [.random])
+                case .searchQueryUpdated(query: let query):
+                    state.searchQuery = query
+                }
+            }
+            .navigationTitle("Events")
+        }
+    }
+}

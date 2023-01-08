@@ -22,7 +22,7 @@
 
 import Foundation
 
-enum LoadingState<Value, Error: Swift.Error> {
+public enum LoadingState<Value, Error: Swift.Error> {
     case initial
     case loading
     case loaded(Value)
@@ -41,7 +41,7 @@ enum LoadingState<Value, Error: Swift.Error> {
 
 extension LoadingState: Equatable where Value: Equatable {
 
-    static func == (lhs: LoadingState<Value, Error>, rhs: LoadingState<Value, Error>) -> Bool {
+    public static func == (lhs: LoadingState<Value, Error>, rhs: LoadingState<Value, Error>) -> Bool {
         switch (lhs, rhs) {
         case (.initial, .initial):
             return true

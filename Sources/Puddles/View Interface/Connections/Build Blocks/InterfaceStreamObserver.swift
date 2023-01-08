@@ -1,13 +1,13 @@
 import SwiftUI
 import Combine
 
-public struct InterfaceStreamObserver<Action, I: Interface<Action>>: InterfaceDescription {
+public struct InterfaceStreamObserver<Action, I: Interface<Action>>: InterfaceObservation {
     var interface: I
-    var actionHandler: @Sendable (_ stream: AsyncStream<Action>) async -> Void
+    var actionHandler: @MainActor (_ stream: AsyncStream<Action>) async -> Void
 
     public init(
         _ interface: I,
-        actionHandler: @Sendable @escaping (_ stream: AsyncStream<Action>) async -> Void
+        actionHandler: @MainActor @escaping (_ stream: AsyncStream<Action>) async -> Void
     ) {
         self.interface = interface
         self.actionHandler = actionHandler

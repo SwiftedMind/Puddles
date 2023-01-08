@@ -31,23 +31,3 @@ extension Interface {
         }
     }
 }
-
-extension PassthroughSubject where Failure == Never {
-    var actionStream: AsyncStream<Output> {
-        AsyncStream<Output> { continuation in
-            let canceller = self
-                .sink { newValue in
-                    // https://forums.swift.org/t/pitch-2-structured-concurrency/43452/116
-                    if Task.isCancelled {
-                        continuation.finish()
-                    } else {
-                        continuation.yield(newValue)
-                    }
-                }
-
-            continuation.onTermination = { continuation in
-                canceller.cancel()
-            }
-        }
-    }
-}

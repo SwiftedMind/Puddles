@@ -1,13 +1,13 @@
 import SwiftUI
 
-public struct InterfaceObserver<Action, I: Interface<Action>>: InterfaceDescription {
+public struct InterfaceObserver<Action, I: Interface<Action>>: InterfaceObservation {
 
     var interface: I
-    var actionHandler:  @Sendable (_ action: Action) -> Void
+    var actionHandler: @MainActor (_ action: Action) -> Void
 
     public init(
         _ interface: I,
-        actionHandler: @Sendable @escaping (_ action: Action) -> Void
+        actionHandler: @MainActor @escaping (_ action: Action) -> Void
     ) {
         self.interface = interface
         self.actionHandler = actionHandler

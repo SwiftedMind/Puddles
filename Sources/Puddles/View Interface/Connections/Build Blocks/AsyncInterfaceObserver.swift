@@ -1,13 +1,13 @@
 import SwiftUI
 
-public struct AsyncInterfaceObserver<Action, I: Interface<Action>>: InterfaceDescription {
+public struct AsyncInterfaceObserver<Action, I: Interface<Action>>: InterfaceObservation {
 
     var interface: I
-    var actionHandler: @Sendable (_ action: Action) async -> Void
+    var actionHandler: @MainActor (_ action: Action) async -> Void
 
     public init(
         _ interface: I,
-        actionHandler: @Sendable @escaping (_ action: Action) async -> Void
+        actionHandler: @MainActor @escaping (_ action: Action) async -> Void
     ) {
         self.interface = interface
         self.actionHandler = actionHandler

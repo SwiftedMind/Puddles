@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AccumulatedInterfaceDescription<Pattern: InterfaceDescription, Next: InterfaceDescription>: InterfaceDescription {
+struct AccumulatedInterfaceObservation<Pattern: InterfaceObservation, Next: InterfaceObservation>: InterfaceObservation {
 
     var accumulated: Pattern
     var next: Next

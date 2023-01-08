@@ -27,31 +27,54 @@ struct Root: Coordinator {
     @EnvironmentObject private var services: Services
 	@StateObject private var interface: Interface<Home.Action> = .init()
 
-    @State private var points: LoadingState<[Event], Never> = .loaded(.repeating(.random, count: 5))
-    @State private var searchResults: LoadingState<[Event], Never> = .initial
+    @State private var events: HomeView.EventsLoadingState = .loaded(.repeating(.random, count: 5))
+    @State private var searchResults: HomeView.SearchResultsLoadingState = .initial
 
 	var entryView: some View {
-		Home(interface: interface, points: points, searchResults: searchResults)
+		Home(interface: interface, events: events, searchResults: searchResults)
 	}
 
-    func interfaces() -> some InterfaceDescription {
+    func start() async {
+        do {
+            self.events = .loading
+            let events = try await services.events.events()
+            self.events = .loaded(events)
+        } catch {}
+    }
+
+    func navigation() -> some NavigationPattern {
+
+    }
+
+    func interfaces() -> some InterfaceObservation {
         AsyncInterfaceObserver(interface) { action in
             await handleViewAction(action)
         }
+        AsyncInterfaceObserver(services.events.interface) { action in
+            await handleEventServiceAction(action)
+        }
     }
-
-	func navigation() -> some NavigationPattern {
-
-	}
 
 	func handleViewAction(_ action: Home.Action) async {
 		switch action {
-		case .searchEvents(let query):
-            searchResults = .loading
-            let events = try! await services.events.searchEvents(query: query)
-            searchResults = .loaded(events)
-
+		case .searchQueryUpdated(let query):
+            // Submit query to the event service, which debounces the search
+            await services.events.submitSearchQuery(query)
 		}
 	}
+
+    private func handleEventServiceAction(_ action: EventServiceAction) async {
+        switch action {
+        case .eventSearchChanged(let state):
+            switch state {
+            case .initial, .loading:
+                searchResults = .loading
+            case .loaded(let events):
+                searchResults = .loaded(events)
+            case .failure:
+                break
+            }
+        }
+    }
 
 }

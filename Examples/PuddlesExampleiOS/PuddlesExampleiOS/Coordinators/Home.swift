@@ -25,22 +25,12 @@ import Puddles
 import Combine
 import AsyncAlgorithms
 
-/*
-
- @Debounced private var searchDebouncer
- ...
- case .searchUpdated(let query):
-    searchQuery = query
-    try await searchDebouncer
-
- */
-
 struct Home: Coordinator {
     @ObservedObject var interface: Interface<Action>
-    @StateObject var viewInterface: HomeView.Interface = .init()
+    @StateObject var viewInterface: Interface<HomeView.Action> = .init()
 
-	let points: LoadingState<[Event], Never>
-	let searchResults: LoadingState<[Event], Never>
+    let events: HomeView.EventsLoadingState
+    let searchResults: HomeView.SearchResultsLoadingState
     @State var sorting: Bool = true
 	@State var searchQuery: String = ""
 
@@ -48,7 +38,7 @@ struct Home: Coordinator {
 		HomeView(
 			interface: viewInterface,
             state: .init(
-                points: points,
+                events: events,
                 searchResults: searchResults,
                 sorting: sorting,
                 searchQuery: searchQuery
@@ -66,53 +56,29 @@ struct Home: Coordinator {
 
 	}
 
-/*
- How to do this:
- You need two separate things like a toggle and search query and combine them into a result (a search call). Also debounced. Difficult?
- -> Create action that contains both, like .filtersUpdated(query: String, someFilterValue: Bool). those are the combination and then debounce on this action
- -> Test this!
- */
-
-    /* One app state? I dont know*/
-
-    func interfaces() -> some InterfaceDescription {
-        ActionObserver(viewInterface.eventTapped) { event in
-            print("Event Tapped")
+    func interfaces() -> some InterfaceObservation {
+        AsyncInterfaceObserver(viewInterface) { action in
+            await handleViewAction(action)
         }
-        ActionObserver(viewInterface.searchQueryUpdated) { newValue in
-            searchQuery = newValue
-        }
-        ActionStreamObserver(viewInterface.searchQueryUpdated) { stream in
-            for await _ in stream.debounce(for: .seconds(2)) {
-                print("Debounced Event Tapped")
-            }
-        }
-//        AsyncInterfaceObserver(viewInterface) { action in
-//            await handleViewAction(action)
-//        }
-//        InterfaceStreamObserver(viewSearchInterface) { stream in
-//            // How to actually update the self.searchQuery string? That shouldn't be debouncedf
-//            for await action in stream.debounce(for: .seconds(1)) {
-//                print("print")
-//            }
-//        }
     }
 
-//    func handleViewAction(_ action: HomeView.Action) async {
-//        switch action {
-//        case .eventTapped:
-//            print("Event Tapped")
-////        case .searchQueryUpdated(query: let query):
-////            searchQuery = query
-//        }
-//    }
-
+    func handleViewAction(_ action: HomeView.Action) async {
+        switch action {
+        case .eventTapped:
+            print("Event Tapped")
+        case .searchQueryUpdated(query: let query):
+            searchQuery = query
+            // Pass through action to own interface.
+            // The instance responsible for providing searchResults needs to decide on debouncing/throttling etc.
+            interface.sendAction(.searchQueryUpdated(query))
+        }
+    }
 }
 
 extension Home {
 
 	enum Action {
-		case searchEvents(query: String)
+		case searchQueryUpdated(String)
 	}
 
 }

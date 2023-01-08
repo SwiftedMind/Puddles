@@ -26,14 +26,23 @@ import Foundation
 public final class Services: ObservableObject {
 
     public var events: EventService
+    private var eventsTask: Task<Void, Never>
 
     public init(events: EventService) {
         self.events = events
+
+        eventsTask = Task {
+            await events.start()
+        }
+    }
+
+    public func stop() {
+        eventsTask.cancel()
     }
 }
 
 extension Services {
-    public static var real: Services {
-        .init(events: RealEventService())
+    public static var mock: Services {
+        .init(events: MockEventService())
     }
 }
