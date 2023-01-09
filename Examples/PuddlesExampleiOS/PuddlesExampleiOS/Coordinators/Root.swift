@@ -22,16 +22,18 @@
 
 import SwiftUI
 import Puddles
+import AsyncAlgorithms
 
 struct Root: Coordinator {
     @EnvironmentObject private var services: Services
-    @StateObject private var interface: Interface<Home.Action> = .init()
+    @StateObject private var helper: Helper = Helper()
+    @StateObject private var homeInterface: Interface<Home.Action> = .init()
 
     @State private var events: HomeView.EventsLoadingState = .loaded(.repeating(.random, count: 5))
     @State private var searchResults: HomeView.SearchResultsLoadingState = .initial
 
     var entryView: some View {
-        Home(interface: interface, events: events, searchResults: searchResults)
+        Home(interface: homeInterface, events: events, searchResults: searchResults)
     }
 
     func modify(coordinator: CoordinatorContent) -> some View {
@@ -53,34 +55,47 @@ struct Root: Coordinator {
     }
 
     func interfaces() -> some InterfaceObservation {
-        AsyncInterfaceObserver(interface) { action in
-            await handleViewAction(action)
+        AsyncInterfaceObserver(homeInterface) { action in
+            await handleHomeAction(action)
         }
-        AsyncInterfaceObserver(services.events.interface) { action in
-            await handleEventServiceAction(action)
-        }
-    }
-
-    func handleViewAction(_ action: Home.Action) async {
-        switch action {
-        case .searchQueryUpdated(let query):
-            // Submit query to the event service, which takes care of debouncing
-            await services.events.submitSearchQuery(query)
-        }
-    }
-
-    private func handleEventServiceAction(_ action: EventServiceAction) async {
-        switch action {
-        case .eventSearchChanged(let state):
-            switch state {
-            case .initial, .loading:
-                searchResults = .loading
-            case .loaded(let events):
-                searchResults = .loaded(events)
-            case .failure:
-                break
+        AsyncChannelObserver(helper.searchChannel) { channel in
+            for await query in channel.debounce(for: .seconds(0-5)) {
+                searchEvents(query: query)
             }
         }
     }
 
+    func handleHomeAction(_ action: Home.Action) async {
+        switch action {
+        case .searchQueryUpdated(let query):
+            await helper.searchChannel.send(query)
+        }
+    }
+
+    private func searchEvents(query: String) {
+        helper.searchTask?.cancel()
+
+        if query.isEmpty {
+            searchResults = .loaded([])
+            return
+        }
+
+        helper.searchTask = Task {
+            do {
+                searchResults = .loading
+                let events = try await services.events.searchEvents(query)
+                try Task.checkCancellation()
+                searchResults = .loaded(events)
+            } catch {
+                // TODO: Error Handling
+            }
+        }
+    }
+}
+
+extension Root {
+    @MainActor private class Helper: ObservableObject {
+        let searchChannel: AsyncChannel<String> = .init()
+        var searchTask: Task<Void, Never>?
+    }
 }
