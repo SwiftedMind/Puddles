@@ -24,47 +24,27 @@ import Foundation
 import Puddles
 import AsyncAlgorithms
 
-public enum EventServiceAction {
-    case eventSearchChanged(LoadingState<[Event], Swift.Error>)
-}
-
 public protocol EventService {
-    @MainActor var interface: Interface<EventServiceAction> { get }
-    @MainActor func start() async
     @Sendable func events() async throws -> [Event]
-    @Sendable func submitSearchQuery(_ query: String) async
+    @Sendable func searchEvents(_ query: String) async throws -> [Event]
 }
 
 public final class MockEventService: EventService {
 
-    @MainActor
-    public let interface: Interface<EventServiceAction> = .init()
-
     private var events: [Event] = []
-
-    // Bad. multiple searches in the app will all go through this one channel, they all need their own! But how?
-    private var channel: AsyncChannel<String> = .init()
 
     public init() {}
 
     @MainActor
-    public func start() async {
-        for await _ in channel.debounce(for: .seconds(0.5)) {
-            if Task.isCancelled { return }
-            interface.sendAction(.eventSearchChanged(.loading))
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-            interface.sendAction(.eventSearchChanged(.loaded(.repeating(.random, count: 2))))
-        }
-    }
-
-    @MainActor
     public func events() async throws -> [Event] {
-        .repeating(.random, count: 10)
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+        return .repeating(.random, count: 10)
     }
 
     @MainActor
-    public func submitSearchQuery(_ query: String) async {
-        await channel.send(query)
+    public func searchEvents(_ query: String) async throws -> [Event] {
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+        return [.init(name: "Mock Event: " + query)]
     }
 }
 
