@@ -58,6 +58,8 @@ public protocol Coordinator: View {
 
     @InterfaceObservationBuilder @MainActor func interfaces() -> Interfaces
 
+    @MainActor func handleDeeplink(url: URL) -> DeepLinkPropagation
+
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
     ///
@@ -120,6 +122,9 @@ public extension Coordinator {
                 },
                 finalDisappearHandler: {
                     stop()
+                },
+                onDeepLink: { url in
+                    handleDeeplink(url: url)
                 }
             )
         )
@@ -132,4 +137,5 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
+    @MainActor func handleDeeplink(url: URL) -> DeepLinkPropagation { .shouldContinue }
 }

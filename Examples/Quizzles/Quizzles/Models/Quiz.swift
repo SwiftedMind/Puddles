@@ -20,18 +20,20 @@
 //  SOFTWARE.
 //
 
-import SwiftUI
-import Puddles
+import Foundation
 
-@main
-struct ExampleApp: App {
-    @StateObject private var services: Services = .mock
+public struct Quiz: Identifiable, Hashable, Sendable {
+    public var id: UUID = .init()
+    public var name: String
+}
 
-    var body: some Scene {
-        WindowGroup {
-            Root()
-                .environmentObject(services)
-                .deepLinkRoot()
-        }
+public extension Quiz {
+
+    static var draft: Quiz {
+        .init(name: "")
+    }
+
+    static var mock: Quiz {
+        .init(name: faker.name.name())
     }
 }

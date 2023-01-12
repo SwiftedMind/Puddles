@@ -22,16 +22,55 @@
 
 import SwiftUI
 import Puddles
+import PreviewDebugTools
+import Combine
 
-@main
-struct ExampleApp: App {
-    @StateObject private var services: Services = .mock
+struct QuizCreationView: View {
+    @ObservedObject var interface: Interface<Action>
 
-    var body: some Scene {
-        WindowGroup {
-            Root()
-                .environmentObject(services)
-                .deepLinkRoot()
+    let state: ViewState
+
+    @State private var name: String = ""
+    private var nameBinding: Binding<String> {
+        .init {
+            state.quiz.name
+        } set: { newValue in
+//            name = newValue
+            interface.sendAction(.quizNameChanged(newName: newValue))
+        }
+    }
+
+    var body: some View {
+        Form {
+            TextField("Quiz Name", text: nameBinding)
+        }
+    }
+}
+
+extension QuizCreationView {
+    struct ViewState {
+        var quiz: Quiz
+
+        static var mock: ViewState {
+            .init(quiz: .mock)
+        }
+    }
+
+    enum Action {
+        case quizNameChanged(newName: String)
+    }
+}
+
+struct QuizCreationView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            Preview(QuizCreationView.init, state: .mock) { action, $state in
+                switch action {
+                case .quizNameChanged(let newName):
+                    break
+                }
+            }
+            .navigationTitle("Quizzes")
         }
     }
 }

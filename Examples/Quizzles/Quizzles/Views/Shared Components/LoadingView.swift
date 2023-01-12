@@ -21,17 +21,16 @@
 //
 
 import SwiftUI
-import Puddles
 
-@main
-struct ExampleApp: App {
-    @StateObject private var services: Services = .mock
+struct LoadingView: View {
+    var body: some View {
+        ProgressView()
+            .frame(maxWidth: .infinity)
+    }
+}
 
-    var body: some Scene {
-        WindowGroup {
-            Root()
-                .environmentObject(services)
-                .deepLinkRoot()
-        }
+struct LoadingView_Previews: PreviewProvider {
+    static var previews: some View {
+        LoadingView()
     }
 }

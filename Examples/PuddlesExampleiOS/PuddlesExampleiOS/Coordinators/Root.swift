@@ -42,6 +42,12 @@ struct Root: Coordinator {
         }
     }
 
+    // Rename this and make "quiz maker" app as a case study for deep linking
+    func handleDeeplink(url: URL) -> DeepLinkPropagation {
+        print("received »\(url)«")
+        return .shouldContinue
+    }
+
     func start() async {
         do {
             self.events = .loading
@@ -59,7 +65,7 @@ struct Root: Coordinator {
             await handleHomeAction(action)
         }
         AsyncChannelObserver(helper.searchChannel) { channel in
-            for await query in channel.debounce(for: .seconds(0-5)) {
+            for await query in channel.debounce(for: .seconds(0.5)) {
                 searchEvents(query: query)
             }
         }

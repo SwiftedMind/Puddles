@@ -33,6 +33,8 @@ struct Home: Coordinator {
     let searchResults: HomeView.SearchResultsLoadingState
     @State var searchQuery: String = ""
 
+    @State var showSheet: Bool = false
+
     var entryView: some View {
         HomeView(
             interface: viewInterface,
@@ -45,8 +47,19 @@ struct Home: Coordinator {
         .navigationTitle("Events")
     }
 
-    func navigation() -> some NavigationPattern {
+    func handleDeeplink(url: URL) -> DeepLinkPropagation {
+        print("received »\(url)«")
 
+        viewInterface.sendAction(.searchQueryUpdated("ABCD Test"))
+        showSheet = true
+
+        return .hasFinished
+    }
+
+    func navigation() -> some NavigationPattern {
+        Sheet(isActive: $showSheet) {
+            Text("OK")
+        }
     }
 
     func interfaces() -> some InterfaceObservation {

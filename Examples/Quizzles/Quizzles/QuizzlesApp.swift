@@ -24,13 +24,15 @@ import SwiftUI
 import Puddles
 
 @main
-struct ExampleApp: App {
-    @StateObject private var services: Services = .mock
+struct QuizzlesApp: App {
+
+    init() {
+        Puddles.configureLog()
+    }
 
     var body: some Scene {
         WindowGroup {
             Root()
-                .environmentObject(services)
                 .deepLinkRoot()
         }
     }

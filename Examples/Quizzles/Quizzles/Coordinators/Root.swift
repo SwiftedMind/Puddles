@@ -21,17 +21,28 @@
 //
 
 import SwiftUI
+import Combine
 import Puddles
 
-@main
-struct ExampleApp: App {
-    @StateObject private var services: Services = .mock
+struct Root: Coordinator {
 
-    var body: some Scene {
-        WindowGroup {
-            Root()
-                .environmentObject(services)
-                .deepLinkRoot()
+    @State var quizzes: QuizListView.Quizzes = .loaded(.repeating(.mock, count: 5))
+
+    var entryView: some View {
+        QuizList(quizzes: quizzes)
+    }
+
+    func modify(coordinator: CoordinatorContent) -> some View {
+        NavigationStack {
+            coordinator
         }
+    }
+
+    func navigation() -> some NavigationPattern {
+
+    }
+
+    func interfaces() -> some InterfaceObservation {
+        
     }
 }
