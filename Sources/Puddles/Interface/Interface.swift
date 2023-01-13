@@ -2,6 +2,7 @@ import Combine
 import SwiftUI
 import AsyncAlgorithms
 
+/// A wrapper around `ObservableObject` that provides an `actionPublisher` and a `sendAction(_:)` method that can be used as a unidirectional communication between views and coordinators.
 @MainActor
 public final class Interface<Action>: ObservableObject {
 	public let actionPublisher: PassthroughSubject<Action, Never> = .init()

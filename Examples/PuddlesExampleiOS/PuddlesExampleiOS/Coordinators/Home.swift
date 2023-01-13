@@ -63,17 +63,18 @@ struct Home: Coordinator {
     }
 
     func interfaces() -> some InterfaceObservation {
-        AsyncInterfaceObserver(viewInterface) { action in
-            await handleViewAction(action)
+        InterfaceObserver(viewInterface) { action in
+            handleViewAction(action)
         }
     }
 
-    func handleViewAction(_ action: HomeView.Action) async {
+    func handleViewAction(_ action: HomeView.Action) {
         switch action {
         case .eventTapped:
             print("Event Tapped")
         case .searchQueryUpdated(query: let query):
             searchQuery = query
+            
             // Pass through action to own interface.
             // The instance responsible for providing searchResults needs to decide on debouncing/throttling etc.
             interface.sendAction(.searchQueryUpdated(query))

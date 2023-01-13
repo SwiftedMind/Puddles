@@ -18,6 +18,9 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
     var overlayAlignment: Alignment = .bottom
     var debugOverlay: (_ state: Binding<ViewState>) -> Overlay
 
+    /// A SwiftUI previews helper type allowing to take advantage of view interfacing by providing an in-place mechanism of reacting to the view's actions.
+    ///
+    /// - Important: This is only meant to be used within previews!
     public init(
         @ViewBuilder _ content: @escaping (_ interface: ViewInterface, _ state: ViewState) -> Content,
         state: @autoclosure @escaping () -> ViewState,

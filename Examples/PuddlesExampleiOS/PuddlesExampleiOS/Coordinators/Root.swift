@@ -42,7 +42,8 @@ struct Root: Coordinator {
         }
     }
 
-    // Rename this and make "quiz maker" app as a case study for deep linking
+    // To test deep linking, enter the following into a console:
+    // xcrun simctl openurl booted "puddles://com.something"
     func handleDeeplink(url: URL) -> DeepLinkPropagation {
         print("received »\(url)«")
         return .shouldContinue
@@ -61,8 +62,8 @@ struct Root: Coordinator {
     }
 
     func interfaces() -> some InterfaceObservation {
-        AsyncInterfaceObserver(homeInterface) { action in
-            await handleHomeAction(action)
+        InterfaceObserver(homeInterface) { action in
+            handleHomeAction(action)
         }
         AsyncChannelObserver(helper.searchChannel) { channel in
             for await query in channel.debounce(for: .seconds(0.5)) {
@@ -71,10 +72,12 @@ struct Root: Coordinator {
         }
     }
 
-    func handleHomeAction(_ action: Home.Action) async {
+    func handleHomeAction(_ action: Home.Action) {
         switch action {
         case .searchQueryUpdated(let query):
-            await helper.searchChannel.send(query)
+            Task {
+                await helper.searchChannel.send(query)
+            }
         }
     }
 

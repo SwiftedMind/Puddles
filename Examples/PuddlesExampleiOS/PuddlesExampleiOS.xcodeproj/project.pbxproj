@@ -81,12 +81,11 @@
 				958AF81D296DF035004F8E61 /* Info.plist */,
 				9531A73529681866009D7688 /* ExampleApp.swift */,
 				958AF81C296AF6E9004F8E61 /* README.md */,
-				9594A7802968BF1100063CE7 /* Helper */,
 				9594A7782968B3D100063CE7 /* Models */,
 				9594A7752968A2F200063CE7 /* Services */,
 				9594A764296819A900063CE7 /* Coordinators */,
-				9594A76A29681A8400063CE7 /* Share Components */,
 				9594A76929681A7E00063CE7 /* Views */,
+				9594A7802968BF1100063CE7 /* Helper */,
 				9531A73929681866009D7688 /* Assets.xcassets */,
 				9531A73B29681866009D7688 /* Preview Content */,
 			);
@@ -123,13 +122,6 @@
 				9594A76B29681AA500063CE7 /* HomeView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		9594A76A29681A8400063CE7 /* Share Components */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Share Components";
 			sourceTree = "<group>";
 		};
 		9594A7752968A2F200063CE7 /* Services */ = {
