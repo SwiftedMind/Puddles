@@ -16,9 +16,9 @@
             }
             
             @Step {
-                Add the two required methods to `Root`.
+                Add the two required methods and one required property to `Root`.
                 
-                We'll add navigation later.
+                We'll talk about interfaces and navigation later.
                 @Code(name: "Root.swift", file: "essentials-01-02")
             }
             
@@ -26,7 +26,7 @@
             
             @Step {
                 Set `Root` as the root view of the app and run it.
-                @Code(name: "YourApp.swift", file: "essentials-01-03") {
+                @Code(name: "FirstChapterApp.swift", file: "essentials-01-03") {
                     @Image(source: "tutorial_essentials_01_02", alt: "A screenshot of an iPhone running the app. It shows the text 'Hello, World'.")
                 }
             }
@@ -44,12 +44,12 @@
                 @Code(name: "HomeView.swift", file: "essentials-02-01")
             }
             
-            Next, the view needs a place to hold public state that can be created by and managed through a `Coordinator`. This is done via a ``Puddles/ViewInterface``, which is a wrapper around `ObservableObject`.
+            Next, the view needs a place to hold public state that can be created by and managed through a `Coordinator`.
             
             @Step {
-                Add a view interface to `HomeView`.
+                Create and add a `ViewState` to `HomeView`.
                 
-                The ``Puddles/ViewInterface`` protocol requires a property `actionPublisher` which will be discussed in <doc:02-ViewInteraction>. For now, simply add the property to the interface.
+                Notice that the view itself cannot manipulate the state. That is the job of a `Coordinator`.
                 
                 @Code(name: "HomeView.swift", file: "essentials-02-02")
             }
@@ -62,12 +62,10 @@
             }
             
             @Step {
-                For now, we connect the button action to the interface, so that the value increases with each tap.
+                Leave the button's action closure empty for now.
                 
-                This approach is not encouraged, since all communication should go through a `Coordinator` in a unidirectional flow of data. In the next tutorial, we will replace the method inside the interface with something better.
-                @Code(name: "HomeView.swift", file: "essentials-02-04")  {
-                    @Image(source: "tutorial_01_essentials_02_04", alt: "A screenshot of an iPhone running the app. It shows the home view, now with a working button.")
-                }
+                In the next tutorial, we will look at a way to update the view's state.
+                @Code(name: "HomeView.swift", file: "essentials-02-04")
             }
             
             @Step {
@@ -77,6 +75,8 @@
             
             @Step {
                 Add the newly created `HomeView` and set it as the coordinator's entry view.
+                
+                Notice that the `Coordinator` holds the actual `@State` for the view. This is important to keep responsibilities structured and away from the view.
                 @Code(name: "Root.swift", file: "essentials-02-06")
             }
             

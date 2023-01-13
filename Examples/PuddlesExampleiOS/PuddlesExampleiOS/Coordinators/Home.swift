@@ -33,6 +33,8 @@ struct Home: Coordinator {
     let searchResults: HomeView.SearchResultsLoadingState
     @State var searchQuery: String = ""
 
+    @State var showSheet: Bool = false
+
     var entryView: some View {
         HomeView(
             interface: viewInterface,
@@ -45,22 +47,34 @@ struct Home: Coordinator {
         .navigationTitle("Events")
     }
 
-    func navigation() -> some NavigationPattern {
+    func handleDeeplink(url: URL) -> DeepLinkPropagation {
+        print("received »\(url)«")
 
+        viewInterface.sendAction(.searchQueryUpdated("ABCD Test"))
+        showSheet = true
+
+        return .hasFinished
     }
 
-    func interfaces() -> some InterfaceObservation {
-        AsyncInterfaceObserver(viewInterface) { action in
-            await handleViewAction(action)
+    func navigation() -> some NavigationPattern {
+        Sheet(isActive: $showSheet) {
+            Text("OK")
         }
     }
 
-    func handleViewAction(_ action: HomeView.Action) async {
+    func interfaces() -> some InterfaceObservation {
+        InterfaceObserver(viewInterface) { action in
+            handleViewAction(action)
+        }
+    }
+
+    func handleViewAction(_ action: HomeView.Action) {
         switch action {
         case .eventTapped:
             print("Event Tapped")
         case .searchQueryUpdated(query: let query):
             searchQuery = query
+            
             // Pass through action to own interface.
             // The instance responsible for providing searchResults needs to decide on debouncing/throttling etc.
             interface.sendAction(.searchQueryUpdated(query))

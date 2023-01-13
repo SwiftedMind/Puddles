@@ -42,6 +42,13 @@ struct Root: Coordinator {
         }
     }
 
+    // To test deep linking, enter the following into a console:
+    // xcrun simctl openurl booted "puddles://com.something"
+    func handleDeeplink(url: URL) -> DeepLinkPropagation {
+        print("received »\(url)«")
+        return .shouldContinue
+    }
+
     func start() async {
         do {
             self.events = .loading
@@ -55,20 +62,22 @@ struct Root: Coordinator {
     }
 
     func interfaces() -> some InterfaceObservation {
-        AsyncInterfaceObserver(homeInterface) { action in
-            await handleHomeAction(action)
+        InterfaceObserver(homeInterface) { action in
+            handleHomeAction(action)
         }
         AsyncChannelObserver(helper.searchChannel) { channel in
-            for await query in channel.debounce(for: .seconds(0-5)) {
+            for await query in channel.debounce(for: .seconds(0.5)) {
                 searchEvents(query: query)
             }
         }
     }
 
-    func handleHomeAction(_ action: Home.Action) async {
+    func handleHomeAction(_ action: Home.Action) {
         switch action {
         case .searchQueryUpdated(let query):
-            await helper.searchChannel.send(query)
+            Task {
+                await helper.searchChannel.send(query)
+            }
         }
     }
 

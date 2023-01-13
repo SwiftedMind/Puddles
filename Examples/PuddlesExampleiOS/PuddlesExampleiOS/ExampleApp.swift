@@ -21,6 +21,7 @@
 //
 
 import SwiftUI
+import Puddles
 
 @main
 struct ExampleApp: App {
@@ -30,6 +31,7 @@ struct ExampleApp: App {
         WindowGroup {
             Root()
                 .environmentObject(services)
+                .deepLinkRoot()
         }
     }
 }

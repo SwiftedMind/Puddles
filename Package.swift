@@ -11,7 +11,8 @@ let package = Package(
         .library(
             name: "Puddles",
             targets: ["Puddles"]
-        )
+        ),
+        .library(name: "PreviewDebugTools", targets: ["PreviewDebugTools"])
     ],
     dependencies: [
 			.package(url: "https://github.com/apple/swift-docc-plugin", branch: "main"),
@@ -22,6 +23,12 @@ let package = Package(
             name: "Puddles",
             dependencies: [
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ]
+        ),
+        .target(
+            name: "PreviewDebugTools",
+            dependencies: [
+                "Puddles"
             ]
         )
     ]

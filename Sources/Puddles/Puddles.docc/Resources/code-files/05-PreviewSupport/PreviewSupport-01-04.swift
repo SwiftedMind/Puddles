@@ -1,45 +1,51 @@
 import SwiftUI
 import Puddles
-import Combine
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface
+    @ObservedObject var interface: Interface<Action>
+    let state: ViewState
 
     var body: some View {
         VStack {
-          Text("Button tapped \(interface.buttonTapCount) times.")
-          Button("Tap Me") {
-              interface.sendAction(.buttonTapped)
-          }
+            Text("Button tapped \(state.buttonTapCount) times.")
+            Button("Tap Me") {
+                interface.sendAction(.buttonTaped)
+            }
         }
     }
 
 }
 
 extension HomeView {
-    @MainActor final class Interface: ViewInterface {
-        var actionPublisher: PassthroughSubject<Action, Never> = .init()
 
-        @Published var buttonTapCount: Int = 0
+    struct ViewState {
+        var buttonTapCount: Int
+
+        init(buttonTapCount: Int = 0) {
+            self.buttonTapCount = buttonTapCount
+        }
+
+        static var mock: ViewState {
+            .init(buttonTapCount: 10)
+        }
     }
 
     enum Action {
-        case buttonTapped
+        case buttonTaped
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        Preview(HomeView.init, interface: .init()) { action, interface in
+        Preview(HomeView.init, state: .mock) { action, $state in
             switch action {
-            case .buttonTapped:
-                interface.buttonTapCount += 1
+            case .buttonTaped:
+                state.buttonTapCount += 1
             }
         }
-        .onStart { interface in
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-            interface.buttonTapCount = 40
+        .onStart { $state in
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            state.buttonTapCount = 40
         }
     }
 }
-

@@ -1,7 +1,11 @@
 import SwiftUI
+import Combine
 
 /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Coordinator``.
 public struct CoordinatorBody<C: Coordinator>: View {
+    @Environment(\.deepLinkHandler) private var deepLinkHandler
+
+    private var onDeepLink: (_ url: URL) -> DeepLinkPropagation
 
     /// The root view of the `Coordinator` as provided in ``Puddles/Coordinator/entryView-swift.property``.
     private let entryView: C.EntryView
@@ -24,13 +28,15 @@ public struct CoordinatorBody<C: Coordinator>: View {
         navigation: C.NavigationContent,
         interfaces: C.Interfaces,
         firstAppearHandler: @escaping () async -> Void,
-        finalDisappearHandler: @escaping () -> Void
+        finalDisappearHandler: @escaping () -> Void,
+        onDeepLink: @escaping (_: URL) -> DeepLinkPropagation
     ) {
         self.entryView = entryView
         self.navigation = navigation
         self.interfaces = interfaces
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
+        self.onDeepLink = onDeepLink
     }
 
     public var body: some View {
@@ -38,12 +44,26 @@ public struct CoordinatorBody<C: Coordinator>: View {
             entryView
         }
         .background(navigation)
-				.background(interfaces)
+        .background(interfaces)
         .background {
             ViewLifetimeHelper {
                 await firstAppearHandler()
             } onDeinit: {
                 finalDisappearHandler()
+            }
+        }
+        .onAppear {
+            if let url = deepLinkHandler.url {
+                if onDeepLink(url) == .hasFinished {
+                    deepLinkHandler.url = nil
+                }
+            }
+        }
+        .onChange(of: deepLinkHandler) { deepLinkHandler in
+            if let url = deepLinkHandler.url {
+                if onDeepLink(url) == .hasFinished {
+                    deepLinkHandler.url = nil
+                }
             }
         }
     }

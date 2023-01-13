@@ -1,20 +1,22 @@
 import SwiftUI
 import Puddles
-import Combine
 
-struct MyView: View {
-    @ObservedObject var interface: Interface
+struct QueryableDemoView: View {
+    @ObservedObject var interface: Interface<Action>
+    let state: ViewState
 
     var body: some View {
         Button("Delete") {
             interface.sendAction(.deleteButtonTapped)
         }
     }
+
 }
 
-extension MyView {
-    @MainActor final class Interface: ViewInterface {
-        var actionPublisher: PassthroughSubject<Action, Never> = .init()
+extension QueryableDemoView {
+
+    struct ViewState {
+
     }
 
     enum Action {

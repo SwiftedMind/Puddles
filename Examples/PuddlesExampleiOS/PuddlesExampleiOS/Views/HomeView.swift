@@ -22,7 +22,6 @@
 
 import SwiftUI
 import Puddles
-import Combine
 
 struct HomeView: View {
     @ObservedObject var interface: Interface<Action>
@@ -78,7 +77,6 @@ struct HomeView: View {
                         Button(event.name) {
                             
                         }
-                        
                     }
                     .listStyle(.insetGrouped)
                 }
@@ -116,7 +114,7 @@ extension HomeView {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            Preview(HomeView.init, state: .mock) { action, state in
+            Preview(HomeView.init, state: .mock) { action, $state in
                 switch action {
                 case .eventTapped:
                     state.events = .loaded(state.events.value! + [.random])

@@ -1,4 +1,4 @@
-@Tutorials(name: "Coordinator") {
+@Tutorials(name: "Puddles") {
     @Intro(title: "Meet Puddles") {
         An architectural pattern for apps built on the SwiftUI lifecycle. It helps separating navigation and logic from the views.
         @Image(source: "logo.png", alt: "An illustration of a sleeping sloth, hanging from a tree branch.")
@@ -12,7 +12,7 @@
         @TutorialReference(tutorial: "doc:02-ViewInteraction")
         @TutorialReference(tutorial: "doc:03-BasicNavigation")
         @TutorialReference(tutorial: "doc:04-PreviewSupport")
-        @TutorialReference(tutorial: "doc:05-Expectations")
+        @TutorialReference(tutorial: "doc:05-Queryable")
         @TutorialReference(tutorial: "doc:06-ProvidingData")
     }
     

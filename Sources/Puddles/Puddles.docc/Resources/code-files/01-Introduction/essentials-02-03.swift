@@ -1,25 +1,22 @@
 import SwiftUI
 import Puddles
-import Combine
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface
+    let state: ViewState
 
     var body: some View {
         VStack {
-          Text("Button tapped \(interface.buttonTapCount) times.")
-          Button("Tap Me") {
-            // Button tapped
-          }
+            Text("Button tapped \(state.buttonTapCount) times.")
+            Button("Tap Me") {
+                
+            }
         }
     }
 
 }
 
 extension HomeView {
-    @MainActor final class Interface: ViewInterface {
-        var actionPublisher: PassthroughSubject<NoAction, Never> = .init()
-
-        @Published var buttonTapCount: Int = 0
+    struct ViewState {
+        var buttonTapCount: Int = 0
     }
 }

@@ -18,31 +18,30 @@
             }
             
             @Step {
-                Add the default Previews object.
+                Add a preview using the ``Puddles/Preview`` view wrapper, which will hold the views state and connect to its interface.
                 
-                The problem with this is that we cannot actually use the counter in the view. Pressing the button does nothing.
+                Tip: Prefixing the state closure parameter with a `$` gives you more ergonomic access to the binding. 
        
                 @Code(name: "HomeView.swift", file: "PreviewSupport-01-02")
             }
-            
-            Instead, we are going to use ``Puddles/Preview`` .
+        
             
             @Step {
-                Wrap the view with a ``Puddles/Preview`` view, passing in `HomeView` and an instance of its interface.
+                Inside the provided closure, you can switch over incoming view actions and modify the state as needed
                 
-                `Preview` connects with the interface and calls the provided closure when an Action is sent. In that closure, you have access to the interface object and can manipulate the view's state.
+                `Preview` automatically connects with the view interface and calls the provided closure when an Action is sent.
                 @Code(name: "HomeView.swift", file: "PreviewSupport-01-03")
             }
             
             @Step {
-                To load or set initial data, you can add the ``Puddles/Preview/onStart(perform:)`` modifier, which calls the provided closure when the view appears.
+                To load or set initial asynchronous data, you can add the ``Puddles/Preview/onStart(perform:)`` modifier, which calls the provided closure when the preview appears.
                 
                 Tip: See ``Puddles/Coordinator/start()-e3dl`` for more information on how the `start()` of a `Coordinator` is defined.
        
                 @Code(name: "HomeView.swift", file: "PreviewSupport-01-04")
             }
             @Step {
-                If you want to add preview-specific debug functionality, you can use the ``Puddles/Preview/overlay(alignment:overlayContent:)`` view modifier overload which lets you return a view that is put on top of the preview, while also providing you with access to the view interface.
+                If you want to add preview-specific debug functionality, you can use the ``Puddles/Preview/overlay(alignment:maximizedPreviewFrame:overlayContent:)`` view modifier overload which lets you return a view that is put on top of the preview, while also providing you with access to a modifiable view state.
        
                 @Code(name: "HomeView.swift", file: "PreviewSupport-01-05")
             }

@@ -1,13 +1,19 @@
 import SwiftUI
 import Puddles
 
-struct MyCoordinator: Coordinator {
-    @StateObject var interface: MyView.Interface = .init()
+struct QueryableDemo: Coordinator {
+    @StateObject var viewInterface: Interface<QueryableDemoView.Action> = .init()
 
     @State private var isShowingConfirmationAlert: Bool = false
 
+    var viewState: QueryableDemoView.ViewState {
+        .init(
+
+        )
+    }
+
     var entryView: some View {
-        MyView(interface: interface)
+        QueryableDemoView(interface: viewInterface, state: viewState)
     }
 
     func navigation() -> some NavigationPattern {
@@ -15,7 +21,7 @@ struct MyCoordinator: Coordinator {
             title: "Do you want to delete this?",
             isPresented: $isShowingConfirmationAlert) {
                 Button("Cancel", role: .cancel) {
-                    // Do nothing
+                    // Cancel
                 }
                 Button("OK") {
                     delete()
@@ -25,7 +31,13 @@ struct MyCoordinator: Coordinator {
             }
     }
 
-    func handleAction(_ action: Action) async {
+    func interfaces() -> some InterfaceObservation {
+        InterfaceObserver(viewInterface) { action in
+            handleViewAction(action)
+        }
+    }
+
+    private func handleViewAction(_ action: QueryableDemoView.Action) {
         switch action {
         case .deleteButtonTapped:
             isShowingConfirmationAlert = true
@@ -35,4 +47,5 @@ struct MyCoordinator: Coordinator {
     private func delete() {
         // Apply the deletion
     }
+
 }

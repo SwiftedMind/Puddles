@@ -12,12 +12,17 @@ public protocol Coordinator: View {
     associatedtype EntryView: View
 
     /// The navigation that the ``Puddles/Coordinator`` defines,
-    /// which is built inside ``Puddles/Coordinator/navigation()`` using a ``NavigationBuilder``.
+    /// which is built inside the ``Puddles/Coordinator/navigation()`` method  using a ``NavigationBuilder``.
     ///
     /// This can be inferred by providing an implementation for  ``Puddles/Coordinator/navigation()``.
     /// The implementation can be empty to define an empty navigation.
     associatedtype NavigationContent: NavigationPattern
 
+    /// The collective interfaces that the ``Puddles/Coordinator`` observes,
+    /// which are built inside the ``Puddles/Coordinator/interfaces()`` using a ``Puddles/InterfaceObservationBuilder``.
+    ///
+    /// This can be inferred by providing an implementation for  ``Puddles/Coordinator/interfaces()``.
+    /// The implementation can be empty to define an empty interface observation (i.e. no observation).
     associatedtype Interfaces: InterfaceObservation
 
     /// The final `View` type for the ``Puddles/Coordinator``,
@@ -56,7 +61,29 @@ public protocol Coordinator: View {
     /// - Returns: The navigation content for the ``Puddles/Coordinator``.
     @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
+    /// The collection of interfaces that the ``Puddles/Coordinator`` observes.
+    ///
+    /// The interface observations are built using a ``Puddles/InterfaceObservationBuilder`` result builder. An example implementation would look like this:
+    ///
+    /// ```swift
+    /// func interfaces() -> Interfaces {
+    ///   InterfaceObserver(viewInterface) { action in
+    ///     handleViewAction(action)
+    ///   }
+    /// }
+    /// ```
+    ///
+    /// The interface observations are internally added to the coordinator's content view.
+    ///
+    /// - Returns: The interface observations for the ``Puddles/Coordinator``.
     @InterfaceObservationBuilder @MainActor func interfaces() -> Interfaces
+
+    /// Experimental support for deep linking.
+    ///
+    /// A default implementation is provided and simply returns ``Puddles/DeepLinkPropagation/shouldContinue``.
+    /// - Parameter url: The deep link url.
+    /// - Returns: A propagation strategy.
+    @MainActor func handleDeeplink(url: URL) -> DeepLinkPropagation
 
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
@@ -77,6 +104,8 @@ public protocol Coordinator: View {
     ///
     /// When you need to implement a `NavigationSplitView` or need iPad support,
     /// you need to wrap your root `Coordinator` in a view that provides the `NavigationSplitView`, as `Coordinator` currently does not support this in a convenient way.
+    ///
+    /// - Tip: Due to a Swift Compiler bug, autocomplete will insert the wrong method signature for this method. It will use `FinalBody` as return type, instead of the correct `some View` type. Be aware that you have to manually correct this, or otherwise the code will not compile.
     ///
     /// - Parameter coordinator: A representation of the fully configured coordinator content.
     /// - Returns: A view that modifies the provided coordinator.
@@ -120,6 +149,9 @@ public extension Coordinator {
                 },
                 finalDisappearHandler: {
                     stop()
+                },
+                onDeepLink: { url in
+                    handleDeeplink(url: url)
                 }
             )
         )
@@ -132,4 +164,5 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
+    @MainActor func handleDeeplink(url: URL) -> DeepLinkPropagation { .shouldContinue }
 }
