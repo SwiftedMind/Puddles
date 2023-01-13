@@ -4,14 +4,11 @@ import AsyncAlgorithms
 
 @MainActor
 public final class Interface<Action>: ObservableObject {
-    public let channel: AsyncChannel<Action> = .init()
-
 	public let actionPublisher: PassthroughSubject<Action, Never> = .init()
 	public init() {}
 
     @MainActor
     public func sendAction(_ action: Action) {
-//        Task { await channel.send(action) }
         actionPublisher.send(action)
     }
 }

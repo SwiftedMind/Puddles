@@ -4,14 +4,16 @@ import SwiftUI
 ///
 /// - Important: This is only meant to be used within previews!
 ///
-/// For more details on the view interfacing concept, see ``ViewInterface``.
+/// For more details on the view interfacing concept, see ``Puddles/Interface``.
 public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Content: View, Overlay: View>: View {
     @State var state: ViewState
     @StateObject var interface: ViewInterface
 
     var content: (_ interface: ViewInterface, _ state: Binding<ViewState>) -> Content
-    var actionHandler: (_ action: Action, _ state: Binding<ViewState>) async -> Void
-    var onStart: ((_ state: inout ViewState) async throws -> Void)?
+    var actionHandler: (_ action: Action, _ state: Binding<ViewState>) -> Void
+    var onStart: ((_ state: Binding<ViewState>) async -> Void)?
+
+    var maximizedPreviewFrame: Bool = false
 
     var overlayAlignment: Alignment = .bottom
     var debugOverlay: (_ state: Binding<ViewState>) -> Overlay
@@ -19,7 +21,7 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
     public init(
         @ViewBuilder _ content: @escaping (_ interface: ViewInterface, _ state: ViewState) -> Content,
         state: @autoclosure @escaping () -> ViewState,
-        actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) async -> Void
+        actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
     ) where Overlay == EmptyView {
         self._state = .init(wrappedValue: state())
         self._interface = .init(wrappedValue: .init())
@@ -33,11 +35,13 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
         @ViewBuilder debugOverlay: @escaping (_ state: Binding<ViewState>) -> Overlay,
         overlayAlignment: Alignment,
         state: @autoclosure () -> ViewState,
-        actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) async -> Void
+        maximizedPreviewFrame: Bool,
+        actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
     ) {
         self._state = .init(wrappedValue: state())
         self._interface = .init(wrappedValue: .init())
         self.content = content
+        self.maximizedPreviewFrame = maximizedPreviewFrame
         self.actionHandler = actionHandler
         self.debugOverlay = debugOverlay
         self.overlayAlignment = overlayAlignment
@@ -45,26 +49,30 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
     
     public var body: some View {
         content(interface, $state)
+            .frame(
+                maxWidth: maximizedPreviewFrame ? .infinity : nil,
+                maxHeight: maximizedPreviewFrame ? .infinity : nil
+            )
             .overlay(alignment: overlayAlignment) {
                 debugOverlay($state)
             }
             .background(
                 ViewLifetimeHelper {
-                    var state = state
-                    try! await onStart?(&state)
-                    self.state = state
+                    await onStart?($state)
                 } onDeinit: {}
             )
             .onReceive(interface.actionPublisher) { action in
-                Task {
-//                    var state = state
-                    await actionHandler(action, $state)
-//                    self.state = state
-                }
+                actionHandler(action, $state)
             }
     }
+
+    public func fullScreenPreview() -> Preview {
+        var copy = self
+        copy.maximizedPreviewFrame = true
+        return copy
+    }
     
-    public func onStart(perform: @escaping (_ state: inout ViewState) async throws -> Void) -> Preview {
+    public func onStart(perform: @escaping (_ state: Binding<ViewState>) async -> Void) -> Preview {
         var copy = self
         copy.onStart = perform
         return copy
@@ -72,6 +80,7 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
 
     public func overlay<OverlayContent: View>(
         alignment: Alignment = .bottom,
+        maximizedPreviewFrame: Bool = true,
         @ViewBuilder overlayContent: @escaping (_ state: Binding<ViewState>) -> OverlayContent
     ) -> Preview<Action, ViewInterface, ViewState, Content, OverlayContent> {
         Preview<_, _, _, _, OverlayContent>(
@@ -79,6 +88,7 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
             debugOverlay: overlayContent,
             overlayAlignment: alignment,
             state: state,
+            maximizedPreviewFrame: maximizedPreviewFrame,
             actionHandler: actionHandler
         )
     }

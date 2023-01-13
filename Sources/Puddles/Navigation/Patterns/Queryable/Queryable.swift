@@ -40,18 +40,32 @@ import SwiftUI
 ///
 /// When the Task that calls ``Puddles/Queryable/Wrapper/query()`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation. In that case, a ``Puddles/QueryError/queryCancelled`` error is thrown.
 ///
-/// For more information, see <doc:05-Expectations>.
-///
-/// - Important: By `await`ing a ``Puddles/Queryable/Wrapper/query()`` result, you have to guarantee that an answer will be provided exactly once, no less and no more! Failing to do so will cause undefined behavior and even crashes, since this view makes use of `CheckedContinuation`s.
+/// For more information, see <doc:05-Queryable>.
 @propertyWrapper
 public struct Queryable<Result>: DynamicProperty {
 
+    /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
     public struct Wrapper {
+
+        /// A binding to the `isActive` state inside the `@Queryable` property wrapper.
+        ///
+        /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
         var isActive: Binding<Bool>
+
+        /// A pointer to the ``Puddles/Queryable/Resolver`` object that is passed inside the closure of the ``Puddles/QueryControlled`` navigation wrapper.
+        ///
+        /// This is used internally inside ``Puddles/QueryControlled``.
         var resolver: Resolver
+
+        /// A property that stores the `Result` type to be used in logging messages.
         let expectedType: Result.Type
+
+        /// A pointer to the `Buffer` object type.
+        ///
+        /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
         private var buffer: Buffer
 
+        /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
         fileprivate init(
             isActive: Binding<Bool>,
             expectedType: Result.Type,
@@ -64,6 +78,12 @@ public struct Queryable<Result>: DynamicProperty {
             self.buffer = buffer
         }
 
+        /// Requests the collection of data by starting a query on the `Result` type.
+        ///
+        /// This method will suspend for as long as the query is unanswered and not cancelled. When the parent Task is cancelled, this method will immediately cancel the query and throw a ``Puddles/QueryError/queryCancelled`` error.
+        ///
+        /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/Queryable/QueryConflictPolicy`` defined in the initializer of ``Puddles/Queryable``. The default policy is ``Puddles/Queryable/QueryConflictPolicy/cancelNewQuery``.
+        /// - Returns: The result of the query.
         public func query() async throws -> Result {
             isActive.wrappedValue = true
             return try await withTaskCancellationHandler {
@@ -77,19 +97,18 @@ public struct Queryable<Result>: DynamicProperty {
         }
     }
 
+    /// Boolean flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
+    @State var isActive: Bool = false
 
     public var wrappedValue: Wrapper {
         .init(isActive: $isActive, expectedType: Result.self, resolver: resolver, buffer: buffer)
     }
 
-    /// Boolean flag indicating if the expectation has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
-    @State var isActive: Bool = false
-
-    /// Internal helper type that stores and continues a `CheckedContinuation` created within ``Expectation/result``.
+    /// Internal helper type that stores and continues a `CheckedContinuation` created by calling ``Puddles/Queryable/Wrapper/query()``.
     private var buffer: Buffer
 
-    /// Helper type to hide other implementation details of ``Expectation``.
-    /// This type only exposes a single method to complete the expectation.
+    /// Helper type to hide implementation details of ``Puddles/Queryable``.
+    /// This type exposes convenient methods to answer (i.e. complete) a query.
     private var resolver: Resolver!
 
     public init(queryConflictPolicy: QueryConflictPolicy = .cancelNewQuery) {
@@ -97,33 +116,22 @@ public struct Queryable<Result>: DynamicProperty {
         resolver = .init(answerHandler: resumeContinuation(returning:), errorHandler: resumeContinuation(throwing:))
     }
 
-    /// Helper flag to determine if a continuation is currently stored.
-    ///
-    /// This is needed for runtime checks in ``Expecting/body``
-    /// to inform about unfulfilled expectations (causing a `CheckedContinuation` to leak).
-    private var hasContinuation: Bool {
-        get async {
-            await buffer.hasContinuation
-        }
-    }
-
-    // MARK: - Completion access
-
-    /// Completes the expectation with a result.
-    /// - Parameter result: The result of the expectation.
+    /// Completes the query with a result.
+    /// - Parameter result: The answer to the query.
     private func resumeContinuation(returning result: Result) {
         Task {
             await buffer.resumeContinuation(returning: result)
         }
     }
 
-    /// Completes the expectation with a result.
-    /// - Parameter result: The result of the expectation.
+    /// Completes the query with an error.
+    /// - Parameter result: The error that should be thrown.
     private func resumeContinuation(throwing error: Error) {
         Task {
+
+            // Catch an unanswered query and cancel it to prevent the stored continuation from leaking.
             if case QueryInternalError.queryAutoCancel = error,
                await buffer.hasContinuation {
-                // Unfinished continuation detected. We need to cancel it
                 logger.notice("Cancelling query of »\(Result.self, privacy: .public)« because presentation has terminated.")
                 await buffer.resumeContinuation(throwing: QueryError.queryCancelled)
                 return
@@ -136,8 +144,13 @@ public struct Queryable<Result>: DynamicProperty {
 
 extension Queryable {
 
+    /// A query conflict resolving strategy for situations in which multiple queries are started at the same time.
     public enum QueryConflictPolicy {
+
+        /// A query conflict resolving strategy that cancels the previous, ongoing query to allow the new query to continue.
         case cancelPreviousQuery
+
+        /// A query conflict resolving strategy that cancels the new query to allow the previous, ongoing query to continue.
         case cancelNewQuery
     }
 

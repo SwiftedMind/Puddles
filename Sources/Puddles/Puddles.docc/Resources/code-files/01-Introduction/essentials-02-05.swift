@@ -11,4 +11,9 @@ struct Root: Coordinator {
         // Empty for now
     }
 
+
+    func interfaces() -> some InterfaceObservation {
+        // Empty for now
+    }
+
 }

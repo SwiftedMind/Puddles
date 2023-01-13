@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct YourApp: App {
+struct FirstChapterApp: App {
     var body: some Scene {
         WindowGroup {
             Root()

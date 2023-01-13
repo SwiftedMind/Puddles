@@ -75,20 +75,20 @@ struct QuizListView_Previews: PreviewProvider {
             Preview(QuizListView.init, state: .mock) { action, state in
 
             }
-            .overlay(alignment: .bottom) { state in
+            .overlay(alignment: .bottom) { $state in
                 HStack {
                     DebugButton("Loading") {
-                        state.wrappedValue.quizzes = .loading
+                        state.quizzes = .loading
                     }
-                    .disabled(state.wrappedValue.quizzes.isLoading)
+                    .disabled(state.quizzes.isLoading)
                     DebugButton("Error") {
-                        state.wrappedValue.quizzes = .failure(.debug)
+                        state.quizzes = .failure(.debug)
                     }
-                    .disabled(state.wrappedValue.quizzes.isFailure)
+                    .disabled(state.quizzes.isFailure)
                     DebugButton("Success") {
-                        state.wrappedValue.quizzes = .loaded(.repeating(.mock, count: 5))
+                        state.quizzes = .loaded(.repeating(.mock, count: 5))
                     }
-                    .disabled(state.wrappedValue.quizzes.isLoaded)
+                    .disabled(state.quizzes.isLoaded)
                 }
             }
             .navigationTitle("Quizzes")

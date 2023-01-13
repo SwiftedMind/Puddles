@@ -23,7 +23,7 @@ struct ViewLifetimeHelper: View {
 
 private final class LifetimeViewModel: ObservableObject {
 
-    private var task: Task<Void, Never>
+    private let task: Task<Void, Never>
 
     @MainActor var onInit: () async -> Void
     @MainActor var onDeinit: () -> Void

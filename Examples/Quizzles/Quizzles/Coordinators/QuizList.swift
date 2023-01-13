@@ -28,7 +28,6 @@ struct QuizList: Coordinator {
     @StateObject var viewInterface: Interface<QuizListView.Action> = .init()
 
     @Queryable<Quiz> private var quizCreation
-    @Queryable<Bool> private var deletionConfirmation
     let quizzes: QuizListView.Quizzes
 
     var viewState: QuizListView.ViewState {
@@ -50,21 +49,6 @@ struct QuizList: Coordinator {
                     query.answer(withOptional: createdQuiz)
                 }
             }
-        }
-        QueryControlled(by: deletionConfirmation) { isActive, query in
-            Alert(
-                title: "Do you want to delete this?",
-                isPresented: isActive
-            ) {
-                    Button("Cancel", role: .cancel) {
-                        query.answer(with: false)
-                    }
-                    Button("OK") {
-                        query.answer(with: true)
-                    }
-                } message: {
-                    Text("This cannot be reversed!")
-                }
         }
     }
 
@@ -88,17 +72,20 @@ struct QuizList: Coordinator {
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             Button {
-                Task {
-                    do {
-                        let quiz = try await quizCreation.query()
-                        print(quiz)
-                    } catch QueryError.queryCancelled {
-                        print("Jo")
-                    } catch {}
-                }
+                queryQuizCreation()
             } label: {
                 Image(systemName: "plus")
             }
+        }
+    }
+
+    private func queryQuizCreation() {
+        Task {
+            do {
+                let quiz = try await quizCreation.query()
+                print(quiz)
+            } catch QueryError.queryCancelled {
+            } catch {}
         }
     }
 }

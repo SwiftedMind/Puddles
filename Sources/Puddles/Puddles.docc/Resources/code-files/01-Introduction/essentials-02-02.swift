@@ -1,9 +1,8 @@
 import SwiftUI
 import Puddles
-import Combine
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface
+    let state: ViewState
 
     var body: some View {
         Text("Hello, World")
@@ -12,7 +11,7 @@ struct HomeView: View {
 }
 
 extension HomeView {
-    @MainActor final class Interface: ViewInterface {
-        var actionPublisher: PassthroughSubject<NoAction, Never> = .init()
+    struct ViewState {
+        var buttonTapCount: Int = 0
     }
 }
