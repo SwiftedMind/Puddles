@@ -27,6 +27,10 @@ struct Root: Coordinator {
   func navigation() -> some NavigationPattern {
     
   }
+
+  func interfaces() -> Interfaces {
+
+  }
 }
 
 @main
