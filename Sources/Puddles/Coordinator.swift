@@ -1,5 +1,3 @@
-// Copyright 2022 apploft GmbH. All rights reserved.
-
 import SwiftUI
 import Combine
 
