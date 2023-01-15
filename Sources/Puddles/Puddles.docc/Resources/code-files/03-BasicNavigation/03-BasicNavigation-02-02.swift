@@ -30,7 +30,7 @@ struct Root: Coordinator {
         }
     }
 
-    private func handleViewAction(_ action: Action) async {
+    private func handleViewAction(_ action: Action) {
         switch action {
         case .buttonTapped:
             buttonTapCount += 1
