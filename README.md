@@ -39,7 +39,7 @@ You will also need Swift 5.7 to compile the package.
 The package is installed through the Swift Package Manager. Simply add the following line to your `Package.swift` dependencies:
 
 ```swift
-.package(url: "https://github.com/SwiftedMind/Puddles", from: "0.1.0")
+.package(url: "https://github.com/SwiftedMind/Puddles", branch: "main")
 ```
 
 Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
