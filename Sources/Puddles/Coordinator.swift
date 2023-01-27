@@ -81,7 +81,7 @@ public protocol Coordinator: View {
     /// A default implementation is provided and simply returns ``Puddles/DeepLinkPropagation/shouldContinue``.
     /// - Parameter url: The deep link url.
     /// - Returns: A propagation strategy.
-    @MainActor func handleDeeplink(url: URL) -> DeepLinkPropagation
+    @MainActor func handleDeepLink(_ deepLink: URL)
 
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
@@ -148,8 +148,8 @@ public extension Coordinator {
                 finalDisappearHandler: {
                     stop()
                 },
-                onDeepLink: { url in
-                    handleDeeplink(url: url)
+                deepLinkHandler: { url in
+                    handleDeepLink(url)
                 }
             )
         )
@@ -162,5 +162,5 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
-    @MainActor func handleDeeplink(url: URL) -> DeepLinkPropagation { .shouldContinue }
+    @MainActor func handleDeepLink(_ deepLink: URL) {}
 }

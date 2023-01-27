@@ -3,6 +3,8 @@ import SwiftUI
 // MARK: - Push isActive
 
 /// A view that controls a navigation presentation.
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
 public struct Push<Destination: View>: NavigationPattern {
     @Binding var isActive: Bool
     @ViewBuilder var destination: () -> Destination
@@ -16,6 +18,8 @@ public struct Push<Destination: View>: NavigationPattern {
     }
 }
 
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
 public extension Push {
     var body: some View {
         NavigationLink(
@@ -28,6 +32,8 @@ public extension Push {
 // MARK: - Push item
 
 /// A view that controls a navigation presentation and is driven by the existence of an item you provide.
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
 public struct PushItem<Item: Identifiable, Destination: View>: NavigationPattern {
     @Binding var item: Item?
     @ViewBuilder var destination: (Item) -> Destination
@@ -41,6 +47,8 @@ public struct PushItem<Item: Identifiable, Destination: View>: NavigationPattern
     }
 }
 
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
 public extension PushItem {
     var body: some View {
         NavigationLink(isActive: $item.mappedToBool()) {

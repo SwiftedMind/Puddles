@@ -3,9 +3,10 @@ import Combine
 
 /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Coordinator``.
 public struct CoordinatorBody<C: Coordinator>: View {
-    @Environment(\.deepLinkHandler) private var deepLinkHandler
 
-    private var onDeepLink: (_ url: URL) -> DeepLinkPropagation
+    @ObservedObject private var deepLinkStorage: DeepLinkStorage = .shared
+
+    private var deepLinkHandler: (_ url: URL) -> Void
 
     /// The root view of the `Coordinator` as provided in ``Puddles/Coordinator/entryView-swift.property``.
     private let entryView: C.EntryView
@@ -29,14 +30,14 @@ public struct CoordinatorBody<C: Coordinator>: View {
         interfaces: C.Interfaces,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
-        onDeepLink: @escaping (_: URL) -> DeepLinkPropagation
+        deepLinkHandler: @escaping (_: URL) -> Void
     ) {
         self.entryView = entryView
         self.navigation = navigation
         self.interfaces = interfaces
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
-        self.onDeepLink = onDeepLink
+        self.deepLinkHandler = deepLinkHandler
     }
 
     public var body: some View {
@@ -52,18 +53,9 @@ public struct CoordinatorBody<C: Coordinator>: View {
                 finalDisappearHandler()
             }
         }
-        .onAppear {
-            if let url = deepLinkHandler.url {
-                if onDeepLink(url) == .hasFinished {
-                    deepLinkHandler.url = nil
-                }
-            }
-        }
-        .onChange(of: deepLinkHandler) { deepLinkHandler in
-            if let url = deepLinkHandler.url {
-                if onDeepLink(url) == .hasFinished {
-                    deepLinkHandler.url = nil
-                }
+        .onReceive(deepLinkStorage.$url) { url in
+            if let url = url {
+                deepLinkHandler(url)
             }
         }
     }

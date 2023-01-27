@@ -1,5 +1,6 @@
-import OSLog
+@_exported import SwiftUI
 
+import OSLog
 
 fileprivate(set) var logger: Logger = .init(OSLog.disabled)
 
