@@ -25,12 +25,21 @@ import Combine
 import Puddles
 
 struct QuizCreationSheet: Coordinator {
+    static var debugIdentifier: String { "QuizCreationSheet" }
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewInterface: Interface<QuizCreationView.Action> = .init()
 
     let onFinish: (_ createdQuiz: Quiz?) -> Void
 
-    @State private var draftQuiz: Quiz = .draft
+    @State private var draftQuiz: Quiz
+
+    init(
+        draftQuiz: Quiz = .draft,
+        onFinish: @escaping (_: Quiz?) -> Void
+    ) {
+        self._draftQuiz = .init(initialValue: draftQuiz)
+        self.onFinish = onFinish
+    }
 
     var viewState: QuizCreationView.ViewState {
         .init(
@@ -53,6 +62,9 @@ struct QuizCreationSheet: Coordinator {
             }
     }
 
+    func start() async {
+    }
+
     func navigation() -> some NavigationPattern {
 
     }
@@ -67,6 +79,10 @@ struct QuizCreationSheet: Coordinator {
         switch action {
         case .quizNameChanged(let newName):
             draftQuiz.name = newName
+        case .quizItemQuestionChanged(let id, let newValue):
+            draftQuiz.items[id: id]?.question = newValue
+        case .quizItemAnswerChanged(let id, let newValue):
+            draftQuiz.items[id: id]?.answer = newValue
         }
     }
 
@@ -83,6 +99,30 @@ struct QuizCreationSheet: Coordinator {
                 dismiss()
             }
             .bold()
+        }
+    }
+
+    func handleDeepLink(_ deepLink: URL) {
+        print("deeplink creation sheet")
+        guard deepLink.absoluteString.contains("createQuiz") else {
+            return
+        }
+
+        guard let items = URLComponents(string: deepLink.absoluteString)?.queryItems else {
+            return
+        }
+
+        draftQuiz = .draft
+        for item in items {
+
+            if item.name == "name" {
+                draftQuiz.name = item.value ?? ""
+            }
+
+            if item.name == "question" {
+                let split = item.value!.split(separator: "-")
+                draftQuiz.items.append(.init(question: String(split[0]), answer: String(split[1])))
+            }
         }
     }
 }

@@ -22,41 +22,26 @@
 
 import SwiftUI
 import Puddles
-import AsyncAlgorithms
 
-enum Path: Hashable {
-    case target2
-    case target3(number: String, path: [Path2])
-}
+struct QuizListProvider: Coordinator {
+    @EnvironmentObject private var quizManager: QuizManager
 
-struct Root: CoordinatorStack {
-    @State private var actualPath: [Path] = []
+    @ObservedObject var listInterface: Interface<QuizList.Action>
+    var quizCreation: Queryable<Quiz>.Trigger
 
-    var path: Binding<[Path]> {
-        $actualPath
+    var entryView: some View {
+        QuizList(
+            interface: listInterface,
+            quizzes: quizManager.quizzes,
+            quizCreation: quizCreation
+        )
     }
 
-    var root: some Coordinator {
-        DeepLinkTarget1(path: $actualPath)
-    }
-
-    func viewForDestination(_ destination: Path) -> some View {
-        switch destination {
-        case .target2:
-            DeepLinkTarget2(path: $actualPath)
-        case .target3(let number, let otherPath):
-            DeepLinkTarget3(number: number, path: $actualPath)
-        }
-    }
-
-
-    func deepLinkOnAppear(url: URL) {
+    func navigation() -> some NavigationPattern {
 
     }
-    
-    func handleDeeplink(url: URL) async {
-        actualPath = [.target2, .target3(number: url.absoluteString, path: [])]
-//        try! await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
-//        actualPath = [.target2, .target3(number: "42", path: [])]
+
+    func interfaces() -> some InterfaceObservation {
+
     }
 }

@@ -25,42 +25,38 @@ import Puddles
 import PreviewDebugTools
 import Combine
 
-struct QuizListView: View {
+struct QuizDetailView: View {
     @ObservedObject var interface: Interface<Action>
     let state: ViewState
 
     var body: some View {
         List {
-            switch state.quizzes {
+            switch state.quiz {
             case .initial, .loading:
                 LoadingView()
             case .failure:
                 Text("Fehler")
-            case .loaded(let quizzes):
-                loadedContent(quizzes: quizzes)
+            case .loaded(let quiz):
+                loadedContent(quiz: quiz)
             }
         }
-        .animation(.default, value: state.quizzes)
+        .animation(.default, value: state.quiz)
     }
 
-    @ViewBuilder private func loadedContent(quizzes: [Quiz]) -> some View {
-        ForEach(quizzes) { quiz in
-            Button(quiz.name) {
-                interface.sendAction(.quizTapped(quiz))
-            }
-        }
+    @ViewBuilder private func loadedContent(quiz: Quizzles.Quiz) -> some View {
+        Text(quiz.name)
     }
 }
 
-extension QuizListView {
+extension QuizDetailView {
 
-    typealias Quizzes = LoadingState<[Quiz], Swift.Error>
+    typealias Quiz = LoadingState<Quizzles.Quiz, Swift.Error>
 
     struct ViewState {
-        var quizzes: Quizzes
+        var quiz: Quiz
 
         static var mock: ViewState {
-            .init(quizzes: .loaded(.repeating(.random, count: 5)))
+            .init(quiz: .loaded(.mock))
         }
     }
 
@@ -69,26 +65,26 @@ extension QuizListView {
     }
 }
 
-struct QuizListView_Previews: PreviewProvider {
+struct QuizDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            Preview(QuizListView.init, state: .mock) { action, state in
+            Preview(QuizDetailView.init, state: .mock) { action, state in
 
             }
             .overlay(alignment: .bottom) { $state in
                 HStack {
                     DebugButton("Loading") {
-                        state.quizzes = .loading
+                        state.quiz = .loading
                     }
-                    .disabled(state.quizzes.isLoading)
+                    .disabled(state.quiz.isLoading)
                     DebugButton("Error") {
-                        state.quizzes = .failure(.debug)
+                        state.quiz = .failure(.debug)
                     }
-                    .disabled(state.quizzes.isFailure)
+                    .disabled(state.quiz.isFailure)
                     DebugButton("Success") {
-                        state.quizzes = .loaded(.repeating(.mock, count: 5))
+                        state.quiz = .loaded(.mock)
                     }
-                    .disabled(state.quizzes.isLoaded)
+                    .disabled(state.quiz.isLoaded)
                 }
             }
             .navigationTitle("Quizzes")

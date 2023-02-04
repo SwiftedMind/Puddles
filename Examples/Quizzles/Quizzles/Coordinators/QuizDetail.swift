@@ -21,80 +21,67 @@
 //
 
 import SwiftUI
-import Puddles
 import Combine
-import AsyncAlgorithms
+import Puddles
+//
+//protocol MyProtocol {
+//    associatedtype Content: View
+//    @MainActor @ViewBuilder func content() -> Content
+//}
+//
+//extension MyProtocol {
+//    @MainActor @ViewBuilder func content() -> some View {
+//        EmptyView()
+//    }
+//}
+//
+//struct Implementation: MyProtocol {
+//    func content() -> Content {
+//
+//    }
+//}
 
-struct Home: Coordinator {
-    @ObservedObject var interface: Interface<Action>
-    @StateObject var viewInterface: Interface<HomeView.Action> = .init()
+struct QuizDetail: Coordinator {
+    static var debugIdentifier: String { "QuizDetail" }
+    @StateObject var viewInterface: Interface<QuizDetailView.Action> = .init()
 
-    let events: HomeView.EventsLoadingState
-    let searchResults: HomeView.SearchResultsLoadingState
-    @State var searchQuery: String = ""
 
-    @State var showSheet: Bool = false
+    @State private var isShowing: Bool = false
+
+    let quiz: QuizDetailView.Quiz
 
     var entryView: some View {
-        HomeView(
+        QuizDetailView(
             interface: viewInterface,
             state: .init(
-                events: events,
-                searchResults: searchResults,
-                searchQuery: searchQuery
+                quiz: quiz
             )
         )
-        .navigationTitle("Events")
+        .navigationTitle(quiz.value?.name ?? "No Name")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Sheet") {
-                    showSheet = true
+                Button("Open Sheet") {
+                    isShowing = true
                 }
             }
         }
     }
 
-    func handleDeeplink(url: URL) -> DeepLinkPropagation {
-        print("Home")
-
-        viewInterface.sendAction(.searchQueryUpdated("ABCD Test"))
-        showSheet = true
-
-        return .shouldContinue
-    }
-
     func navigation() -> some NavigationPattern {
-        Sheet(isActive: $showSheet) {
-            NavigationStack {
-                DeepLinkTarget1(path: .constant([]))
-            }.navigationViewStyle(.stack)
+        Sheet(isActive: $isShowing) {
+            TestCoordinator()
         }
     }
 
     func interfaces() -> some InterfaceObservation {
         InterfaceObserver(viewInterface) { action in
-            handleViewAction(action)
-        }
-    }
 
-    func handleViewAction(_ action: HomeView.Action) {
-        switch action {
-        case .eventTapped:
-            print("Event Tapped")
-        case .searchQueryUpdated(query: let query):
-            searchQuery = query
-            
-            // Pass through action to own interface.
-            // The instance responsible for providing searchResults needs to decide on debouncing/throttling etc.
-            interface.sendAction(.searchQueryUpdated(query))
         }
     }
 }
 
-extension Home {
-
+extension QuizDetail {
     enum Action {
-        case searchQueryUpdated(String)
-    }
 
+    }
 }

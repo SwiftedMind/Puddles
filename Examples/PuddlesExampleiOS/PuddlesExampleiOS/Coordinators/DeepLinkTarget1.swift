@@ -20,43 +20,39 @@
 //  SOFTWARE.
 //
 
-import SwiftUI
 import Puddles
-import AsyncAlgorithms
 
-enum Path: Hashable {
-    case target2
-    case target3(number: String, path: [Path2])
+@MainActor final class Test: ObservableObject {
+
+    @Published var isShowingNext: Bool = false
+
+    init() {
+    }
 }
 
-struct Root: CoordinatorStack {
-    @State private var actualPath: [Path] = []
+struct DeepLinkTarget1: Coordinator {
 
-    var path: Binding<[Path]> {
-        $actualPath
-    }
+    @Binding var path: [Path]
 
-    var root: some Coordinator {
-        DeepLinkTarget1(path: $actualPath)
-    }
-
-    func viewForDestination(_ destination: Path) -> some View {
-        switch destination {
-        case .target2:
-            DeepLinkTarget2(path: $actualPath)
-        case .target3(let number, let otherPath):
-            DeepLinkTarget3(number: number, path: $actualPath)
+    var entryView: some View {
+        Button("(1) Next") {
+            path.append(.target2)
         }
+        .navigationTitle("1")
     }
 
+    func navigation() -> some NavigationPattern {
+//        Push(isActive: $viewModel.isShowingNext) {
+//            DeepLinkTarget2()
+//        }
+    }
 
-    func deepLinkOnAppear(url: URL) {
+    func interfaces() -> some InterfaceObservation {
 
     }
-    
-    func handleDeeplink(url: URL) async {
-        actualPath = [.target2, .target3(number: url.absoluteString, path: [])]
-//        try! await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
-//        actualPath = [.target2, .target3(number: "42", path: [])]
+
+    func handleDeeplink(url: URL) -> DeepLinkPropagation {
+        print("(1)")
+        return .shouldContinue
     }
 }

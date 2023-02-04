@@ -7,12 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		953BDAF429748E2C00963197 /* QuizDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953BDAF329748E2C00963197 /* QuizDetail.swift */; };
+		953BDAF629748E6000963197 /* QuizDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953BDAF529748E6000963197 /* QuizDetailView.swift */; };
+		953BDB1E29846EFA00963197 /* RootNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953BDB1D29846EFA00963197 /* RootNavigator.swift */; };
+		953BDB2129853A9500963197 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 953BDB2029853A9500963197 /* IdentifiedCollections */; };
+		95477DB2298E784400FB7754 /* QuizManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95477DB1298E784400FB7754 /* QuizManager.swift */; };
 		958AF82B296F232D004F8E61 /* QuizzlesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF82A296F232D004F8E61 /* QuizzlesApp.swift */; };
 		958AF82F296F232E004F8E61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 958AF82E296F232E004F8E61 /* Assets.xcassets */; };
 		958AF832296F232E004F8E61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 958AF831296F232E004F8E61 /* Preview Assets.xcassets */; };
 		958AF83B296F235B004F8E61 /* Puddles in Frameworks */ = {isa = PBXBuildFile; productRef = 958AF83A296F235B004F8E61 /* Puddles */; };
 		958AF842296F2409004F8E61 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF841296F2409004F8E61 /* Quiz.swift */; };
-		958AF844296F243B004F8E61 /* Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF843296F243B004F8E61 /* Root.swift */; };
+		958AF844296F243B004F8E61 /* QuizListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF843296F243B004F8E61 /* QuizListProvider.swift */; };
 		958AF846296F24A7004F8E61 /* QuizList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF845296F24A7004F8E61 /* QuizList.swift */; };
 		958AF848296F2500004F8E61 /* QuizListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF847296F2500004F8E61 /* QuizListView.swift */; };
 		958AF84B296F27C8004F8E61 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF84A296F27C8004F8E61 /* LoadingState.swift */; };
@@ -23,16 +28,21 @@
 		958AF858296F3256004F8E61 /* PreviewDebugTools in Frameworks */ = {isa = PBXBuildFile; productRef = 958AF857296F3256004F8E61 /* PreviewDebugTools */; };
 		958AF85A296F37F6004F8E61 /* QuizCreationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF859296F37F6004F8E61 /* QuizCreationSheet.swift */; };
 		958AF85D296F3EE2004F8E61 /* QuizCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958AF85C296F3EE2004F8E61 /* QuizCreationView.swift */; };
+		95B2911329865EE1001CF6B9 /* TesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B2911229865EE1001CF6B9 /* TesCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		953BDAF329748E2C00963197 /* QuizDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizDetail.swift; sourceTree = "<group>"; };
+		953BDAF529748E6000963197 /* QuizDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizDetailView.swift; sourceTree = "<group>"; };
+		953BDB1D29846EFA00963197 /* RootNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigator.swift; sourceTree = "<group>"; };
+		95477DB1298E784400FB7754 /* QuizManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizManager.swift; sourceTree = "<group>"; };
 		958AF827296F232D004F8E61 /* Quizzles.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quizzles.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		958AF82A296F232D004F8E61 /* QuizzlesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizzlesApp.swift; sourceTree = "<group>"; };
 		958AF82E296F232E004F8E61 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		958AF831296F232E004F8E61 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		958AF838296F233E004F8E61 /* Puddles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Puddles; path = ../..; sourceTree = "<group>"; };
 		958AF841296F2409004F8E61 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
-		958AF843296F243B004F8E61 /* Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root.swift; sourceTree = "<group>"; };
+		958AF843296F243B004F8E61 /* QuizListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizListProvider.swift; sourceTree = "<group>"; };
 		958AF845296F24A7004F8E61 /* QuizList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizList.swift; sourceTree = "<group>"; };
 		958AF847296F2500004F8E61 /* QuizListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizListView.swift; sourceTree = "<group>"; };
 		958AF84A296F27C8004F8E61 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
@@ -42,6 +52,7 @@
 		958AF859296F37F6004F8E61 /* QuizCreationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizCreationSheet.swift; sourceTree = "<group>"; };
 		958AF85B296F382B004F8E61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		958AF85C296F3EE2004F8E61 /* QuizCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizCreationView.swift; sourceTree = "<group>"; };
+		95B2911229865EE1001CF6B9 /* TesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TesCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				958AF852296F27F4004F8E61 /* Fakery in Frameworks */,
+				953BDB2129853A9500963197 /* IdentifiedCollections in Frameworks */,
 				958AF858296F3256004F8E61 /* PreviewDebugTools in Frameworks */,
 				958AF83B296F235B004F8E61 /* Puddles in Frameworks */,
 			);
@@ -58,6 +70,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		95477DB0298E783B00FB7754 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				95477DB1298E784400FB7754 /* QuizManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		958AF81E296F232D004F8E61 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +101,7 @@
 			children = (
 				958AF85B296F382B004F8E61 /* Info.plist */,
 				958AF82A296F232D004F8E61 /* QuizzlesApp.swift */,
+				95477DB0298E783B00FB7754 /* Managers */,
 				958AF840296F2404004F8E61 /* Models */,
 				958AF83E296F23FB004F8E61 /* Coordinators */,
 				958AF83F296F2400004F8E61 /* Views */,
@@ -109,8 +130,11 @@
 		958AF83E296F23FB004F8E61 /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
-				958AF843296F243B004F8E61 /* Root.swift */,
+				953BDB1D29846EFA00963197 /* RootNavigator.swift */,
+				958AF843296F243B004F8E61 /* QuizListProvider.swift */,
 				958AF845296F24A7004F8E61 /* QuizList.swift */,
+				953BDAF329748E2C00963197 /* QuizDetail.swift */,
+				95B2911229865EE1001CF6B9 /* TesCoordinator.swift */,
 				958AF859296F37F6004F8E61 /* QuizCreationSheet.swift */,
 			);
 			path = Coordinators;
@@ -121,6 +145,7 @@
 			children = (
 				958AF854296F2F35004F8E61 /* Shared Components */,
 				958AF847296F2500004F8E61 /* QuizListView.swift */,
+				953BDAF529748E6000963197 /* QuizDetailView.swift */,
 				958AF85C296F3EE2004F8E61 /* QuizCreationView.swift */,
 			);
 			path = Views;
@@ -172,6 +197,7 @@
 				958AF83A296F235B004F8E61 /* Puddles */,
 				958AF851296F27F4004F8E61 /* Fakery */,
 				958AF857296F3256004F8E61 /* PreviewDebugTools */,
+				953BDB2029853A9500963197 /* IdentifiedCollections */,
 			);
 			productName = Quizzles;
 			productReference = 958AF827296F232D004F8E61 /* Quizzles.app */;
@@ -203,6 +229,7 @@
 			mainGroup = 958AF81E296F232D004F8E61;
 			packageReferences = (
 				958AF850296F27F4004F8E61 /* XCRemoteSwiftPackageReference "Fakery" */,
+				953BDB1F29853A9500963197 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
 			);
 			productRefGroup = 958AF828296F232D004F8E61 /* Products */;
 			projectDirPath = "";
@@ -230,17 +257,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95477DB2298E784400FB7754 /* QuizManager.swift in Sources */,
 				958AF84B296F27C8004F8E61 /* LoadingState.swift in Sources */,
-				958AF844296F243B004F8E61 /* Root.swift in Sources */,
+				958AF844296F243B004F8E61 /* QuizListProvider.swift in Sources */,
 				958AF82B296F232D004F8E61 /* QuizzlesApp.swift in Sources */,
+				953BDB1E29846EFA00963197 /* RootNavigator.swift in Sources */,
+				953BDAF629748E6000963197 /* QuizDetailView.swift in Sources */,
 				958AF85A296F37F6004F8E61 /* QuizCreationSheet.swift in Sources */,
 				958AF848296F2500004F8E61 /* QuizListView.swift in Sources */,
 				958AF846296F24A7004F8E61 /* QuizList.swift in Sources */,
 				958AF84E296F27E6004F8E61 /* Array+repeating.swift in Sources */,
 				958AF842296F2409004F8E61 /* Quiz.swift in Sources */,
+				95B2911329865EE1001CF6B9 /* TesCoordinator.swift in Sources */,
 				958AF84F296F27E6004F8E61 /* Faker.swift in Sources */,
 				958AF85D296F3EE2004F8E61 /* QuizCreationView.swift in Sources */,
 				958AF856296F2F41004F8E61 /* LoadingView.swift in Sources */,
+				953BDAF429748E2C00963197 /* QuizDetail.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +479,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		953BDB1F29853A9500963197 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.0;
+			};
+		};
 		958AF850296F27F4004F8E61 /* XCRemoteSwiftPackageReference "Fakery" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vadymmarkov/Fakery";
@@ -458,6 +498,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		953BDB2029853A9500963197 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 953BDB1F29853A9500963197 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
 		958AF83A296F235B004F8E61 /* Puddles */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Puddles;

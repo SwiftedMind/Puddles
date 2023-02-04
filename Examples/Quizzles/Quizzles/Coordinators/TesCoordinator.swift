@@ -23,18 +23,10 @@
 import SwiftUI
 import Puddles
 
-struct Root: Coordinator {
-
-    @State var quizzes: QuizListView.Quizzes = .loaded(.repeating(.mock, count: 5))
-
+struct TestCoordinator: Coordinator {
+    static var debugIdentifier: String { "TestCoordinator" }
     var entryView: some View {
-        QuizList(quizzes: quizzes)
-    }
-
-    func modify(coordinator: CoordinatorContent) -> some View {
-        NavigationStack {
-            coordinator
-        }
+        Text("okay")
     }
 
     func navigation() -> some NavigationPattern {
@@ -42,6 +34,10 @@ struct Root: Coordinator {
     }
 
     func interfaces() -> some InterfaceObservation {
-        
+
+    }
+
+    func handleDeepLink(_ deepLink: URL) {
+        print("deeplink test coordinator")
     }
 }

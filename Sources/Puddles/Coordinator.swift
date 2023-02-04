@@ -32,6 +32,11 @@ public protocol Coordinator: View {
     /// This is an internal helper view type whose ``Puddles/CoordinatorBody/body`` contains all the needed modifiers to setup the ``Puddles/Coordinator``.
     typealias CoordinatorContent = CoordinatorBody<Self>
 
+    /// An identifier that can be used to name the `Coordinator`.
+    ///
+    /// This might be helpful while debugging.
+    @MainActor static var debugIdentifier: String { get }
+
     /// The entry point for this coordinator, which should be its root `View`.
     ///
     /// It is safe (and usually expected) to provide modifications that define the context of the root, like setting a navigation title or adding a toolbar.
@@ -75,13 +80,6 @@ public protocol Coordinator: View {
     ///
     /// - Returns: The interface observations for the ``Puddles/Coordinator``.
     @InterfaceObservationBuilder @MainActor func interfaces() -> Interfaces
-
-    /// Experimental support for deep linking.
-    ///
-    /// A default implementation is provided and simply returns ``Puddles/DeepLinkPropagation/shouldContinue``.
-    /// - Parameter url: The deep link url.
-    /// - Returns: A propagation strategy.
-    @MainActor func handleDeepLink(_ deepLink: URL)
 
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
@@ -135,6 +133,10 @@ public protocol Coordinator: View {
 
 public extension Coordinator {
 
+    @MainActor static var debugIdentifier: String {
+        "\(type(of: Self.self))"
+    }
+
     // The final body for the coordinator, consisting of the modified `CoordinatorBody` helper
     @MainActor var body: some View {
         modify(
@@ -147,9 +149,6 @@ public extension Coordinator {
                 },
                 finalDisappearHandler: {
                     stop()
-                },
-                deepLinkHandler: { url in
-                    handleDeepLink(url)
                 }
             )
         )
@@ -162,5 +161,4 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
-    @MainActor func handleDeepLink(_ deepLink: URL) {}
 }

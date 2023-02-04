@@ -23,53 +23,92 @@
 import SwiftUI
 import Combine
 
+// sheet item? queryable?
+// queryable dann im navigator? da sind ja die sheets. die triggern das in irgendeiner form?
+// queryable im @Published?
+@available(iOS 16.0, macOS 13.0, *)
+public protocol NavigatorPresentation: DynamicProperty {
+    init()
+}
+
+@available(iOS 16.0, macOS 13.0, *)
+public struct EmptyNavigatorPresentation: NavigatorPresentation {
+    public init() {
+
+    }
+}
+
 @available(iOS 16, macOS 13.0, *)
 public struct StackNavigatorBody<Navigator: StackNavigator>: View {
+    @Environment(\.stateRestorationId) private var stateRestorationId
 
-    @ObservedObject private var deepLinkStorage: DeepLinkStorage = .shared
-    @State private var hasAppeared: Bool = false
+    private let root: Navigator.RootCoordinator
 
-    private let root: Navigator.Root
-    private let destinationForPathHandler: (_ path: Navigator.Path) -> Navigator.PathDestination
+    private let presentations: Navigator.PresentationContent
+
     private let navigationPath: Binding<[Navigator.Path]>
+
+    private let interfaces: Navigator.Interfaces
+
+    private var destinationForPathHandler: (_ path: Navigator.Path) -> Navigator.PathDestination
+
     private var deepLinkHandler: (_ url: URL) async -> Void
-    private var initialPathHandler: (_ url: URL) -> [Navigator.Path]?
+
+    private let restoreStateHandler: (_ state: Navigator.StateRestoration) async -> Void
+
+    /// A closure reporting back first appearance of the view.
+    private let firstAppearHandler: () async -> Void
+
+    /// A closure reporting back the last disappearance of the view.
+    private let finalDisappearHandler: () -> Void
 
     init(
-        root: Navigator.Root,
+        root: Navigator.RootCoordinator,
         destinationForPathHandler: @escaping (_ path: Navigator.Path) -> Navigator.PathDestination,
+        presentations: Navigator.PresentationContent,
+        interfaces: Navigator.Interfaces,
         navigationPath: Binding<[Navigator.Path]>,
-        deepLinkHandler: @escaping (_: URL) async -> Void,
-        initialPathHandler: @escaping (_ url: URL) -> [Navigator.Path]?
+        restoreStateHandler: @escaping (_ state: Navigator.StateRestoration) async -> Void,
+        firstAppearHandler: @escaping () async -> Void,
+        finalDisappearHandler: @escaping () -> Void,
+        deepLinkHandler: @escaping (_: URL) async -> Void
     ) {
         self.root = root
         self.destinationForPathHandler = destinationForPathHandler
+        self.presentations = presentations
+        self.interfaces = interfaces
         self.navigationPath = navigationPath
+        self.restoreStateHandler = restoreStateHandler
+        self.firstAppearHandler = firstAppearHandler
+        self.finalDisappearHandler = finalDisappearHandler
         self.deepLinkHandler = deepLinkHandler
-        self.initialPathHandler = initialPathHandler
     }
 
     public var body: some View {
-        ZStack {
-            NavigationStack(path: navigationPath, root: {
-                root
-                    .navigationDestination(for: Navigator.Path.self, destination: { path in
-                        destinationForPathHandler(path)
-                    })
-            })
+        NavigationStack(path: navigationPath) {
+            root
+                .navigationDestination(for: Navigator.Path.self, destination: { path in
+                    destinationForPathHandler(path)
+                })
         }
-        .onAppear {
-            guard !hasAppeared else { return }
-            hasAppeared = true
-            if let url = deepLinkStorage.url, let path = initialPathHandler(url) {
-                navigationPath.wrappedValue = path
+        .background(presentations)
+        .background(interfaces)
+        .background {
+            ViewLifetimeHelper {
+
+                if let state = stateRestorations[stateRestorationId] as? Navigator.StateRestoration {
+                    await restoreStateHandler(state)
+                }
+
+                await firstAppearHandler()
+            } onDeinit: {
+                finalDisappearHandler()
             }
         }
         .onOpenURL { url in
             logger.debug("Received deep link: »\(url, privacy: .public)«")
             Task {
                 await deepLinkHandler(url)
-                DeepLinkStorage.shared.url = url
             }
         }
     }

@@ -27,11 +27,15 @@ import Puddles
 struct ExampleApp: App {
     @StateObject private var services: Services = .mock
 
+    init() {
+        Puddles.configureLog()
+    }
+
     var body: some Scene {
         WindowGroup {
             Root()
                 .environmentObject(services)
-                .deepLinkRoot()
+//                .deepLinkRoot()
         }
     }
 }

@@ -10,7 +10,12 @@
 		9531A73629681866009D7688 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9531A73529681866009D7688 /* ExampleApp.swift */; };
 		9531A73A29681866009D7688 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9531A73929681866009D7688 /* Assets.xcassets */; };
 		9531A73D29681866009D7688 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9531A73C29681866009D7688 /* Preview Assets.xcassets */; };
-		9531A746296818AE009D7688 /* Puddles in Frameworks */ = {isa = PBXBuildFile; productRef = 9531A745296818AE009D7688 /* Puddles */; };
+		953BDB12297DA7A100963197 /* Puddles in Frameworks */ = {isa = PBXBuildFile; productRef = 953BDB11297DA7A100963197 /* Puddles */; };
+		953BDB1A298457AE00963197 /* Root2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953BDB19298457AE00963197 /* Root2.swift */; };
+		953BDB1C29845A9700963197 /* ABC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953BDB1B29845A9700963197 /* ABC.swift */; };
+		9561C7042973017500ADA6A5 /* DeepLinkTarget1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9561C7032973017500ADA6A5 /* DeepLinkTarget1.swift */; };
+		9561C706297301E700ADA6A5 /* DeepLinkTarget2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9561C705297301E700ADA6A5 /* DeepLinkTarget2.swift */; };
+		9561C7082973022500ADA6A5 /* DeepLinkTarget3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9561C7072973022500ADA6A5 /* DeepLinkTarget3.swift */; };
 		9594A766296819B700063CE7 /* Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A765296819B700063CE7 /* Root.swift */; };
 		9594A76829681A2300063CE7 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A76729681A2300063CE7 /* Home.swift */; };
 		9594A76C29681AA500063CE7 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594A76B29681AA500063CE7 /* HomeView.swift */; };
@@ -30,6 +35,11 @@
 		9531A73929681866009D7688 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9531A73C29681866009D7688 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9531A74329681889009D7688 /* Puddles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Puddles; path = ../..; sourceTree = "<group>"; };
+		953BDB19298457AE00963197 /* Root2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root2.swift; sourceTree = "<group>"; };
+		953BDB1B29845A9700963197 /* ABC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABC.swift; sourceTree = "<group>"; };
+		9561C7032973017500ADA6A5 /* DeepLinkTarget1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkTarget1.swift; sourceTree = "<group>"; };
+		9561C705297301E700ADA6A5 /* DeepLinkTarget2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkTarget2.swift; sourceTree = "<group>"; };
+		9561C7072973022500ADA6A5 /* DeepLinkTarget3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkTarget3.swift; sourceTree = "<group>"; };
 		958AF81C296AF6E9004F8E61 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		958AF81D296DF035004F8E61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9594A765296819B700063CE7 /* Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root.swift; sourceTree = "<group>"; };
@@ -48,8 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				953BDB12297DA7A100963197 /* Puddles in Frameworks */,
 				9594A77D2968BE9B00063CE7 /* Fakery in Frameworks */,
-				9531A746296818AE009D7688 /* Puddles in Frameworks */,
 				9594A7892969750400063CE7 /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,7 +121,12 @@
 			isa = PBXGroup;
 			children = (
 				9594A765296819B700063CE7 /* Root.swift */,
+				953BDB19298457AE00963197 /* Root2.swift */,
+				953BDB1B29845A9700963197 /* ABC.swift */,
 				9594A76729681A2300063CE7 /* Home.swift */,
+				9561C7032973017500ADA6A5 /* DeepLinkTarget1.swift */,
+				9561C705297301E700ADA6A5 /* DeepLinkTarget2.swift */,
+				9561C7072973022500ADA6A5 /* DeepLinkTarget3.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -168,9 +183,9 @@
 			);
 			name = PuddlesExampleiOS;
 			packageProductDependencies = (
-				9531A745296818AE009D7688 /* Puddles */,
 				9594A77C2968BE9B00063CE7 /* Fakery */,
 				9594A7882969750400063CE7 /* AsyncAlgorithms */,
+				953BDB11297DA7A100963197 /* Puddles */,
 			);
 			productName = PuddlesExampleiOS;
 			productReference = 9531A73229681866009D7688 /* PuddlesExampleiOS.app */;
@@ -230,14 +245,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				953BDB1A298457AE00963197 /* Root2.swift in Sources */,
 				9531A73629681866009D7688 /* ExampleApp.swift in Sources */,
+				9561C7042973017500ADA6A5 /* DeepLinkTarget1.swift in Sources */,
 				9594A76829681A2300063CE7 /* Home.swift in Sources */,
+				953BDB1C29845A9700963197 /* ABC.swift in Sources */,
 				9594A76C29681AA500063CE7 /* HomeView.swift in Sources */,
 				9594A766296819B700063CE7 /* Root.swift in Sources */,
 				9594A7862968C3B900063CE7 /* LoadingState.swift in Sources */,
+				9561C7082973022500ADA6A5 /* DeepLinkTarget3.swift in Sources */,
 				9594A7842968BFE900063CE7 /* Services.swift in Sources */,
 				9594A77A2968B41B00063CE7 /* Event.swift in Sources */,
 				9594A7772968A3C400063CE7 /* EventService.swift in Sources */,
+				9561C706297301E700ADA6A5 /* DeepLinkTarget2.swift in Sources */,
 				9594A7822968BF1D00063CE7 /* Array+repeating.swift in Sources */,
 				9594A77F2968BEC700063CE7 /* Faker.swift in Sources */,
 			);
@@ -469,7 +489,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9531A745296818AE009D7688 /* Puddles */ = {
+		953BDB11297DA7A100963197 /* Puddles */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Puddles;
 		};

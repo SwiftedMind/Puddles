@@ -12,6 +12,15 @@ public final class Interface<Action>: ObservableObject {
     public func sendAction(_ action: Action) {
         actionPublisher.send(action)
     }
+
+    public func binding<Value>(
+        _ value: @autoclosure @escaping () -> Value,
+        to action: @escaping (_ newValue: Value) -> Action
+    ) -> Binding<Value> {
+        .init(get: value) { newValue in
+            self.sendAction(action(newValue))
+        }
+    }
 }
 
 extension Interface {

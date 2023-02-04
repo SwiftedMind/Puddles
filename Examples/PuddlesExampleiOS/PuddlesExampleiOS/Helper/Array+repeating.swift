@@ -21,10 +21,21 @@
 //
 
 import Foundation
+import IdentifiedCollections
 
 extension Array {
     public static func repeating(_ closure: @autoclosure () -> Element, count: Int) -> [Element] {
         var elements: [Element] = []
+        for _ in 0..<count {
+            elements.append(closure())
+        }
+        return elements
+    }
+}
+
+extension IdentifiedArray where Element: Identifiable {
+    public static func repeating(_ closure: @autoclosure () -> Element, count: Int) -> IdentifiedArrayOf<Element> {
+        var elements: IdentifiedArrayOf<Element> = []
         for _ in 0..<count {
             elements.append(closure())
         }

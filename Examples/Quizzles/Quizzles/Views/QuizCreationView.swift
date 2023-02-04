@@ -30,19 +30,27 @@ struct QuizCreationView: View {
 
     let state: ViewState
 
-    @State private var name: String = ""
-    private var nameBinding: Binding<String> {
-        .init {
-            state.quiz.name
-        } set: { newValue in
-//            name = newValue
-            interface.sendAction(.quizNameChanged(newName: newValue))
-        }
-    }
-
     var body: some View {
         Form {
-            TextField("Quiz Name", text: nameBinding)
+            TextField(
+                "Quiz Name",
+                text: interface.binding(state.quiz.name, to: Action.nameChanged)
+            )
+            ForEach(state.quiz.items) { item in
+                Section {
+                    VStack(alignment: .leading) {
+                        TextField(
+                            "Question",
+                            text: interface.binding(item.question, to: { .quizItemQuestionChanged(id: item.id, newValue: $0) })
+                        )
+                        .bold()
+                        TextField(
+                            "Answer",
+                            text: interface.binding(item.answer, to: { .quizItemAnswerChanged(id: item.id, newValue: $0) })
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -58,6 +66,12 @@ extension QuizCreationView {
 
     enum Action {
         case quizNameChanged(newName: String)
+        case quizItemQuestionChanged(id: Quiz.Item.ID, newValue: String)
+        case quizItemAnswerChanged(id: Quiz.Item.ID, newValue: String)
+
+        static func nameChanged(_ newName: String) -> Action {
+            .quizNameChanged(newName: newName)
+        }
     }
 }
 
@@ -67,10 +81,14 @@ struct QuizCreationView_Previews: PreviewProvider {
             Preview(QuizCreationView.init, state: .mock) { action, $state in
                 switch action {
                 case .quizNameChanged(let newName):
-                    break
+                    state.quiz.name = newName
+                case .quizItemQuestionChanged(let id, let newValue):
+                    state.quiz.items[id: id]?.question = newValue
+                case .quizItemAnswerChanged(let id, let newValue):
+                    state.quiz.items[id: id]?.answer = newValue
                 }
             }
-            .navigationTitle("Quizzes")
+            .navigationTitle("New Quiz")
         }
     }
 }

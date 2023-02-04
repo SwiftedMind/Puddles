@@ -21,19 +21,48 @@
 //
 
 import Foundation
+import IdentifiedCollections
 
 public struct Quiz: Identifiable, Hashable, Sendable {
     public var id: UUID = .init()
     public var name: String
+    public var items: IdentifiedArrayOf<Item> = []
+
+    public struct Item: Identifiable, Hashable, Sendable {
+        public var id: UUID = .init()
+        public var question: String
+        public var answer: String
+    }
 }
 
 public extension Quiz {
 
     static var draft: Quiz {
-        .init(name: "")
+        .init(name: "", items: [])
     }
 
     static var mock: Quiz {
-        .init(name: faker.name.name())
+        .init(name: "The Quiz about Space", items: [.mock])
+    }
+
+    static var random: Quiz {
+        .init(name: faker.name.name(), items: .repeating(.mock, count: 5))
+    }
+
+    private static var list: [Quiz] {
+        [
+            
+        ]
+    }
+}
+
+public extension Quiz.Item {
+
+    static var mock: Quiz.Item {
+        .init(question: "What is the name of the only habitable planet in the solar system?", answer: "Earth")
+    }
+
+    static var random: Quiz.Item {
+        .init(question: faker.name.name(), answer: faker.name.name())
     }
 }

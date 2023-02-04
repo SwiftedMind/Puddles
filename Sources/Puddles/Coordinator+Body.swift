@@ -4,10 +4,6 @@ import Combine
 /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Coordinator``.
 public struct CoordinatorBody<C: Coordinator>: View {
 
-    @ObservedObject private var deepLinkStorage: DeepLinkStorage = .shared
-
-    private var deepLinkHandler: (_ url: URL) -> Void
-
     /// The root view of the `Coordinator` as provided in ``Puddles/Coordinator/entryView-swift.property``.
     private let entryView: C.EntryView
 
@@ -29,15 +25,13 @@ public struct CoordinatorBody<C: Coordinator>: View {
         navigation: C.NavigationContent,
         interfaces: C.Interfaces,
         firstAppearHandler: @escaping () async -> Void,
-        finalDisappearHandler: @escaping () -> Void,
-        deepLinkHandler: @escaping (_: URL) -> Void
+        finalDisappearHandler: @escaping () -> Void
     ) {
         self.entryView = entryView
         self.navigation = navigation
         self.interfaces = interfaces
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
-        self.deepLinkHandler = deepLinkHandler
     }
 
     public var body: some View {
@@ -51,11 +45,6 @@ public struct CoordinatorBody<C: Coordinator>: View {
                 await firstAppearHandler()
             } onDeinit: {
                 finalDisappearHandler()
-            }
-        }
-        .onReceive(deepLinkStorage.$url) { url in
-            if let url = url {
-                deepLinkHandler(url)
             }
         }
     }

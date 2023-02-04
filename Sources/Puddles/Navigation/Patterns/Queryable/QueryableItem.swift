@@ -43,7 +43,7 @@ import SwiftUI
 ///
 /// For more information, see <doc:05-Queryable>.
 @propertyWrapper
-public struct Queryable<Result>: DynamicProperty {
+public struct QueryableItem<Item, Result>: DynamicProperty {
 
     /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
     public struct Trigger {
@@ -51,7 +51,7 @@ public struct Queryable<Result>: DynamicProperty {
         /// A binding to the `isActive` state inside the `@Queryable` property wrapper.
         ///
         /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
-        var isActive: Binding<Bool>
+        var item: Binding<Item?>
 
         /// A pointer to the ``Puddles/QueryResolver`` object that is passed inside the closure of the ``Puddles/QueryControlled`` navigation wrapper.
         ///
@@ -70,11 +70,11 @@ public struct Queryable<Result>: DynamicProperty {
 
         /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
         fileprivate init(
-            isActive: Binding<Bool>,
+            item: Binding<Item?>,
             resolver: QueryResolver<Result>,
             buffer: QueryBuffer<Result>
         ) {
-            self.isActive = isActive
+            self.item = item
             self.resolver = resolver
             self.buffer = buffer
         }
@@ -85,43 +85,39 @@ public struct Queryable<Result>: DynamicProperty {
         ///
         /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/Queryable/QueryConflictPolicy`` defined in the initializer of ``Puddles/Queryable``. The default policy is ``Puddles/Queryable/QueryConflictPolicy/cancelNewQuery``.
         /// - Returns: The result of the query.
-        public func query() async throws -> Result {
+        public func query(providing item: Item) async throws -> Result {
             return try await withTaskCancellationHandler {
                 try await withCheckedThrowingContinuation { continuation in
                     Task {
                         let couldStore = await buffer.storeContinuation(continuation)
                         if couldStore {
-                            isActive.wrappedValue = true
+                            self.item.wrappedValue = item
                         }
                     }
                 }
             } onCancel: {
-                isActive.wrappedValue = false
+                self.item.wrappedValue = nil
                 Task { await buffer.resumeContinuation(throwing: QueryError.queryCancelled) }
             }
         }
 
         public func cancel() {
-            isActive.wrappedValue = false
+            self.item.wrappedValue = nil
             Task {
                 await buffer.resumeContinuation(throwing: QueryError.queryCancelled)
             }
         }
 
         public var isQuerying: Bool {
-            isActive.wrappedValue
+            self.item.wrappedValue != nil
         }
     }
 
     /// Boolean flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
-    @State var isActive: Bool = false
+    @State var item: Item? = nil
 
     public var wrappedValue: Trigger {
-        .init(isActive: $isActive, resolver: resolver, buffer: buffer)
-    }
-
-    public var projectedValue: Trigger {
-        .init(isActive: $isActive, resolver: resolver, buffer: buffer)
+        .init(item: $item, resolver: resolver, buffer: buffer)
     }
 
     /// Internal helper type that stores and continues a `CheckedContinuation` created by calling ``Puddles/Queryable/Wrapper/query()``.
@@ -160,8 +156,4 @@ public struct Queryable<Result>: DynamicProperty {
             await buffer.resumeContinuation(throwing: error)
         }
     }
-}
-
-public enum QueryError: Swift.Error {
-    case queryCancelled
 }

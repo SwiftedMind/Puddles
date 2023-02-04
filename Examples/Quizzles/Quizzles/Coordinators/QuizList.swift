@@ -24,49 +24,64 @@ import SwiftUI
 import Combine
 import Puddles
 
-struct QuizList: Coordinator {
-    @StateObject var viewInterface: Interface<QuizListView.Action> = .init()
+@MainActor class QuizListModel: ObservableObject {
 
-    @Queryable<Quiz> private var quizCreation
-    let quizzes: QuizListView.Quizzes
+    @Published var quizzes: QuizListView.Quizzes
 
-    var viewState: QuizListView.ViewState {
-        .init(
-            quizzes: quizzes
-        )
+    init(quizzes: QuizListView.Quizzes) {
+        self.quizzes = quizzes
     }
 
+    func applyDeepLink(url: URL) {
+
+    }
+}
+
+struct Test {
+    var test: String
+
+    init() {
+        self.test = ""
+    }
+}
+
+struct QuizList: Coordinator {
+    static var debugIdentifier: String { "QuizList" }
+    @StateObject var viewInterface: Interface<QuizListView.Action> = .init()
+
+    @State private var creationTask: Task<Void, Never>?
+
+    @ObservedObject var interface: Interface<Action>
+    let quizzes: QuizListView.Quizzes
+
+    // IDEA: quiz search with mock network search for quizzes, Filter UI, deletion, sorting, duplicate quiz, templates, "play quiz" flow
+    let quizCreation: Queryable<Quiz>.Trigger
+
     var entryView: some View {
-        QuizListView(interface: viewInterface, state: viewState)
-            .navigationTitle("Quizzes")
-            .toolbar { toolbar }
+        QuizListView(
+            interface: viewInterface,
+            state: .init(
+                quizzes: quizzes
+            )
+        )
+        .navigationTitle("Quizzes")
+        .toolbar { toolbar }
     }
 
     func navigation() -> some NavigationPattern {
-        QueryControlled(by: quizCreation) { isActive, query in
-            Sheet(isActive: isActive) {
-                QuizCreationSheet { createdQuiz in
-                    query.answer(withOptional: createdQuiz)
-                }
-            }
-        }
     }
 
     func interfaces() -> some InterfaceObservation {
         InterfaceObserver(viewInterface) { action in
-
+            handleViewAction(action)
         }
     }
 
-    private func handleViewAction(_ action: QuizListView.Action) async {
+    private func handleViewAction(_ action: QuizListView.Action) {
         switch action {
-        case .quizTapped:
-            break
+        case .quizTapped(let quiz):
+            interface.sendAction(.quizTapped(quiz))
         }
-    }
-
-    func handleDeeplink(url: URL) -> DeepLinkPropagation {
-        .shouldContinue
     }
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
@@ -80,12 +95,19 @@ struct QuizList: Coordinator {
     }
 
     private func queryQuizCreation() {
-        Task {
+        creationTask?.cancel()
+        creationTask = Task {
             do {
                 let quiz = try await quizCreation.query()
                 print(quiz)
             } catch QueryError.queryCancelled {
             } catch {}
         }
+    }
+}
+
+extension QuizList {
+    enum Action {
+        case quizTapped(Quiz)
     }
 }

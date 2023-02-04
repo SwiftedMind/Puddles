@@ -28,21 +28,12 @@
       }
     },
     {
-      "identity" : "swift-docc-plugin",
+      "identity" : "swift-identified-collections",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-docc-plugin",
+      "location" : "https://github.com/pointfreeco/swift-identified-collections",
       "state" : {
-        "branch" : "main",
-        "revision" : "a3217706ad049ca058743003e065767773cc56cc"
-      }
-    },
-    {
-      "identity" : "swift-docc-symbolkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-docc-symbolkit",
-      "state" : {
-        "branch" : "main",
-        "revision" : "b45d1f2ed151d057b54504d653e0da5552844e34"
+        "revision" : "fd34c544ad27f3ba6b19142b348005bfa85b6005",
+        "version" : "0.6.0"
       }
     }
   ],

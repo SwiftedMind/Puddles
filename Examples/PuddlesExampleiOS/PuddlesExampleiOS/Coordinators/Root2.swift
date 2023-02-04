@@ -24,39 +24,34 @@ import SwiftUI
 import Puddles
 import AsyncAlgorithms
 
-enum Path: Hashable {
-    case target2
-    case target3(number: String, path: [Path2])
+enum Path2: Hashable {
+    case a
 }
 
-struct Root: CoordinatorStack {
-    @State private var actualPath: [Path] = []
+struct Root2: CoordinatorStack {
+    @State private var actualPath: [Path2] = []
 
-    var path: Binding<[Path]> {
+    var path: Binding<[Path2]> {
         $actualPath
     }
 
     var root: some Coordinator {
-        DeepLinkTarget1(path: $actualPath)
+        ABC(path: $actualPath)
     }
 
-    func viewForDestination(_ destination: Path) -> some View {
+    func viewForDestination(_ destination: Path2) -> some View {
         switch destination {
-        case .target2:
-            DeepLinkTarget2(path: $actualPath)
-        case .target3(let number, let otherPath):
-            DeepLinkTarget3(number: number, path: $actualPath)
+        case .a:
+            Text("A")
         }
     }
 
-
     func deepLinkOnAppear(url: URL) {
-
+        print("TTTTTT")
+        actualPath = [.a]
     }
-    
+
     func handleDeeplink(url: URL) async {
-        actualPath = [.target2, .target3(number: url.absoluteString, path: [])]
-//        try! await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
-//        actualPath = [.target2, .target3(number: "42", path: [])]
+        actualPath = [.a]
     }
 }

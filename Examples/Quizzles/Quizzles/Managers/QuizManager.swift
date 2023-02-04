@@ -20,43 +20,43 @@
 //  SOFTWARE.
 //
 
-import SwiftUI
-import Puddles
-import AsyncAlgorithms
+import Foundation
 
-enum Path: Hashable {
-    case target2
-    case target3(number: String, path: [Path2])
+protocol QuizService {
+
 }
 
-struct Root: CoordinatorStack {
-    @State private var actualPath: [Path] = []
 
-    var path: Binding<[Path]> {
-        $actualPath
+public final class LiveQuizService: QuizService {
+
+}
+
+public final class MockQuizService: QuizService {
+
+}
+
+extension QuizService where Self == LiveQuizService {
+    static var live: LiveQuizService {
+        .init()
+    }
+}
+
+extension QuizService where Self == MockQuizService {
+    static var mock: MockQuizService {
+        .init()
+    }
+}
+
+@MainActor
+public final class QuizManager: ObservableObject {
+
+    @Published var quizzes: LoadingState<[Quiz], Error>
+
+    let service: QuizService
+
+    init(service: QuizService = .live) {
+        self.service = service
+        quizzes = .loaded(.repeating(.mock, count: 10))
     }
 
-    var root: some Coordinator {
-        DeepLinkTarget1(path: $actualPath)
-    }
-
-    func viewForDestination(_ destination: Path) -> some View {
-        switch destination {
-        case .target2:
-            DeepLinkTarget2(path: $actualPath)
-        case .target3(let number, let otherPath):
-            DeepLinkTarget3(number: number, path: $actualPath)
-        }
-    }
-
-
-    func deepLinkOnAppear(url: URL) {
-
-    }
-    
-    func handleDeeplink(url: URL) async {
-        actualPath = [.target2, .target3(number: url.absoluteString, path: [])]
-//        try! await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
-//        actualPath = [.target2, .target3(number: "42", path: [])]
-    }
 }

@@ -32,8 +32,9 @@ struct QuizzlesApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Root()
-                .deepLinkRoot()
+            RootNavigator()
+//                .restoringState(.quizDetail(.mock))
+                .environmentObject(QuizManager(service: .mock))
         }
     }
 }
