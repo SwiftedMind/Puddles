@@ -100,7 +100,7 @@ struct QuizList: Coordinator {
             do {
                 let quiz = try await quizCreation.query()
                 print(quiz)
-            } catch QueryError.queryCancelled {
+            } catch QueryCancellationError() {
             } catch {}
         }
     }

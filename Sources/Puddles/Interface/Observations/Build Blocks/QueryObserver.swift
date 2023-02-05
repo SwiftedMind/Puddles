@@ -1,13 +1,13 @@
 import SwiftUI
 
-public struct QueryObserver<Result>: InterfaceObservation {
+public struct QueryObserver<Result>: View {
 
     var queryable: Queryable<Result>.Trigger
-    var queryHandler: @MainActor (_ resolver: QueryResolver<Result>) -> Void
+    var queryHandler: @MainActor (_ query: QueryResolver<Result>) -> Void
 
     public init(
         queryable: Queryable<Result>.Trigger,
-        queryHandler: @MainActor @escaping (_ resolver: QueryResolver<Result>) -> Void
+        queryHandler: @MainActor @escaping (_ query: QueryResolver<Result>) -> Void
     ) {
         self.queryable = queryable
         self.queryHandler = queryHandler
@@ -28,4 +28,3 @@ public extension QueryObserver {
             }
     }
 }
-

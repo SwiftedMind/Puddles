@@ -10,9 +10,6 @@ public struct CoordinatorBody<C: Coordinator>: View {
     /// The navigation content of the `Coordinator` as provided in ``Puddles/Coordinator/navigation()``.
     private let navigation: C.NavigationContent
 
-    /// The interfaces of the `Coordinator` as provided in ``Puddles/Coordinator/interfaces().
-    private let interfaces: C.Interfaces
-
     /// A closure reporting back first appearance of the view.
     private let firstAppearHandler: () async -> Void
 
@@ -23,13 +20,11 @@ public struct CoordinatorBody<C: Coordinator>: View {
     init(
         entryView: C.EntryView,
         navigation: C.NavigationContent,
-        interfaces: C.Interfaces,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void
     ) {
         self.entryView = entryView
         self.navigation = navigation
-        self.interfaces = interfaces
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
     }
@@ -39,7 +34,6 @@ public struct CoordinatorBody<C: Coordinator>: View {
             entryView
         }
         .background(navigation)
-        .background(interfaces)
         .background {
             ViewLifetimeHelper {
                 await firstAppearHandler()

@@ -16,13 +16,6 @@ public protocol Coordinator: View {
     /// The implementation can be empty to define an empty navigation.
     associatedtype NavigationContent: NavigationPattern
 
-    /// The collective interfaces that the ``Puddles/Coordinator`` observes,
-    /// which are built inside the ``Puddles/Coordinator/interfaces()`` using a ``Puddles/InterfaceObservationBuilder``.
-    ///
-    /// This can be inferred by providing an implementation for  ``Puddles/Coordinator/interfaces()``.
-    /// The implementation can be empty to define an empty interface observation (i.e. no observation).
-    associatedtype Interfaces: InterfaceObservation
-
     /// The final `View` type for the ``Puddles/Coordinator``,
     /// which is determined by the ``Puddles/Coordinator/modify(coordinator:)-19rqn`` method.
     associatedtype FinalBody: View
@@ -62,24 +55,10 @@ public protocol Coordinator: View {
     /// The navigation is internally added to the coordinator's content view. Keep in mind that it is your responsibility to place the ``Puddles/Coordinator`` inside a navigation-based view, if you plan to use navigation pushes like ``Push`` or ``PushItem``.
     ///
     /// - Returns: The navigation content for the ``Puddles/Coordinator``.
-    @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
-    /// The collection of interfaces that the ``Puddles/Coordinator`` observes.
-    ///
-    /// The interface observations are built using a ``Puddles/InterfaceObservationBuilder`` result builder. An example implementation would look like this:
-    ///
-    /// ```swift
-    /// func interfaces() -> Interfaces {
-    ///   InterfaceObserver(viewInterface) { action in
-    ///     handleViewAction(action)
-    ///   }
-    /// }
-    /// ```
-    ///
-    /// The interface observations are internally added to the coordinator's content view.
-    ///
-    /// - Returns: The interface observations for the ``Puddles/Coordinator``.
-    @InterfaceObservationBuilder @MainActor func interfaces() -> Interfaces
+    @available(iOS, obsoleted: 16.0, message: "Please use a StackNavigator")
+    @available(macOS, obsoleted: 13.0, message: "Please use a StackNavigator")
+    @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
@@ -143,7 +122,6 @@ public extension Coordinator {
             coordinator: CoordinatorBody(
                 entryView: entryView,
                 navigation: navigation(),
-                interfaces: interfaces(),
                 firstAppearHandler: {
                     await start()
                 },
@@ -161,4 +139,12 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
+}
+
+@available(iOS 16, macOS 13, *)
+public extension Coordinator {
+
+    @MainActor func navigation() -> EmptyNavigation {
+        EmptyNavigation()
+    }
 }

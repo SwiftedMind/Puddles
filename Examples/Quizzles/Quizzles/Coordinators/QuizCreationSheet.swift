@@ -29,9 +29,8 @@ struct QuizCreationSheet: Coordinator {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewInterface: Interface<QuizCreationView.Action> = .init()
 
-    let onFinish: (_ createdQuiz: Quiz?) -> Void
-
     @State private var draftQuiz: Quiz
+    let onFinish: (_ createdQuiz: Quiz?) -> Void
 
     init(
         draftQuiz: Quiz = .draft,

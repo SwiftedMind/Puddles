@@ -21,12 +21,12 @@ final actor QueryBuffer<Result> {
             switch queryConflictPolicy {
             case .cancelPreviousQuery:
                 logger.warning("Cancelling previous query of »\(Result.self, privacy: .public)« to allow new query.")
-                self.continuation?.resume(throwing: QueryError.queryCancelled)
+                self.continuation?.resume(throwing: QueryCancellationError())
                 self.continuation = nil
                 return false
             case .cancelNewQuery:
                 logger.warning("Cancelling new query of »\(Result.self, privacy: .public)« because another query is ongoing.")
-                continuation.resume(throwing: QueryError.queryCancelled)
+                continuation.resume(throwing: QueryCancellationError())
                 return false
             }
         }

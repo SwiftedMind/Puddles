@@ -97,14 +97,14 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
                 }
             } onCancel: {
                 self.item.wrappedValue = nil
-                Task { await buffer.resumeContinuation(throwing: QueryError.queryCancelled) }
+                Task { await buffer.resumeContinuation(throwing: QueryCancellationError()) }
             }
         }
 
         public func cancel() {
             self.item.wrappedValue = nil
             Task {
-                await buffer.resumeContinuation(throwing: QueryError.queryCancelled)
+                await buffer.resumeContinuation(throwing: QueryCancellationError())
             }
         }
 
@@ -113,8 +113,8 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
         }
     }
 
-    /// Boolean flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
-    @State var item: Item? = nil
+    /// Flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
+    @State var item: Item?
 
     public var wrappedValue: Trigger {
         .init(item: $item, resolver: resolver, buffer: buffer)
@@ -135,6 +135,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
     /// Completes the query with a result.
     /// - Parameter result: The answer to the query.
     private func resumeContinuation(returning result: Result) {
+        item = nil
         Task {
             await buffer.resumeContinuation(returning: result)
         }
@@ -143,13 +144,14 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
     /// Completes the query with an error.
     /// - Parameter result: The error that should be thrown.
     private func resumeContinuation(throwing error: Error) {
+        item = nil
         Task {
 
             // Catch an unanswered query and cancel it to prevent the stored continuation from leaking.
             if case QueryInternalError.queryAutoCancel = error,
                await buffer.hasContinuation {
                 logger.notice("Cancelling query of »\(Result.self, privacy: .public)« because presentation has terminated.")
-                await buffer.resumeContinuation(throwing: QueryError.queryCancelled)
+                await buffer.resumeContinuation(throwing: QueryCancellationError())
                 return
             }
 

@@ -43,7 +43,7 @@ public class QueryResolver<Result> {
 
     /// Cancel the query by throwing a ``Puddles/QueryError/queryCancelled`` error.
     public func cancelQuery() {
-        cancelHandler(QueryError.queryCancelled)
+        cancelHandler(QueryCancellationError())
     }
 
     /// Cancel the query by throwing a `QueryInternalError.queryAutoCancel` error.

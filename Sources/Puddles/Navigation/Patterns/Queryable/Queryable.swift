@@ -97,14 +97,14 @@ public struct Queryable<Result>: DynamicProperty {
                 }
             } onCancel: {
                 isActive.wrappedValue = false
-                Task { await buffer.resumeContinuation(throwing: QueryError.queryCancelled) }
+                Task { await buffer.resumeContinuation(throwing: QueryCancellationError()) }
             }
         }
 
         public func cancel() {
             isActive.wrappedValue = false
             Task {
-                await buffer.resumeContinuation(throwing: QueryError.queryCancelled)
+                await buffer.resumeContinuation(throwing: QueryCancellationError())
             }
         }
 
@@ -141,6 +141,7 @@ public struct Queryable<Result>: DynamicProperty {
     private func resumeContinuation(returning result: Result) {
         Task {
             await buffer.resumeContinuation(returning: result)
+            isActive = false
         }
     }
 
@@ -148,20 +149,23 @@ public struct Queryable<Result>: DynamicProperty {
     /// - Parameter result: The error that should be thrown.
     private func resumeContinuation(throwing error: Error) {
         Task {
-
             // Catch an unanswered query and cancel it to prevent the stored continuation from leaking.
             if case QueryInternalError.queryAutoCancel = error,
                await buffer.hasContinuation {
                 logger.notice("Cancelling query of »\(Result.self, privacy: .public)« because presentation has terminated.")
-                await buffer.resumeContinuation(throwing: QueryError.queryCancelled)
+                await buffer.resumeContinuation(throwing: QueryCancellationError())
+                isActive = false
                 return
             }
 
             await buffer.resumeContinuation(throwing: error)
+            isActive = false
         }
     }
 }
 
+public struct QueryCancellationError: Swift.Error {}
+
 public enum QueryError: Swift.Error {
-    case queryCancelled
+    case unknown
 }

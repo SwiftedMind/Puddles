@@ -22,7 +22,7 @@
 
 import Puddles
 
-enum RootNavigatorStateRestoration: Hashable {
+enum RootNavigatorStateConfiguration: Hashable {
     case reset
     case quizCreation(Quiz)
     case quizDetail(Quiz)
@@ -103,7 +103,7 @@ struct RootNavigator: StackNavigator {
         }
     }
 
-    func restoreState(for state: RootNavigatorStateRestoration) async {
+    func applyStateConfiguration(_ state: RootNavigatorStateConfiguration) async {
         switch state {
         case .reset:
             path.removeAll()
@@ -122,11 +122,11 @@ struct RootNavigator: StackNavigator {
 
     func handleDeepLink(_ deepLink: URL) async {
         if deepLink.absoluteString.contains("createQuiz") {
-            await restoreState(for: .quizCreation(.mock))
+            await applyStateConfiguration(.quizCreation(.mock))
         } else if deepLink.absoluteString.contains("Detail") {
-            await restoreState(for: .quizDetail(.mock))
+            await applyStateConfiguration(.quizDetail(.mock))
         } else {
-            await restoreState(for: .reset)
+            await applyStateConfiguration(.reset)
         }
     }
 

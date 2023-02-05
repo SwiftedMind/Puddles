@@ -25,39 +25,25 @@ import Foundation
 @available(iOS 16, macOS 13.0, *)
 public protocol StackNavigator: View {
 
-    associatedtype RootCoordinator: Coordinator
+    associatedtype RootView: View
 
     associatedtype Path: Hashable
 
-    associatedtype StateRestoration
+    associatedtype StateConfiguration
 
     associatedtype PathDestination: View
 
-    associatedtype PresentationState: NavigatorPresentation = EmptyNavigatorPresentation
-
-    associatedtype PresentationContent: NavigationPattern
-
-    associatedtype Interfaces: InterfaceObservation
-
     @MainActor static var debugIdentifier: String { get }
 
-    @MainActor var root: RootCoordinator { get }
+    @MainActor var root: RootView { get }
 
     @MainActor var navigationPath: Binding<[Path]> { get }
 
-    @MainActor var presentationState: PresentationState { get }
-
     @MainActor @ViewBuilder func destination(for path: Path) -> PathDestination
 
-    @MainActor @NavigationBuilder func presentations() -> PresentationContent
+    @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
 
-    @MainActor @InterfaceObservationBuilder func interfaces() -> Interfaces
-
-    @MainActor static var shouldHandleDeepLinks: Bool { get }
-
-    @MainActor func restoreState(for stateRestoration: StateRestoration) async
-
-    @MainActor func handleDeepLink(_ deepLink: URL) async
+    @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
 
         /// A method that is called when the navigator has first appeared.
     ///
@@ -93,17 +79,15 @@ public extension StackNavigator {
             destinationForPathHandler: { path in
                 destination(for: path)
             },
-            presentations: presentations(),
-            interfaces: interfaces(),
-            navigationPath: navigationPath) { state in
-                await restoreState(for: state)
-            } firstAppearHandler: {
-                await start()
-            } finalDisappearHandler: {
-                stop()
-            } deepLinkHandler: { url in
-            guard Self.shouldHandleDeepLinks else { return }
-            await handleDeepLink(url)
+            navigationPath: navigationPath
+        ) { state in
+            applyStateConfiguration(state)
+        } firstAppearHandler: {
+            await start()
+        } finalDisappearHandler: {
+            stop()
+        } deepLinkHandler: { url in
+            handleDeepLink(url)
         }
     }
 }
@@ -111,9 +95,9 @@ public extension StackNavigator {
 @available(iOS 16, macOS 13.0, *)
 public extension StackNavigator {
 
-    @MainActor func handleDeepLink(_ deepLink: URL) async {}
-
-    @MainActor static var shouldHandleDeepLinks: Bool { false }
+    @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
+        return nil
+    }
 
     @MainActor static var debugIdentifier: String {
         "\(type(of: Self.self))"
@@ -123,40 +107,3 @@ public extension StackNavigator {
     @MainActor func stop() {}
 }
 
-private struct StateRestorationKey: EnvironmentKey {
-    static let defaultValue: UUID = .init()
-}
-
-extension EnvironmentValues {
-    var stateRestorationId: UUID {
-        get { self[StateRestorationKey.self] }
-        set { self[StateRestorationKey.self] = newValue }
-    }
-}
-
-var stateRestorations: [UUID: Any] = [:]
-
-@available(iOS 16, macOS 13.0, *)
-struct StateRestorationWrapper<Navigator: StackNavigator>: ViewModifier {
-    @State var id = UUID()
-
-    var state: Navigator.StateRestoration
-
-    func body(content: Content) -> some View {
-        content
-            .environment(\.stateRestorationId, id)
-            .onAppear {
-                stateRestorations[id] = state
-            }
-            .onDisappear {
-                stateRestorations.removeValue(forKey: id)
-            }
-    }
-}
-
-@available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
-    func restoringState(_ state: Self.StateRestoration) -> some View {
-        modifier(StateRestorationWrapper<Self>(state: state))
-    }
-}

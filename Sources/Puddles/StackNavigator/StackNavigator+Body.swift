@@ -23,38 +23,19 @@
 import SwiftUI
 import Combine
 
-// sheet item? queryable?
-// queryable dann im navigator? da sind ja die sheets. die triggern das in irgendeiner form?
-// queryable im @Published?
-@available(iOS 16.0, macOS 13.0, *)
-public protocol NavigatorPresentation: DynamicProperty {
-    init()
-}
-
-@available(iOS 16.0, macOS 13.0, *)
-public struct EmptyNavigatorPresentation: NavigatorPresentation {
-    public init() {
-
-    }
-}
-
 @available(iOS 16, macOS 13.0, *)
 public struct StackNavigatorBody<Navigator: StackNavigator>: View {
-    @Environment(\.stateRestorationId) private var stateRestorationId
+    @Environment(\.stateConfigurationId) private var stateConfigurationId
 
-    private let root: Navigator.RootCoordinator
-
-    private let presentations: Navigator.PresentationContent
+    private let root: Navigator.RootView
 
     private let navigationPath: Binding<[Navigator.Path]>
 
-    private let interfaces: Navigator.Interfaces
-
     private var destinationForPathHandler: (_ path: Navigator.Path) -> Navigator.PathDestination
 
-    private var deepLinkHandler: (_ url: URL) async -> Void
+    private var deepLinkHandler: (_ url: URL) -> Navigator.StateConfiguration?
 
-    private let restoreStateHandler: (_ state: Navigator.StateRestoration) async -> Void
+    private let applyStateConfigurationHandler: (_ state: Navigator.StateConfiguration) -> Void
 
     /// A closure reporting back first appearance of the view.
     private let firstAppearHandler: () async -> Void
@@ -63,22 +44,18 @@ public struct StackNavigatorBody<Navigator: StackNavigator>: View {
     private let finalDisappearHandler: () -> Void
 
     init(
-        root: Navigator.RootCoordinator,
+        root: Navigator.RootView,
         destinationForPathHandler: @escaping (_ path: Navigator.Path) -> Navigator.PathDestination,
-        presentations: Navigator.PresentationContent,
-        interfaces: Navigator.Interfaces,
         navigationPath: Binding<[Navigator.Path]>,
-        restoreStateHandler: @escaping (_ state: Navigator.StateRestoration) async -> Void,
+        applyStateConfigurationHandler: @escaping (_ state: Navigator.StateConfiguration) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
-        deepLinkHandler: @escaping (_: URL) async -> Void
+        deepLinkHandler: @escaping (_ url: URL) -> Navigator.StateConfiguration?
     ) {
         self.root = root
         self.destinationForPathHandler = destinationForPathHandler
-        self.presentations = presentations
-        self.interfaces = interfaces
         self.navigationPath = navigationPath
-        self.restoreStateHandler = restoreStateHandler
+        self.applyStateConfigurationHandler = applyStateConfigurationHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
         self.deepLinkHandler = deepLinkHandler
@@ -91,13 +68,11 @@ public struct StackNavigatorBody<Navigator: StackNavigator>: View {
                     destinationForPathHandler(path)
                 })
         }
-        .background(presentations)
-        .background(interfaces)
         .background {
             ViewLifetimeHelper {
 
-                if let state = stateRestorations[stateRestorationId] as? Navigator.StateRestoration {
-                    await restoreStateHandler(state)
+                if let state = stateConfigurations[stateConfigurationId] as? Navigator.StateConfiguration {
+                    applyStateConfigurationHandler(state)
                 }
 
                 await firstAppearHandler()
@@ -107,9 +82,8 @@ public struct StackNavigatorBody<Navigator: StackNavigator>: View {
         }
         .onOpenURL { url in
             logger.debug("Received deep link: »\(url, privacy: .public)«")
-            Task {
-                await deepLinkHandler(url)
-            }
+            guard let state = deepLinkHandler(url) else { return }
+            applyStateConfigurationHandler(state)
         }
     }
 }
