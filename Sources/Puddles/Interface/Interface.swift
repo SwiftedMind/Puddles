@@ -1,8 +1,8 @@
 public struct Interface<Action> {
-    private let actionHandler: @Sendable (_ action: Action) -> Void
+    private let actionHandler: (_ action: Action) -> Void
 
-    public static func actionHandler(_ handler: @escaping @Sendable (_ action: Action) -> Void) -> Self {
-        .init(actionHandler: handler)
+    public static func handled(by block: @escaping (_ action: Action) -> Void) -> Self {
+        .init(actionHandler: block)
     }
 
     public func sendAction(_ action: Action) {

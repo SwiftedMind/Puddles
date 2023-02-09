@@ -48,7 +48,7 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
     }
     
     public var body: some View {
-        content(.actionHandler { actionHandler($0, $state) }, state)
+        content(.handled { actionHandler($0, $state) }, state)
             .frame(
                 maxWidth: maximizedPreviewFrame ? .infinity : nil,
                 maxHeight: maximizedPreviewFrame ? .infinity : nil

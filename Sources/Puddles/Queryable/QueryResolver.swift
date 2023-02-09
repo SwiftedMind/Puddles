@@ -1,14 +1,14 @@
 import Foundation
 
 /// A type that lets you answer a query made by a call to ``Puddles/Queryable/Wrapper/query()``.
-public class QueryResolver<Result> {
+public final class QueryResolver<Result> {
 
-    private let answerHandler: (Result) -> Void
-    private let cancelHandler: (Error) -> Void
+    private let answerHandler: @Sendable (Result) -> Void
+    private let cancelHandler: @Sendable (Error) -> Void
 
     init(
-        answerHandler: @escaping (Result) -> Void,
-        errorHandler: @escaping (Error) -> Void
+        answerHandler: @escaping @Sendable (Result) -> Void,
+        errorHandler: @escaping @Sendable (Error) -> Void
     ) {
         self.answerHandler = answerHandler
         self.cancelHandler = errorHandler
@@ -57,3 +57,5 @@ public class QueryResolver<Result> {
 enum QueryInternalError: Swift.Error {
     case queryAutoCancel
 }
+
+extension QueryResolver: Sendable where Result: Sendable {}

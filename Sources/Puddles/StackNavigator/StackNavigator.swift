@@ -35,15 +35,15 @@ public protocol StackNavigator: View {
 
     @MainActor static var debugIdentifier: String { get }
 
-    @MainActor var root: RootView { get }
+    @MainActor @ViewBuilder var root: RootView { get }
 
     @MainActor var navigationPath: Binding<[Path]> { get }
 
     @MainActor @ViewBuilder func destination(for path: Path) -> PathDestination
 
-    @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
+    func applyStateConfiguration(_ configuration: StateConfiguration)
 
-    @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
+    func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
 
         /// A method that is called when the navigator has first appeared.
     ///
@@ -54,7 +54,7 @@ public protocol StackNavigator: View {
     /// It does not behave like the `.onAppear(perform:)` view modifier,
     /// which can be called multiple times during the lifetime of the view.
     /// Instead, `start()` is only called exactly once, when the lifetime of the ``Puddles/StackNavigator`` starts.
-    @MainActor func start() async
+    func start() async
 
     /// A method that is called after the navigator has disappeared for the last and final time.
     ///
@@ -66,7 +66,7 @@ public protocol StackNavigator: View {
     /// It does not behave like the `.onDisappear(perform:)` view modifier,
     /// which can be called multiple times during the lifetime of the view.
     /// Instead, `stop()` is only called exactly once, when the lifetime of the ``Puddles/StackNavigator`` ends.
-    @MainActor func stop()
+    func stop()
 
 }
 
@@ -103,7 +103,7 @@ public extension StackNavigator {
         "\(type(of: Self.self))"
     }
 
-    @MainActor func start() async {}
-    @MainActor func stop() {}
+    func start() async {}
+    func stop() {}
 }
 

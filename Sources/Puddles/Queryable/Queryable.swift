@@ -129,15 +129,20 @@ public struct Queryable<Result>: DynamicProperty {
 
     /// Helper type to hide implementation details of ``Puddles/Queryable``.
     /// This type exposes convenient methods to answer (i.e. complete) a query.
-    private var resolver: QueryResolver<Result>!
+    private var resolver: QueryResolver<Result> {
+        .init(
+            answerHandler: resumeContinuation(returning:),
+            errorHandler: resumeContinuation(throwing:)
+        )
+    }
 
     public init(queryConflictPolicy: QueryConflictPolicy = .cancelNewQuery) {
         buffer = QueryBuffer(queryConflictPolicy: queryConflictPolicy)
-        resolver = .init(answerHandler: resumeContinuation(returning:), errorHandler: resumeContinuation(throwing:))
     }
 
     /// Completes the query with a result.
     /// - Parameter result: The answer to the query.
+    @Sendable
     private func resumeContinuation(returning result: Result) {
         Task {
             await buffer.resumeContinuation(returning: result)
@@ -147,6 +152,7 @@ public struct Queryable<Result>: DynamicProperty {
 
     /// Completes the query with an error.
     /// - Parameter result: The error that should be thrown.
+    @Sendable
     private func resumeContinuation(throwing error: Error) {
         Task {
             // Catch an unanswered query and cancel it to prevent the stored continuation from leaking.
@@ -169,3 +175,5 @@ public struct QueryCancellationError: Swift.Error {}
 public enum QueryError: Swift.Error {
     case unknown
 }
+
+extension Queryable.Trigger: @unchecked Sendable where Result: Sendable {}

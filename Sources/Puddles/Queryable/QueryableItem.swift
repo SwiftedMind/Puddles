@@ -48,7 +48,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
     /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
     public struct Trigger {
 
-        /// A binding to the `isActive` state inside the `@Queryable` property wrapper.
+        /// A binding to the `item` state inside the `@Queryable` property wrapper.
         ///
         /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
         var item: Binding<Item?>
@@ -86,7 +86,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
         /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/Queryable/QueryConflictPolicy`` defined in the initializer of ``Puddles/Queryable``. The default policy is ``Puddles/Queryable/QueryConflictPolicy/cancelNewQuery``.
         /// - Returns: The result of the query.
         public func query(providing item: Item) async throws -> Result {
-            return try await withTaskCancellationHandler {
+            try await withTaskCancellationHandler {
                 try await withCheckedThrowingContinuation { continuation in
                     Task {
                         let couldStore = await buffer.storeContinuation(continuation)
@@ -114,7 +114,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
     }
 
     /// Flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
-    @State var item: Item?
+    @State var item: Item? = nil
 
     public var wrappedValue: Trigger {
         .init(item: $item, resolver: resolver, buffer: buffer)
@@ -125,26 +125,38 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
 
     /// Helper type to hide implementation details of ``Puddles/Queryable``.
     /// This type exposes convenient methods to answer (i.e. complete) a query.
-    private var resolver: QueryResolver<Result>!
+    private var resolver: QueryResolver<Result> {
+/*
+ * Note:
+ * These handlers implicitly capture self. Since self is a value type, a copy is made.
+ * Doing this during the initialization of `QueryableItem` causes the `@State var item` to be copied without being attached to a view,
+ * making its use inside the resumeContinuation * methods useless. We need to do it here, when a view is already attached.
+ *
+ */
+        .init(
+            answerHandler: resumeContinuation(returning:),
+            errorHandler: resumeContinuation(throwing:)
+        )
+    }
 
     public init(queryConflictPolicy: QueryConflictPolicy = .cancelNewQuery) {
         buffer = QueryBuffer(queryConflictPolicy: queryConflictPolicy)
-        resolver = .init(answerHandler: resumeContinuation(returning:), errorHandler: resumeContinuation(throwing:))
     }
 
     /// Completes the query with a result.
     /// - Parameter result: The answer to the query.
+    @Sendable
     private func resumeContinuation(returning result: Result) {
-        item = nil
         Task {
             await buffer.resumeContinuation(returning: result)
+            item = nil
         }
     }
 
     /// Completes the query with an error.
     /// - Parameter result: The error that should be thrown.
+    @Sendable
     private func resumeContinuation(throwing error: Error) {
-        item = nil
         Task {
 
             // Catch an unanswered query and cancel it to prevent the stored continuation from leaking.
@@ -152,10 +164,12 @@ public struct QueryableItem<Item, Result>: DynamicProperty {
                await buffer.hasContinuation {
                 logger.notice("Cancelling query of »\(Result.self, privacy: .public)« because presentation has terminated.")
                 await buffer.resumeContinuation(throwing: QueryCancellationError())
+                self.item = nil
                 return
             }
 
             await buffer.resumeContinuation(throwing: error)
+            self.item = nil
         }
     }
 }

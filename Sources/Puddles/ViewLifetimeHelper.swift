@@ -21,7 +21,7 @@ struct ViewLifetimeHelper: View {
     }
 }
 
-private final class LifetimeViewModel: ObservableObject {
+final class LifetimeViewModel: ObservableObject {
 
     private let task: Task<Void, Never>
 
