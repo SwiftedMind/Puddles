@@ -22,30 +22,27 @@
 
 import SwiftUI
 
-@available(iOS 16, macOS 13.0, *)
-public protocol StackNavigator: View {
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
+public protocol LegacyStackNavigator: View {
 
     associatedtype RootView: View
 
-    associatedtype Path: Hashable
-
     associatedtype StateConfiguration
 
-    associatedtype PathDestination: View
+    associatedtype NavigationContent: NavigationPattern
 
     static var debugIdentifier: String { get }
 
     @MainActor @ViewBuilder var root: RootView { get }
 
-    var navigationPath: Binding<[Path]> { get }
-
-    @MainActor @ViewBuilder func destination(for path: Path) -> PathDestination
+    @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
     @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
 
-        /// A method that is called when the navigator has first appeared.
+    /// A method that is called when the navigator has first appeared.
     ///
     /// The parent task is bound to the navigator's lifetime and is cancelled once it ends.
     /// Keep in mind, that it is up to the implementation to check for cancellations!
@@ -70,16 +67,14 @@ public protocol StackNavigator: View {
 
 }
 
-@available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
+public extension LegacyStackNavigator {
 
     @MainActor var body: some View {
-        StackNavigatorBody<Self>(
+        LegacyStackNavigatorBody<Self>(
             root: root,
-            destinationForPathHandler: { path in
-                destination(for: path)
-            },
-            navigationPath: navigationPath
+            navigation: navigation()
         ) { state in
             applyStateConfiguration(state)
         } firstAppearHandler: {
@@ -92,8 +87,9 @@ public extension StackNavigator {
     }
 }
 
-@available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
+public extension LegacyStackNavigator {
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
         return nil

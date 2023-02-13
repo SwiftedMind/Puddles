@@ -9,13 +9,6 @@ public protocol Coordinator: View {
     /// This can be inferred by providing an `entryView`.
     associatedtype EntryView: View
 
-    /// The navigation that the ``Puddles/Coordinator`` defines,
-    /// which is built inside the ``Puddles/Coordinator/navigation()`` method  using a ``NavigationBuilder``.
-    ///
-    /// This can be inferred by providing an implementation for  ``Puddles/Coordinator/navigation()``.
-    /// The implementation can be empty to define an empty navigation.
-    associatedtype NavigationContent: NavigationPattern
-
     /// The final `View` type for the ``Puddles/Coordinator``,
     /// which is determined by the ``Puddles/Coordinator/modify(coordinator:)-19rqn`` method.
     associatedtype FinalBody: View
@@ -34,31 +27,6 @@ public protocol Coordinator: View {
     ///
     /// It is safe (and usually expected) to provide modifications that define the context of the root, like setting a navigation title or adding a toolbar.
     @ViewBuilder @MainActor var entryView: EntryView { get }
-
-    /// The navigation content that ``Puddles/Coordinator`` defines.
-    ///
-    /// The navigation is built using a ``NavigationBuilder`` result builder. An example implementation would look like this:
-    ///
-    /// ```swift
-    /// func navigation() -> NavigationContent {
-    ///     // Add a NavigationLink
-    ///     Push(isActive: $isShowingGroceries) {
-    ///         GroceriesCoordinator()
-    ///     }
-    ///     // Add a sheet
-    ///     Sheet(isActive: $isShowingTermsAndConditions) {
-    ///         TermsAndConditions()
-    ///     }
-    /// }
-    /// ```
-    ///
-    /// The navigation is internally added to the coordinator's content view. Keep in mind that it is your responsibility to place the ``Puddles/Coordinator`` inside a navigation-based view, if you plan to use navigation pushes like ``Push`` or ``PushItem``.
-    ///
-    /// - Returns: The navigation content for the ``Puddles/Coordinator``.
-
-    @available(iOS, obsoleted: 16.0, message: "Please use a StackNavigator")
-    @available(macOS, obsoleted: 13.0, message: "Please use a StackNavigator")
-    @NavigationBuilder @MainActor func navigation() -> NavigationContent
 
     /// A method that modifies the content of the ``Puddles/Coordinator``, whose view representation is passed as an argument.
     /// The result of this method is used as the Coordinator's `body` property.
@@ -121,7 +89,6 @@ public extension Coordinator {
         modify(
             coordinator: CoordinatorBody(
                 entryView: entryView,
-                navigation: navigation(),
                 firstAppearHandler: {
                     await start()
                 },
@@ -139,12 +106,4 @@ public extension Coordinator {
 
     @MainActor func start() async {}
     @MainActor func stop() {}
-}
-
-@available(iOS 16, macOS 13, *)
-public extension Coordinator {
-
-    @MainActor func navigation() -> EmptyNavigation {
-        EmptyNavigation()
-    }
 }

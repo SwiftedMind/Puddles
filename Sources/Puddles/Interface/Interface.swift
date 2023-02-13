@@ -1,14 +1,16 @@
 public struct Interface<Action> {
-    private let actionHandler: (_ action: Action) -> Void
+    private let actionHandler: @MainActor (_ action: Action) -> Void
 
-    public static func handled(by block: @escaping (_ action: Action) -> Void) -> Self {
+    public static func handled(by block: @escaping @MainActor (_ action: Action) -> Void) -> Self {
         .init(actionHandler: block)
     }
 
+    @MainActor
     public func sendAction(_ action: Action) {
         actionHandler(action)
     }
 
+    @MainActor
     public func binding<Value>(
         _ value: @autoclosure @escaping () -> Value,
         to action: @escaping (_ newValue: Value) -> Action
