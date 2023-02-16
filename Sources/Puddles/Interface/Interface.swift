@@ -5,6 +5,10 @@ public struct Interface<Action> {
         .init(actionHandler: block)
     }
 
+    public static func unhandled() -> Self {
+        .init(actionHandler: {_ in})
+    }
+
     @MainActor
     public func sendAction(_ action: Action) {
         actionHandler(action)
