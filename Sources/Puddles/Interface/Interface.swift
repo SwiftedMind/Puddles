@@ -1,3 +1,5 @@
+import SwiftUI
+
 public struct Interface<Action> {
     private let actionHandler: @MainActor (_ action: Action) -> Void
 
@@ -5,7 +7,7 @@ public struct Interface<Action> {
         .init(actionHandler: block)
     }
 
-    public static func unhandled() -> Self {
+    public static var unhandled: Self {
         .init(actionHandler: {_ in})
     }
 

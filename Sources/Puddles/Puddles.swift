@@ -1,4 +1,4 @@
-@_exported import SwiftUI
+import SwiftUI
 
 import OSLog
 
