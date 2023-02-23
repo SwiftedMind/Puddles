@@ -22,30 +22,25 @@
 
 import SwiftUI
 
-@available(iOS 16, macOS 13.0, *)
-public protocol StackNavigator: View {
+public protocol TabViewNavigator: View {
 
-    associatedtype RootView: View
-
-    associatedtype Path: Hashable
+    associatedtype TabSelection: Hashable
 
     associatedtype StateConfiguration
 
-    associatedtype PathDestination: View
+    associatedtype TabViewContent: View
 
     static var debugIdentifier: String { get }
 
-    @MainActor @ViewBuilder var root: RootView { get }
+    @MainActor @ViewBuilder var tabViewContent: TabViewContent { get }
 
-    var navigationPath: Binding<[Path]> { get }
-
-    @MainActor @ViewBuilder func destination(for path: Path) -> PathDestination
+    var tabViewSelection: Binding<TabSelection> { get }
 
     @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
 
-        /// A method that is called when the navigator has first appeared.
+    /// A method that is called when the navigator has first appeared.
     ///
     /// The parent task is bound to the navigator's lifetime and is cancelled once it ends.
     /// Keep in mind, that it is up to the implementation to check for cancellations!
@@ -67,19 +62,14 @@ public protocol StackNavigator: View {
     /// which can be called multiple times during the lifetime of the view.
     /// Instead, `stop()` is only called exactly once, when the lifetime of the ``Puddles/StackNavigator`` ends.
     @MainActor func stop()
-
 }
 
-@available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
+public extension TabViewNavigator {
 
     @MainActor var body: some View {
-        StackNavigatorBody<Self>(
-            root: root,
-            destinationForPathHandler: { path in
-                destination(for: path)
-            },
-            navigationPath: navigationPath
+        TabViewNavigatorBody<Self>(
+            tabViewContent: tabViewContent,
+            selectionBinding: tabViewSelection
         ) { state in
             applyStateConfiguration(state)
         } firstAppearHandler: {
@@ -92,8 +82,7 @@ public extension StackNavigator {
     }
 }
 
-@available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
+public extension TabViewNavigator {
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
         return nil

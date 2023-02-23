@@ -23,12 +23,15 @@
 import SwiftUI
 import Combine
 
-struct TabViewNavigatorBody<Navigator: TabViewNavigator>: View {
-    @Environment(\.stateConfigurationId) private var stateConfigurationId
+@available(iOS 16, macOS 13.0, *)
+public struct StackNavigatorBody<Navigator: StackNavigator>: View {
+    @Environment(\.signal) private var signal
 
-    private let tabViewContent: Navigator.TabViewContent
+    private let root: Navigator.RootView
 
-    private let selectionBinding: Binding<Navigator.TabSelection>
+    private let navigationPath: Binding<[Navigator.Path]>
+
+    private var destinationForPathHandler: (_ path: Navigator.Path) -> Navigator.PathDestination
 
     private var deepLinkHandler: (_ url: URL) -> Navigator.StateConfiguration?
 
@@ -41,15 +44,17 @@ struct TabViewNavigatorBody<Navigator: TabViewNavigator>: View {
     private let finalDisappearHandler: () -> Void
 
     init(
-        tabViewContent: Navigator.TabViewContent,
-        selectionBinding: Binding<Navigator.TabSelection>,
+        root: Navigator.RootView,
+        destinationForPathHandler: @escaping (_ path: Navigator.Path) -> Navigator.PathDestination,
+        navigationPath: Binding<[Navigator.Path]>,
         applyStateConfigurationHandler: @escaping (_ state: Navigator.StateConfiguration) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
         deepLinkHandler: @escaping (_ url: URL) -> Navigator.StateConfiguration?
     ) {
-        self.tabViewContent = tabViewContent
-        self.selectionBinding = selectionBinding
+        self.root = root
+        self.destinationForPathHandler = destinationForPathHandler
+        self.navigationPath = navigationPath
         self.applyStateConfigurationHandler = applyStateConfigurationHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
@@ -57,22 +62,18 @@ struct TabViewNavigatorBody<Navigator: TabViewNavigator>: View {
     }
 
     public var body: some View {
-        // if tab hasn't opened yet, it will not receive a deeplink, unfortunately and cannot handle it initially. the tab view has to pass it down? how?
-        //
-        /*
-
-a modifier on stacknavigator
-
-         .signaling(_ configuration) internally uses a uuid to make identical, consecutive signals possible. this modifier makes a one time configuration application. its argzment is a state, which is a bit strange, though ,since states usually dont behave like signals
-
-         */
-        TabView(selection: selectionBinding) {
-            tabViewContent
+        NavigationStack(path: navigationPath) {
+            root
+                .navigationDestination(for: Navigator.Path.self, destination: { path in
+                    destinationForPathHandler(path)
+                })
         }
+        .environment(\.signal, nil)
         .background {
             ViewLifetimeHelper {
-                if let state = stateConfigurations[stateConfigurationId] as? Navigator.StateConfiguration {
-                    applyStateConfigurationHandler(state)
+                if let configuration = signal?.value as? Navigator.StateConfiguration {
+                    applyStateConfigurationHandler(configuration)
+                    signal?.onSignalHandled()
                 }
                 await firstAppearHandler()
             } onDeinit: {
@@ -83,6 +84,11 @@ a modifier on stacknavigator
             logger.debug("Received deep link: »\(url, privacy: .public)«")
             guard let state = deepLinkHandler(url) else { return }
             applyStateConfigurationHandler(state)
+        }
+        .onChange(of: signal) { newValue in
+            guard let configuration = newValue?.value as? Navigator.StateConfiguration else { return }
+            applyStateConfigurationHandler(configuration)
+            signal?.onSignalHandled()
         }
     }
 }

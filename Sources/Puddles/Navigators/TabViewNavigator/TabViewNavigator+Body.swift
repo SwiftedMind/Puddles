@@ -23,14 +23,12 @@
 import SwiftUI
 import Combine
 
-@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
-@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
-public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
-    @Environment(\.stateConfigurationId) private var stateConfigurationId
+struct TabViewNavigatorBody<Navigator: TabViewNavigator>: View {
+    @Environment(\.signal) private var signal
 
-    private let root: Navigator.RootView
+    private let tabViewContent: Navigator.TabViewContent
 
-    private let navigation: Navigator.NavigationContent
+    private let selectionBinding: Binding<Navigator.TabSelection>
 
     private var deepLinkHandler: (_ url: URL) -> Navigator.StateConfiguration?
 
@@ -43,15 +41,15 @@ public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
     private let finalDisappearHandler: () -> Void
 
     init(
-        root: Navigator.RootView,
-        navigation: Navigator.NavigationContent,
+        tabViewContent: Navigator.TabViewContent,
+        selectionBinding: Binding<Navigator.TabSelection>,
         applyStateConfigurationHandler: @escaping (_ state: Navigator.StateConfiguration) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
         deepLinkHandler: @escaping (_ url: URL) -> Navigator.StateConfiguration?
     ) {
-        self.root = root
-        self.navigation = navigation
+        self.tabViewContent = tabViewContent
+        self.selectionBinding = selectionBinding
         self.applyStateConfigurationHandler = applyStateConfigurationHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
@@ -59,14 +57,15 @@ public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
     }
 
     public var body: some View {
-        NavigationView {
-            root
-                .background(navigation)
+        TabView(selection: selectionBinding) {
+            tabViewContent
         }
+        .environment(\.signal, nil)
         .background {
             ViewLifetimeHelper {
-                if let state = stateConfigurations[stateConfigurationId] as? Navigator.StateConfiguration {
-                    applyStateConfigurationHandler(state)
+                if let configuration = signal?.value as? Navigator.StateConfiguration {
+                    applyStateConfigurationHandler(configuration)
+                    signal?.onSignalHandled()
                 }
                 await firstAppearHandler()
             } onDeinit: {
@@ -77,6 +76,11 @@ public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
             logger.debug("Received deep link: »\(url, privacy: .public)«")
             guard let state = deepLinkHandler(url) else { return }
             applyStateConfigurationHandler(state)
+        }
+        .onChange(of: signal) { newValue in
+            guard let configuration = newValue?.value as? Navigator.StateConfiguration else { return }
+            applyStateConfigurationHandler(configuration)
+            signal?.onSignalHandled()
         }
     }
 }

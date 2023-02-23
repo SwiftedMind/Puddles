@@ -53,7 +53,3 @@ public struct QueryResolver<Result> {
         cancelHandler(QueryInternalError.queryAutoCancel)
     }
 }
-
-enum QueryInternalError: Swift.Error {
-    case queryAutoCancel
-}

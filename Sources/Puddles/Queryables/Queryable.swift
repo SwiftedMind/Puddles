@@ -96,15 +96,17 @@ public struct Queryable<Result>: DynamicProperty where Result: Sendable {
                     }
                 }
             } onCancel: {
-                isActive.wrappedValue = false
-                Task { await buffer.resumeContinuation(throwing: QueryCancellationError()) }
+                Task {
+                    await buffer.resumeContinuation(throwing: QueryCancellationError())
+                    isActive.wrappedValue = false
+                }
             }
         }
 
         public func cancel() {
-            isActive.wrappedValue = false
             Task {
                 await buffer.resumeContinuation(throwing: QueryCancellationError())
+                isActive.wrappedValue = false
             }
         }
 
@@ -166,10 +168,4 @@ public struct Queryable<Result>: DynamicProperty where Result: Sendable {
             isActive = false
         }
     }
-}
-
-public struct QueryCancellationError: Swift.Error {}
-
-public enum QueryError: Swift.Error {
-    case unknown
 }

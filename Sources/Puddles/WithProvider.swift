@@ -9,7 +9,7 @@ public protocol IndependentProvider: Provider {
 
 /// A wrapper view that holds a `@StateObject` instance of a specified `provider` and provides it to its view builder `content` property.
 ///
-/// This hides the stateobject and prevents the parent view from having to react to state changes, which is often not needed
+/// This hides the StateObject and prevents the parent view from having to react to state changes, which is often an unnecessary waste of performance.
 public struct WithProvider<P: Provider, Content: View>: View {
 
     @StateObject private var provider: P

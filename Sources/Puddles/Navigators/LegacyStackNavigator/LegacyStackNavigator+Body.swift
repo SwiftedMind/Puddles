@@ -23,15 +23,14 @@
 import SwiftUI
 import Combine
 
-@available(iOS 16, macOS 13.0, *)
-public struct StackNavigatorBody<Navigator: StackNavigator>: View {
-    @Environment(\.stateConfigurationId) private var stateConfigurationId
+@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
+@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
+public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
+    @Environment(\.signal) private var signal
 
     private let root: Navigator.RootView
 
-    private let navigationPath: Binding<[Navigator.Path]>
-
-    private var destinationForPathHandler: (_ path: Navigator.Path) -> Navigator.PathDestination
+    private let navigation: Navigator.NavigationContent
 
     private var deepLinkHandler: (_ url: URL) -> Navigator.StateConfiguration?
 
@@ -45,16 +44,14 @@ public struct StackNavigatorBody<Navigator: StackNavigator>: View {
 
     init(
         root: Navigator.RootView,
-        destinationForPathHandler: @escaping (_ path: Navigator.Path) -> Navigator.PathDestination,
-        navigationPath: Binding<[Navigator.Path]>,
+        navigation: Navigator.NavigationContent,
         applyStateConfigurationHandler: @escaping (_ state: Navigator.StateConfiguration) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
         deepLinkHandler: @escaping (_ url: URL) -> Navigator.StateConfiguration?
     ) {
         self.root = root
-        self.destinationForPathHandler = destinationForPathHandler
-        self.navigationPath = navigationPath
+        self.navigation = navigation
         self.applyStateConfigurationHandler = applyStateConfigurationHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
@@ -62,16 +59,16 @@ public struct StackNavigatorBody<Navigator: StackNavigator>: View {
     }
 
     public var body: some View {
-        NavigationStack(path: navigationPath) {
+        NavigationView {
             root
-                .navigationDestination(for: Navigator.Path.self, destination: { path in
-                    destinationForPathHandler(path)
-                })
+                .background(navigation)
         }
+        .environment(\.signal, nil)
         .background {
             ViewLifetimeHelper {
-                if let state = stateConfigurations[stateConfigurationId] as? Navigator.StateConfiguration {
-                    applyStateConfigurationHandler(state)
+                if let configuration = signal?.value as? Navigator.StateConfiguration {
+                    applyStateConfigurationHandler(configuration)
+                    signal?.onSignalHandled()
                 }
                 await firstAppearHandler()
             } onDeinit: {
@@ -83,6 +80,12 @@ public struct StackNavigatorBody<Navigator: StackNavigator>: View {
             guard let state = deepLinkHandler(url) else { return }
             applyStateConfigurationHandler(state)
         }
+        .onChange(of: signal) { newValue in
+            guard let configuration = newValue?.value as? Navigator.StateConfiguration else { return }
+            applyStateConfigurationHandler(configuration)
+            signal?.onSignalHandled()
+        }
+
     }
 }
 

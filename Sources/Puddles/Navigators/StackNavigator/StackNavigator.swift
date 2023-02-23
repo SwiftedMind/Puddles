@@ -22,25 +22,30 @@
 
 import SwiftUI
 
-public protocol TabViewNavigator: View {
+@available(iOS 16, macOS 13.0, *)
+public protocol StackNavigator: View {
 
-    associatedtype TabSelection: Hashable
+    associatedtype RootView: View
+
+    associatedtype Path: Hashable
 
     associatedtype StateConfiguration
 
-    associatedtype TabViewContent: View
+    associatedtype PathDestination: View
 
     static var debugIdentifier: String { get }
 
-    @MainActor @ViewBuilder var tabViewContent: TabViewContent { get }
+    @MainActor @ViewBuilder var root: RootView { get }
 
-    var tabViewSelection: Binding<TabSelection> { get }
+    @MainActor var navigationPath: Binding<[Path]> { get }
+
+    @MainActor @ViewBuilder func destination(for path: Path) -> PathDestination
 
     @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
 
-    /// A method that is called when the navigator has first appeared.
+        /// A method that is called when the navigator has first appeared.
     ///
     /// The parent task is bound to the navigator's lifetime and is cancelled once it ends.
     /// Keep in mind, that it is up to the implementation to check for cancellations!
@@ -65,12 +70,16 @@ public protocol TabViewNavigator: View {
 
 }
 
-public extension TabViewNavigator {
+@available(iOS 16, macOS 13.0, *)
+public extension StackNavigator {
 
     @MainActor var body: some View {
-        TabViewNavigatorBody<Self>(
-            tabViewContent: tabViewContent,
-            selectionBinding: tabViewSelection
+        StackNavigatorBody<Self>(
+            root: root,
+            destinationForPathHandler: { path in
+                destination(for: path)
+            },
+            navigationPath: navigationPath
         ) { state in
             applyStateConfiguration(state)
         } firstAppearHandler: {
@@ -83,7 +92,8 @@ public extension TabViewNavigator {
     }
 }
 
-public extension TabViewNavigator {
+@available(iOS 16, macOS 13.0, *)
+public extension StackNavigator {
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
         return nil
