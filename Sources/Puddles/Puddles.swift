@@ -3,6 +3,7 @@ import OSLog
 
 fileprivate(set) var logger: Logger = .init(OSLog.disabled)
 
+/// A configuration object for the `Puddles` framework.
 public struct Puddles {
 
     /// Configures and enables a logger that prints out log messages for events inside Puddles.
@@ -12,5 +13,6 @@ public struct Puddles {
     public static func configureLog(inSubsystem subsystem: String? = Bundle.main.bundleIdentifier) {
         logger = .init(subsystem: subsystem ?? "Puddles", category: "Puddles")
     }
-}
 
+    private init() {}
+}
