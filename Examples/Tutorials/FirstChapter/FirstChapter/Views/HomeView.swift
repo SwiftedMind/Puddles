@@ -22,10 +22,11 @@
 
 import SwiftUI
 import Puddles
+import PreviewDebugTools
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface<Action>
-    let state: ViewState
+    var interface: Interface<Action>
+    var state: ViewState
 
     var body: some View {
         VStack {
@@ -35,7 +36,6 @@ struct HomeView: View {
             }
         }
     }
-
 }
 
 extension HomeView {
@@ -65,13 +65,12 @@ struct HomeView_Previews: PreviewProvider {
                 state.buttonTapCount += 1
             }
         }
-        .fullScreenPreview()
         .onStart { $state in
             try? await Task.sleep(nanoseconds: 2_000_000_000)
             state.buttonTapCount = 40
         }
         .overlay(alignment: .bottom) { $state in
-            Button("Reset") {
+            DebugButton("Reset") {
                 state.buttonTapCount = 0
             }
         }

@@ -37,6 +37,7 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
         overlayAlignment: Alignment,
         state: @autoclosure () -> ViewState,
         maximizedPreviewFrame: Bool,
+        onStart: ((_ state: Binding<ViewState>) async -> Void)?,
         actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
     ) {
         self._state = .init(wrappedValue: state())
@@ -45,6 +46,7 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
         self.actionHandler = actionHandler
         self.debugOverlay = debugOverlay
         self.overlayAlignment = overlayAlignment
+        self.onStart = onStart
     }
     
     public var body: some View {
@@ -56,11 +58,9 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
             .overlay(alignment: overlayAlignment) {
                 debugOverlay($state)
             }
-            .background(
-                ViewLifetimeHelper {
-                    await onStart?($state)
-                } onDeinit: {}
-            )
+            .task {
+                await onStart?($state)
+            }
     }
 
     public func fullScreenPreview() -> Preview {
@@ -86,6 +86,7 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
             overlayAlignment: alignment,
             state: state,
             maximizedPreviewFrame: maximizedPreviewFrame,
+            onStart: onStart,
             actionHandler: actionHandler
         )
     }

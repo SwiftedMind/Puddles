@@ -24,64 +24,43 @@ import SwiftUI
 import Puddles
 
 struct Root: Coordinator {
-    @StateObject var viewInterface: Interface<HomeView.Action> = .init()
-    @State var buttonTapCount: Int = 40
+    @State var buttonTapCount: Int = 0
 
-    @State private var isShowingPage: Bool = false
-    @State private var isShowingQueryableDemo: Bool = false
-
-    var viewState: HomeView.ViewState {
-        .init(
-            buttonTapCount: buttonTapCount
-        )
-    }
+    var interface: Interface<Action>
 
     var entryView: some View {
-        HomeView(interface: viewInterface, state: viewState)
-            .navigationTitle("Home")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Queryable Demo") {
-                        isShowingQueryableDemo = true
-                    }
+        HomeView(
+            interface: .handled(by: handleViewAction),
+            state: .init(
+                buttonTapCount: buttonTapCount
+            )
+        )
+        .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("Queryable Demo") {
+                    interface.sendAction(.didTapShowQueryableDemo)
                 }
             }
-    }
-
-
-    func modify(coordinator: CoordinatorContent) -> some View {
-        NavigationStack {
-            coordinator
         }
     }
 
-    func navigation() -> some NavigationPattern {
-        Push(isActive: $isShowingPage) {
-            Text("🎉")
-                .font(.largeTitle)
-                .navigationTitle("Yay!")
-        }
-        Sheet(isActive: $isShowingQueryableDemo) {
-            QueryableDemo()
-        }
-    }
-
-    func interfaces() -> some InterfaceObservation {
-        InterfaceObserver(viewInterface) { action in
-            handleViewAction(action)
-        }
-    }
-
+    @MainActor
     private func handleViewAction(_ action: HomeView.Action) {
         switch action {
         case .buttonTaped:
             buttonTapCount += 1
             if buttonTapCount == 42 {
-                isShowingPage = true
+                interface.sendAction(.didReachFortyTwo)
             }
         }
     }
-
 }
 
+extension Root {
+    enum Action {
+        case didReachFortyTwo
+        case didTapShowQueryableDemo
+    }
+}

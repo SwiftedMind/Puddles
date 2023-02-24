@@ -23,18 +23,15 @@
 import SwiftUI
 import Combine
 
-@available(iOS, deprecated: 16.0, message: "Please use a StackNavigator")
-@available(macOS, deprecated: 13.0, message: "Please use a StackNavigator")
-public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
+@available(iOS 16, macOS 13.0, *)
+public struct NavigatorBody<N: Navigator>: View {
     @Environment(\.signal) private var signal
 
-    private let root: Navigator.RootView
+    private let root: N.RootView
 
-    private let navigation: Navigator.NavigationContent
+    private var deepLinkHandler: (_ url: URL) -> N.StateConfiguration?
 
-    private var deepLinkHandler: (_ url: URL) -> Navigator.StateConfiguration?
-
-    private let applyStateConfigurationHandler: (_ state: Navigator.StateConfiguration) -> Void
+    private let applyStateConfigurationHandler: (_ state: N.StateConfiguration) -> Void
 
     /// A closure reporting back first appearance of the view.
     private let firstAppearHandler: () async -> Void
@@ -43,15 +40,13 @@ public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
     private let finalDisappearHandler: () -> Void
 
     init(
-        root: Navigator.RootView,
-        navigation: Navigator.NavigationContent,
-        applyStateConfigurationHandler: @escaping (_ state: Navigator.StateConfiguration) -> Void,
+        root: N.RootView,
+        applyStateConfigurationHandler: @escaping (_ state: N.StateConfiguration) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
-        deepLinkHandler: @escaping (_ url: URL) -> Navigator.StateConfiguration?
+        deepLinkHandler: @escaping (_ url: URL) -> N.StateConfiguration?
     ) {
         self.root = root
-        self.navigation = navigation
         self.applyStateConfigurationHandler = applyStateConfigurationHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
@@ -59,33 +54,29 @@ public struct LegacyStackNavigatorBody<Navigator: LegacyStackNavigator>: View {
     }
 
     public var body: some View {
-        NavigationView {
-            root
-                .background(navigation)
-        }
-        .environment(\.signal, nil)
-        .background {
-            ViewLifetimeHelper {
-                if let configuration = signal?.value as? Navigator.StateConfiguration {
-                    applyStateConfigurationHandler(configuration)
-                    signal?.onSignalHandled()
+        root
+            .environment(\.signal, nil)
+            .background {
+                ViewLifetimeHelper {
+                    if let configuration = signal?.value as? N.StateConfiguration {
+                        applyStateConfigurationHandler(configuration)
+                        signal?.onSignalHandled()
+                    }
+                    await firstAppearHandler()
+                } onDeinit: {
+                    finalDisappearHandler()
                 }
-                await firstAppearHandler()
-            } onDeinit: {
-                finalDisappearHandler()
             }
-        }
-        .onOpenURL { url in
-            logger.debug("Received deep link: »\(url, privacy: .public)«")
-            guard let state = deepLinkHandler(url) else { return }
-            applyStateConfigurationHandler(state)
-        }
-        .onChange(of: signal) { newValue in
-            guard let configuration = newValue?.value as? Navigator.StateConfiguration else { return }
-            applyStateConfigurationHandler(configuration)
-            signal?.onSignalHandled()
-        }
-
+            .onOpenURL { url in
+                logger.debug("Received deep link: »\(url, privacy: .public)«")
+                guard let state = deepLinkHandler(url) else { return }
+                applyStateConfigurationHandler(state)
+            }
+            .onChange(of: signal) { newValue in
+                guard let configuration = newValue?.value as? N.StateConfiguration else { return }
+                applyStateConfigurationHandler(configuration)
+                signal?.onSignalHandled()
+            }
     }
 }
 

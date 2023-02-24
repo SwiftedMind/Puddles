@@ -23,23 +23,15 @@
 import SwiftUI
 
 @available(iOS 16, macOS 13.0, *)
-public protocol StackNavigator: View {
+public protocol Navigator: View {
 
     associatedtype RootView: View
 
-    associatedtype Path: Hashable
-
     associatedtype StateConfiguration
-
-    associatedtype PathDestination: View
 
     static var debugIdentifier: String { get }
 
     @MainActor @ViewBuilder var root: RootView { get }
-
-    @MainActor var navigationPath: Binding<[Path]> { get }
-
-    @MainActor @ViewBuilder func destination(for path: Path) -> PathDestination
 
     @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
 
@@ -71,15 +63,11 @@ public protocol StackNavigator: View {
 }
 
 @available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
+public extension Navigator {
 
     @MainActor var body: some View {
-        StackNavigatorBody<Self>(
-            root: root,
-            destinationForPathHandler: { path in
-                destination(for: path)
-            },
-            navigationPath: navigationPath
+        NavigatorBody<Self>(
+            root: root
         ) { state in
             applyStateConfiguration(state)
         } firstAppearHandler: {
@@ -93,7 +81,7 @@ public extension StackNavigator {
 }
 
 @available(iOS 16, macOS 13.0, *)
-public extension StackNavigator {
+public extension Navigator {
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
         return nil

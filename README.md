@@ -11,6 +11,14 @@ Puddles revolves around a `Coordinator` protocol that is used at the root of eac
 
 A `Coordinator` is itself a SwiftUI view, meaning it can be placed anywhere that any other view could be placed. It also means that SwiftUI takes full responsibility for handling the Coordinator's lifetime and state objects, unless specified otherwise. Inside a `Coordinator`, you define your component's entry view, its navigational paths (navigation links, sheets, alerts, ...) as well as the entry view's state. Through `view interfaces`, the entry view can read that state and communicate user input to the Coordinator, which can then decide on the desired behavior and state changes. This effectively turns the view into a context-unaware piece of UI that can be placed anywhere in your project (or even a different project).
 
+## Features
+- Flexibility
+- Modularity
+- Queryables
+- Signals
+- Deeplink Support out-of-the-box
+- Very SwiftUI "native"
+
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
   - [Installation](#installation)
