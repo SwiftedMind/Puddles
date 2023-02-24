@@ -22,8 +22,8 @@ extension EnvironmentValues {
 }
 
 @available(iOS 16, *)
-public extension Navigator {
-    func updatingState(upon signal: Signal<StateConfiguration>.Wrapped) -> some View {
+public extension StackNavigator {
+    func updatingStateConfiguration(on signal: Signal<StateConfiguration>.Wrapped) -> some View {
         environment(\.signal, .init(id: signal.id, value: signal.value, onSignalHandled: signal.removeValue))
     }
 }
