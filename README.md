@@ -7,18 +7,15 @@
 > **Warning**
 > Puddles is still in early development. Things will break, so please use this carefully and at your own risk. Feedback is always appreciated.
 
+Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient.
+
 Puddles revolves around a `Coordinator` protocol that is used at the root of each component or screen in your app.
 
 A `Coordinator` is itself a SwiftUI view, meaning it can be placed anywhere that any other view could be placed. It also means that SwiftUI takes full responsibility for handling the Coordinator's lifetime and state objects, unless specified otherwise. Inside a `Coordinator`, you define your component's entry view, its navigational paths (navigation links, sheets, alerts, ...) as well as the entry view's state. Through `view interfaces`, the entry view can read that state and communicate user input to the Coordinator, which can then decide on the desired behavior and state changes. This effectively turns the view into a context-unaware piece of UI that can be placed anywhere in your project (or even a different project).
 
-## Features
-- Flexibility
-- Modularity
-- Queryables
-- Signals
-- Deeplink Support out-of-the-box
-- Very SwiftUI "native"
+## Content
 
+- [Features](#features)
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
   - [Installation](#installation)
@@ -31,6 +28,24 @@ A `Coordinator` is itself a SwiftUI view, meaning it can be placed anywhere that
 - [Why use Puddles?](#why-use-puddles)
 - [License](#documentation)
 
+## Features
+
+**Architecture** - 
+
+**Flexibility** -
+
+📁 **Modularity** - 
+
+⁉️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
+
+⚓ **Deeplink Support** - Support for deeplinking and arbitrary state restoration is built-in from the start and does not require much extra work or setup.
+
+🚦 **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deeplinking, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
+
+🕊️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. Additionally, the framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality.
+
+♻️ **Unidirectional Data Flow** - While not strictly enforced by the framework, Puddles is designed around one-way communication between components. This greatly reduces complexity while increasing modularity and ease of use in SwiftUI Previews. To do this, Puddles provides an easy to use `Interface` type that lets you send `actions` to an interface observer.
+
 ## Getting Started
 
 ### Requirements
@@ -41,6 +56,9 @@ Puddles supports the following platforms:
 - macOS 12+
 
 You will also need Swift 5.7 to compile the package.
+
+> **Note**
+> iOS 16 completely revamped navigation in SwiftUI and fixed countless bugs. Therefore, if you want to achieve the best results with the smallest amount of work, and have the ability to make that decision, a deployment target of iOS 16 is highly recommended.
 
 ### Installation
 
