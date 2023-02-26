@@ -3,6 +3,10 @@ import SwiftUI
 // MARK: - Queryable
 
 public extension View {
+
+    /// Shows an alert controlled by a ``Puddles/QueryableItem``.
+    ///
+    /// The alert is automatically presented when a query is ongoing.
     func queryableAlert<Result, Actions: View, Message: View>(
         controlledBy queryable: Queryable<Result>.Trigger,
         title: String,
@@ -25,6 +29,10 @@ public extension View {
 // MARK: - Queryable Item
 
 public extension View {
+    
+    /// Shows an alert controlled by a ``Puddles/QueryableItem``.
+    ///
+    /// The alert is automatically presented when a query is ongoing.
     func queryableAlert<Item, Result, Actions: View, Message: View>(
         controlledBy queryable: QueryableItem<Item, Result>.Trigger,
         title: String,

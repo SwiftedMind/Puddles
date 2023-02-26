@@ -3,6 +3,10 @@ import SwiftUI
 // MARK: - Queryable
 
 public extension View {
+
+    /// Shows an overlay controlled by a ``Puddles/Queryable``.
+    ///
+    /// The overlay is automatically presented when a query is ongoing. 
     func queryableOverlay<Result, Content: View>(
         controlledBy queryable: Queryable<Result>.Trigger,
         animation: Animation? = nil,
@@ -25,6 +29,10 @@ public extension View {
 // MARK: - Queryable Item
 
 public extension View {
+
+    /// Shows an overlay controlled by a ``Puddles/QueryableItem``.
+    ///
+    /// The overlay is automatically presented when a query is ongoing.
     func queryableOverlay<Item, Result, Content: View>(
         controlledBy queryable: QueryableItem<Item, Result>.Trigger,
         animation: Animation? = nil,

@@ -3,6 +3,8 @@ import SwiftUI
 // MARK: - Queryable
 
 public extension View {
+
+    /// Presents a sheet controlled by a ``Puddles/Queryable``
     func queryableSheet<Result, Content: View>(
         controlledBy queryable: Queryable<Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
@@ -20,6 +22,8 @@ public extension View {
 // MARK: - Queryable Item
 
 public extension View {
+
+    /// Presents a sheet controlled by a ``Puddles/QueryableItem``.
     func queryableSheet<Item, Result, Content: View>(
         controlledBy queryable: QueryableItem<Item, Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
