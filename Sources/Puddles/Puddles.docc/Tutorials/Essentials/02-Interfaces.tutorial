@@ -10,8 +10,8 @@
         
         That's by design. Views should not modify their own public state. Instead, they should define signals (called actions) that their parent `Coordinator` can observe and act upon.
         
-        This can be achieved through the ``Puddles/Interface`` class. It exposes a property ``Puddles/Interface/actionPublisher`` that consumes an `Action` (usually an `enum` defined by a view). A `Coordinator` owns and observes such an interface and provides it to the view as an `@ObservedObject`. Whenever an action is sent, the `Coordinator` can detect it and make modifications to the state or start any necessary other work.
-
+        This can be achieved through the ``Puddles/Interface`` class. It exposes a ``Puddles/Interface/sendAction(_:)`` method that takes an `Action` (usually an `enum` defined by a view). A `Coordinator` creates and observes such an interface and provides it to the view. Whenever an action is sent, the `Coordinator` can detect it and make modifications to the state or start any necessary other work.
+        
         Adding this to the example app is easy.
         
         @Steps {
@@ -46,16 +46,14 @@
             }
             
             @Step {
-                Add the view's interface as a `@StateObject` and pass it to the view.
+                Initialize the view's interface by providing a closure that handles incoming actions.
        
                 @Code(name: "Root.swift", file: "02-ViewInteractions-01-05")
             }
             
             @Step {
-                Inside the ``Puddles/Coordinator/interfaces()`` method, add an ``Puddles/InterfaceObserver`` and relay incoming actions to a new method `handleViewAction(_:)`.
+                Inside the `handleViewAction(_:)` method, you can update the view's state whenever an action is sent from it.
                 
-                We can now switch over all actions and update the view's state through its interface.
-       
                 @Code(name: "Root.swift", file: "02-ViewInteractions-01-06") {
                     @Image(source: "02-ViewInteractions-02-06_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
                 }

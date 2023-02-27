@@ -5,6 +5,10 @@ import SwiftUI
 /// which is particularly useful for deep linking and state restoration without exposing all internal states of the child views.
 ///
 /// You can think of this as the opposite of closures, which are signals going from child view to a parent (like a button's action).
+///
+/// To make a ``Puddles/Navigator`` receive signals,
+/// use the `updatingStateConfiguration(on:)` view modifier and provide a signal whose value is the target navigator's
+/// ``Puddles/Navigator/StateConfiguration``.
 @propertyWrapper
 public struct Signal<Value>: DynamicProperty {
     @StateObject private var stateHolder = StateHolder()
@@ -20,7 +24,6 @@ public struct Signal<Value>: DynamicProperty {
     public init(initialSignal value: Value? = nil) {
         _stateHolder = .init(wrappedValue: .init(value: value))
     }
-
 }
 
 public extension Signal {
@@ -51,7 +54,7 @@ public extension Signal {
         var onSend: (_ value: Value) -> Void
         var removeValue: () -> Void
 
-        /// Send a signal.
+        /// Sends a signal.
         /// - Parameter value: The value of the signal.
         public func send(_ value: Value) {
             onSend(value)

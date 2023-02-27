@@ -2,7 +2,7 @@ import SwiftUI
 import Puddles
 
 struct HomeView: View {
-    let state: ViewState
+    var state: ViewState
 
     var body: some View {
         VStack {
@@ -12,7 +12,6 @@ struct HomeView: View {
             }
         }
     }
-
 }
 
 extension HomeView {
