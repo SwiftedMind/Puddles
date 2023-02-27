@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Coordinator-View Interactions") {
+    @Intro(title: "Interfaces") {
         Communication between a view and its `Coordinator` should be unidirectional.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }

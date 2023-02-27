@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Building The First Coordinator") {
+    @Intro(title: "The Coordinator") {
         Building an app using `Puddles` is easy and fast.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }

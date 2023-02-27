@@ -22,18 +22,36 @@
 
 import SwiftUI
 
+/// A type that coordinates the navigation of `Coordinators`.
 public protocol Navigator: View {
 
+    /// The type of the ``Puddles/Navigator/root`` view for a ``Puddles/Navigator``.
+    ///
+    /// This can be inferred by providing a `root` view.
     associatedtype RootView: View
 
+    /// The type of the state configuration.
+    ///
+    /// This can be inferred by defining the ``Puddles/Navigator/applyStateConfiguration(_:)`` method in a ``Puddles/Navigator``.
     associatedtype StateConfiguration
 
+    /// An identifier that can be used to name the `Coordinator`.
+    ///
+    /// This might be helpful while debugging.
     static var debugIdentifier: String { get }
 
+    /// The entry point for the navigator, which is usually is a `NavigationStack`, `NavigationSplitView` or `TabView` with its `Coordinators`.
     @MainActor @ViewBuilder var root: RootView { get }
 
+    /// Sets the state of the navigator according to the provided configuration.
+    ///
+    /// This can be called manually but it is also automatically called, for example as a result of a ``Puddles/Navigator/handleDeepLink(_:)-6yc8o`` call.
+    /// - Parameter configuration: The state configuration.
     @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
 
+    /// Converts the provided deep link into a state configuration which is then automatically applied by calling ``Puddles/Navigator/applyStateConfiguration(_:)``.
+    /// - Parameter deepLink: The incoming deep link
+    /// - Returns: The state configuration to apply or `nil` if the deep link should not be handled.
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
 
         /// A method that is called when the navigator has first appeared.

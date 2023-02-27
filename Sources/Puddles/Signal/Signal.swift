@@ -2,7 +2,7 @@ import Combine
 import SwiftUI
 
 /// A property wrapper that lets you send one-time signals down the view hierarchy,
-/// which is particularly useful for deeplinking and state restoration without exposing all internal states of the child views.
+/// which is particularly useful for deep linking and state restoration without exposing all internal states of the child views.
 ///
 /// You can think of this as the opposite of closures, which are signals going from child view to a parent (like a button's action).
 @propertyWrapper

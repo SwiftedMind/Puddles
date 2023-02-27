@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Waiting For Data From A Navigation Destination") {
+    @Intro(title: "Queryables") {
         Closing the gap between actions and their effects.
         
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 

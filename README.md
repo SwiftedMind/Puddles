@@ -38,9 +38,9 @@ A `Coordinator` is itself a SwiftUI view, meaning it can be placed anywhere that
 
 ⁉️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
 
-⚓ **Deeplink Support** - Support for deeplinking and arbitrary state restoration is built-in from the start and does not require much extra work or setup.
+⚓ **Deep Link Support** - Support for deep linking and arbitrary state restoration is built-in from the start and does not require much extra work or setup.
 
-🚦 **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deeplinking, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
+🚦 **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking or state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
 
 🕊️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. Additionally, the framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality.
 

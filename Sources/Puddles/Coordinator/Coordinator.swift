@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-/// A type that coordinates the navigation and data management of a `View`.
+/// A type that coordinates the dependency and data management of a `View`.
 public protocol Coordinator: View {
 
     /// The type of the ``Puddles/Coordinator/entryView-swift.property`` for the ``Puddles/Coordinator``.

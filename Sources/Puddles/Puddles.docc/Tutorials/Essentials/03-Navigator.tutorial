@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Adding Navigation To The Coordinator") {
+    @Intro(title: "The Navigator") {
         Navigation is fully handled by the `Coordinator`, so any `sheet`s, `alert`s or `NavigationLink`s should be defined in the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }
