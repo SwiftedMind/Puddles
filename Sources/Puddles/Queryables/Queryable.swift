@@ -12,7 +12,7 @@ import SwiftUI
 /// Then, use one of the `queryable` prefixed presentation modifiers to show the deletion confirmation. Here, we use an alert:
 ///
 /// ```swift
-/// rootView
+/// someView
 ///   .queryableAlert(
 ///     controlledBy: deletionConfirmation,
 ///     title: "Do you want to delete this?") { query in
@@ -51,9 +51,9 @@ public struct Queryable<Result>: DynamicProperty where Result: Sendable {
         /// This is used internally inside ``Puddles/Queryable/Trigger/query()``.
         var isActive: Binding<Bool>
 
-        /// A pointer to the ``Puddles/QueryResolver`` object that is passed inside the closure of the ``Puddles/QueryControlled`` navigation wrapper.
+        /// A pointer to the ``Puddles/QueryResolver`` object that is used to resolve the query.
         ///
-        /// This is used internally in the `queryable` prefixed presentation modifiers, like `queryableSheet`.
+        /// This is used in the `queryable` prefixed presentation modifiers, like `queryableSheet`.
         var resolver: QueryResolver<Result>
 
         /// A property that stores the `Result` type to be used in logging messages.
@@ -122,10 +122,6 @@ public struct Queryable<Result>: DynamicProperty where Result: Sendable {
     @State var isActive: Bool = false
 
     public var wrappedValue: Trigger {
-        .init(isActive: $isActive, resolver: resolver, buffer: buffer)
-    }
-
-    public var projectedValue: Trigger {
         .init(isActive: $isActive, resolver: resolver, buffer: buffer)
     }
 

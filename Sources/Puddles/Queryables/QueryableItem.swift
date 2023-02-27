@@ -1,45 +1,44 @@
 import Combine
 import SwiftUI
 
-/// A type that can be used to query the collection of some kind of disconnected,
-/// delayed data (like a `Bool` coming from a confirmation dialog view) and asynchronously `await` its retrieval in-place, without ever leaving the scope.
+/// A property wrapper type that can trigger a view presentation from within an `async` function and `await` its completion and potential result value.
 ///
-/// First, create a property of the desired data type:
+/// An example use case would be a boolean coming from a confirmation dialog view. First, create a property of the desired data type:
 ///
 /// ```swift
-///  @Queryable<Bool> var deletionConfirmation
+/// @QueryableItem<String, Bool> var deletionConfirmation
 /// ```
 ///
-/// Then, wrap a navigation presentation (like a confirmation dialog view) in an instance of ``Puddles/QueryControlled``, passing in the ``Puddles/Queryable`` property.
-/// The ``Puddles/QueryControlled`` wrapper will provide an `isActive` binding that you can pass to your presentation.
+/// Then, use one of the `queryable` prefixed presentation modifiers to show the deletion confirmation. Here, we use an alert:
 ///
 /// ```swift
-/// QueryControlled(by: deletionConfirmation) { isActive, query in
-///   Alert(
-///     title: "Do you want to delete this?",
-///     isPresented: isActive
-///   ) {
-///     Button("Cancel", role: .cancel) {
+/// someView
+///   .queryableAlert(
+///     controlledBy: deletionConfirmation,
+///     title: "Do you want to delete this?") { itemName, query in
+///       Button("Cancel", role: .cancel) {
 ///         query.answer(with: false)
-///     }
-///     Button("OK") {
+///       }
+///       Button("OK") {
 ///         query.answer(with: true)
+///       }
+///     } message: { itemName in
+///       Text("This cannot be reversed!")
 ///     }
-///   } message: {
-///     Text("This cannot be reversed!")
-///   }
-/// }
 /// ```
 ///
-/// To query data collection and await the results, call ``Puddles/Queryable/Wrapper/query()`` on the ``Puddles/Queryable`` property. This will activate the wrapped navigation presentation which can then answer the query at its completion point.
+/// To actually present the alert and await the boolean result, call ``Puddles/QueryableItem/Trigger/query()`` on the ``Puddles/QueryableItem`` property.
+/// This will activate the alert presentation which can then resolve the query in its completion handler.
 ///
 /// ```swift
 /// do {
-///   let shouldDelete = try await deletionConfirmation.query()
+///   let item = // ...
+///   let shouldDelete = try await deletionConfirmation.query(with: item.name)
 /// } catch {}
 /// ```
 ///
-/// When the Task that calls ``Puddles/Queryable/Wrapper/query()`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation. In that case, a ``Puddles/QueryError/queryCancelled`` error is thrown.
+/// When the Task that calls ``Puddles/QueryableItem/Trigger/query()`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation.
+/// In that case, a ``Puddles/QueryCancellationError`` error is thrown.
 ///
 /// For more information, see <doc:05-Queryable>.
 @propertyWrapper
@@ -48,14 +47,14 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
     /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
     public struct Trigger {
 
-        /// A binding to the `isActive` state inside the `@Queryable` property wrapper.
+        /// A binding to the `item` state inside the `@QueryableItem` property wrapper.
         ///
-        /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
+        /// This is used internally inside ``Puddles/QueryableItem/Wrapper/query()``.
         var item: Binding<Item?>
 
-        /// A pointer to the ``Puddles/QueryResolver`` object that is passed inside the closure of the ``Puddles/QueryControlled`` navigation wrapper.
+        /// A pointer to the ``Puddles/QueryResolver`` object that is used to resolve the query.
         ///
-        /// This is used internally inside ``Puddles/QueryControlled``.
+        /// This is used in the `queryable` prefixed presentation modifiers, like `queryableSheet`.
         var resolver: QueryResolver<Result>
 
         /// A property that stores the `Result` type to be used in logging messages.
@@ -65,10 +64,10 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
 
         /// A pointer to the `Buffer` object type.
         ///
-        /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
+        /// This is used internally inside ``Puddles/QueryableItem/Wrapper/query()``.
         private var buffer: QueryBuffer<Result>
 
-        /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
+        /// A representation of the `Queryable` property wrapper type. This can be passed to `queryable` prefixed presentation modifiers, like `queryableSheet`.
         fileprivate init(
             item: Binding<Item?>,
             resolver: QueryResolver<Result>,
@@ -79,11 +78,11 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
             self.buffer = buffer
         }
 
-        /// Requests the collection of data by starting a query on the `Result` type.
+        /// Requests the collection of data by starting a query on the `Result` type, providing an input value.
         ///
         /// This method will suspend for as long as the query is unanswered and not cancelled. When the parent Task is cancelled, this method will immediately cancel the query and throw a ``Puddles/QueryError/queryCancelled`` error.
         ///
-        /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/Queryable/QueryConflictPolicy`` defined in the initializer of ``Puddles/Queryable``. The default policy is ``Puddles/Queryable/QueryConflictPolicy/cancelNewQuery``.
+        /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/QueryConflictPolicy`` defined in the initializer of ``Puddles/QueryableItem``. The default policy is ``Puddles/QueryConflictPolicy/cancelPreviousQuery``.
         /// - Returns: The result of the query.
         public func query(with item: Item) async throws -> Result {
             return try await withTaskCancellationHandler {
@@ -103,6 +102,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
             }
         }
 
+        /// Cancels any ongoing queries.
         public func cancel() {
             Task {
                 await buffer.resumeContinuation(throwing: QueryCancellationError())
@@ -110,22 +110,23 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
             }
         }
 
+        /// A flag indicating if a query is active.
         public var isQuerying: Bool {
             item.wrappedValue != nil
         }
     }
 
-    /// Boolean flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator``.
+    /// Optional item storing the input value for a query and is used to indicate if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator`` or ``Puddles/Navigator``.
     @State var item: Item?
 
     public var wrappedValue: Trigger {
         .init(item: $item, resolver: resolver, buffer: buffer)
     }
 
-    /// Internal helper type that stores and continues a `CheckedContinuation` created by calling ``Puddles/Queryable/Wrapper/query()``.
+    /// Internal helper type that stores and continues a `CheckedContinuation` created by calling ``Puddles/QueryableItem/Trigger/query()``.
     private var buffer: QueryBuffer<Result>
 
-    /// Helper type to hide implementation details of ``Puddles/Queryable``.
+    /// Helper type to hide implementation details of ``Puddles/QueryableItem``.
     /// This type exposes convenient methods to answer (i.e. complete) a query.
     private var resolver: QueryResolver<Result> {
         .init(

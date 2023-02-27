@@ -1,6 +1,10 @@
 import Combine
 import SwiftUI
 
+/// A property wrapper that lets you send one-time signals down the view hierarchy,
+/// which is particularly useful for deeplinking and state restoration without exposing all internal states of the child views.
+///
+/// You can think of this as the opposite of closures, which are signals going from child view to a parent (like a button's action).
 @propertyWrapper
 public struct Signal<Value>: DynamicProperty {
     @StateObject private var stateHolder = StateHolder()
@@ -47,6 +51,8 @@ public extension Signal {
         var onSend: (_ value: Value) -> Void
         var removeValue: () -> Void
 
+        /// Send a signal.
+        /// - Parameter value: The value of the signal.
         public func send(_ value: Value) {
             onSend(value)
         }

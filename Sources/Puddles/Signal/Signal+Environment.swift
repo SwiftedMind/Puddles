@@ -21,8 +21,12 @@ extension EnvironmentValues {
     }
 }
 
-@available(iOS 16, *)
 public extension Navigator {
+
+    /// Configures the navigator to receive signals that send state configurations. The received signals are automatically applied by calling ``Puddles/Navigator/applyStateConfiguration(_:)``.
+    ///
+    /// - Parameter signal: The signal that sends the navigator's `StateConfiguration`.
+    /// - Returns: A view with a configured signal reception.
     func updatingStateConfiguration(on signal: Signal<StateConfiguration>.Wrapped) -> some View {
         environment(\.signal, .init(id: signal.id, value: signal.value, onSignalHandled: signal.removeValue))
     }
