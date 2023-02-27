@@ -23,7 +23,6 @@
 import SwiftUI
 import Combine
 
-@available(iOS 16, macOS 13.0, *)
 public struct NavigatorBody<N: Navigator>: View {
     @Environment(\.signal) private var signal
 
