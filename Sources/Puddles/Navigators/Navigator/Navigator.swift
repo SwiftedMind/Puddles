@@ -22,7 +22,6 @@
 
 import SwiftUI
 
-@available(iOS 16, macOS 13.0, *)
 public protocol Navigator: View {
 
     associatedtype RootView: View
@@ -62,7 +61,6 @@ public protocol Navigator: View {
 
 }
 
-@available(iOS 16, macOS 13.0, *)
 public extension Navigator {
 
     @MainActor var body: some View {
@@ -80,7 +78,6 @@ public extension Navigator {
     }
 }
 
-@available(iOS 16, macOS 13.0, *)
 public extension Navigator {
 
     @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
