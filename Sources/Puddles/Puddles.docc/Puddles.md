@@ -52,5 +52,7 @@ struct YourApp: App {
 ### Core Types
 
 - ``Puddles/Coordinator``
-- ``Puddles/ViewInterface``
-- ``Puddles/NavigationBuilder``
+- ``Puddles/Navigator``
+- ``Puddles/Queryable``
+- ``Puddles/QueryableItem``
+- ``Puddles/Signal``

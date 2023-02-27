@@ -44,7 +44,7 @@ public protocol Navigator: View {
     /// - Important: This method is intentionally *not* called `onAppear()`.
     /// It does not behave like the `.onAppear(perform:)` view modifier,
     /// which can be called multiple times during the lifetime of the view.
-    /// Instead, `start()` is only called exactly once, when the lifetime of the ``Puddles/StackNavigator`` starts.
+    /// Instead, `start()` is only called exactly once, when the lifetime of the ``Puddles/Navigator`` starts.
     @MainActor func start() async
 
     /// A method that is called after the navigator has disappeared for the last and final time.
@@ -56,7 +56,7 @@ public protocol Navigator: View {
     ///- Important: This method is intentionally *not* called `onDisappear()`.
     /// It does not behave like the `.onDisappear(perform:)` view modifier,
     /// which can be called multiple times during the lifetime of the view.
-    /// Instead, `stop()` is only called exactly once, when the lifetime of the ``Puddles/StackNavigator`` ends.
+    /// Instead, `stop()` is only called exactly once, when the lifetime of the ``Puddles/Navigator`` ends.
     @MainActor func stop()
 
 }

@@ -7,7 +7,7 @@ public protocol Provider: ObservableObject {}
 
 /// A provider with no dependencies or inputs.
 ///
-/// Conforming to this protocol enables a convenience initializer of ``Puddles/WithProvider``: ``Puddles/WithProvider/init(_:content:)``.
+/// Conforming to this protocol enables a convenience initializer of ``Puddles/WithProvider``.
 public protocol IndependentProvider: Provider {
     @MainActor init()
 }

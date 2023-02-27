@@ -37,7 +37,7 @@ import SwiftUI
 /// ```
 ///
 /// When the Task that calls ``Puddles/Queryable/Trigger/query()`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation.
-/// In that case, a ``Puddles/QueryError/queryCancelled`` error is thrown.
+/// In that case, a ``Puddles/QueryCancellationError`` error is thrown.
 ///
 /// For more information, see <doc:05-Queryable>.
 @propertyWrapper
