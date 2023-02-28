@@ -2,6 +2,7 @@ import SwiftUI
 
 // MARK: - Queryable
 
+@available(macOS, unavailable)
 public extension View {
 
     /// Shows a fullscreen cover controlled by a ``Puddles/Queryable``.
@@ -23,6 +24,7 @@ public extension View {
 
 // MARK: - Queryable Item
 
+@available(macOS, unavailable)
 public extension View {
 
     /// Shows a fullscreen cover controlled by a ``Puddles/QueryableItem``.

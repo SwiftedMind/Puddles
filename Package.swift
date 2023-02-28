@@ -18,13 +18,12 @@ let package = Package(
         )
     ],
     dependencies: [
-            .package(url: "https://github.com/apple/swift-async-algorithms", branch: "main")
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.1.0")
     ],
     targets: [
         .target(
             name: "Puddles",
             dependencies: [
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
             ]
         ),
         .target(
