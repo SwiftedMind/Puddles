@@ -11,6 +11,13 @@ public struct Interface<Action> {
         .init(actionHandler: block)
     }
 
+    /// Initializes an interface that sends actions to another interface.
+    /// - Parameter otherInterface: The interface that will handle incoming actions.
+    /// - Returns: An instance of the interface.
+    public static func handled(by otherInterface: Interface<Action>) -> Self {
+        .init(actionHandler: otherInterface.actionHandler)
+    }
+
     /// Initializes an interface with an empty closure.
     public static var unhandled: Self {
         .init(actionHandler: {_ in})

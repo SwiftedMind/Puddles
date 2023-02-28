@@ -26,7 +26,7 @@ import Puddles
 struct RootNavigator: Navigator {
 
     @State private var path: [Path] = []
-    @State private var isShowingQueryableDemo: Bool = false
+    @Queryable<Bool> private var deletionConfirmation
 
     var root: some View {
         NavigationStack(path: $path) {
@@ -35,8 +35,18 @@ struct RootNavigator: Navigator {
                     destination(for: path)
                 }
         }
-        .sheet(isPresented: $isShowingQueryableDemo) {
-            QueryableDemo()
+        .queryableAlert(
+            controlledBy: deletionConfirmation,
+            title: "Do you want to delete this?"
+        ) { query in
+            Button("Cancel", role: .cancel) {
+                query.answer(with: false)
+            }
+            Button("OK") {
+                query.answer(with: true)
+            }
+        } message: {
+            Text("This cannot be reversed!")
         }
     }
 
@@ -57,7 +67,7 @@ struct RootNavigator: Navigator {
         case .didReachFortyTwo:
             applyStateConfiguration(.showPage)
         case .didTapShowQueryableDemo:
-            applyStateConfiguration(.showQueryableDemo)
+            applyStateConfiguration(.showDeletionConfirmation)
         }
     }
 
@@ -65,12 +75,32 @@ struct RootNavigator: Navigator {
 
     func applyStateConfiguration(_ configuration: StateConfiguration) {
         switch configuration {
+        case .reset:
+            deletionConfirmation.cancel()
+            path = []
         case .showPage:
-            isShowingQueryableDemo = false
+            deletionConfirmation.cancel()
             path = [.page]
-        case .showQueryableDemo:
-            isShowingQueryableDemo = true
+        case .showDeletionConfirmation:
+            path = []
+            queryDeletion()
         }
+    }
+
+    private func queryDeletion() {
+        Task {
+            do {
+                if try await deletionConfirmation.query() {
+                    delete()
+                }
+            } catch {
+                // Error Handling
+            }
+        }
+    }
+
+    private func delete() {
+        print("Delete")
     }
 
     func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
@@ -81,8 +111,9 @@ struct RootNavigator: Navigator {
 extension RootNavigator {
 
     enum StateConfiguration: Hashable {
-        case showQueryableDemo
+        case reset
         case showPage
+        case showDeletionConfirmation
     }
 
     enum Path: Hashable {

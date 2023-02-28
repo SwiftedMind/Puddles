@@ -28,6 +28,8 @@ struct RootNavigator: Navigator {
             path = []
         case .showPage:
             path = [.page]
+        case .showDeletionConfirmation:
+            // Show deletion confirmation
         }
     }
 
@@ -36,6 +38,8 @@ struct RootNavigator: Navigator {
         switch action {
         case .didReachFortyTwo:
             applyStateConfiguration(.showPage)
+        case .didTapShowQueryableDemo:
+            applyStateConfiguration(.showDeletionConfirmation)
         }
     }
 }
@@ -44,6 +48,7 @@ extension RootNavigator {
     enum StateConfiguration: Hashable {
         case reset
         case showPage
+        case showDeletionConfirmation
     }
 
     enum Path: Hashable {

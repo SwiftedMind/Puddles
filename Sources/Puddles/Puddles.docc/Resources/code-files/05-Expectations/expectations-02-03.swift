@@ -3,6 +3,7 @@ import Puddles
 
 struct RootNavigator: Navigator {
     @State private var path: [Path] = []
+    @Queryable<Bool> private var deletionConfirmation
 
     var root: some View {
         NavigationStack(path: $path) {
@@ -10,6 +11,19 @@ struct RootNavigator: Navigator {
                 .navigationDestination(for: Path.self) { path in
                     destination(for: path)
                 }
+        }
+        .queryableAlert(
+            controlledBy: deletionConfirmation,
+            title: "Do you want to delete this?"
+        ) { query in
+            Button("Cancel", role: .cancel) {
+                query.answer(with: false)
+            }
+            Button("OK") {
+                query.answer(with: true)
+            }
+        } message: {
+            Text("This cannot be reversed!")
         }
     }
 
@@ -26,8 +40,13 @@ struct RootNavigator: Navigator {
         switch configuration {
         case .reset:
             path = []
+            deletionConfirmation.cancel()
         case .showPage:
             path = [.page]
+            deletionConfirmation.cancel()
+        case .showDeletionConfirmation:
+            path = []
+            queryDeletion()
         }
     }
 
@@ -36,7 +55,25 @@ struct RootNavigator: Navigator {
         switch action {
         case .didReachFortyTwo:
             applyStateConfiguration(.showPage)
+        case .didTapShowQueryableDemo:
+            applyStateConfiguration(.showDeletionConfirmation)
         }
+    }
+
+    private func queryDeletion() {
+        Task {
+            do {
+                if try await deletionConfirmation.query() {
+                    delete()
+                }
+            } catch {
+                // Error Handling
+            }
+        }
+    }
+
+    private func delete() {
+        // Perform deletion
     }
 }
 
@@ -44,6 +81,7 @@ extension RootNavigator {
     enum StateConfiguration: Hashable {
         case reset
         case showPage
+        case showDeletionConfirmation
     }
 
     enum Path: Hashable {

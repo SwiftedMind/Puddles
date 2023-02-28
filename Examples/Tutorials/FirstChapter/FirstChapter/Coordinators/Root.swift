@@ -36,7 +36,6 @@ struct Root: Coordinator {
             )
         )
         .navigationTitle("Home")
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("Queryable Demo") {

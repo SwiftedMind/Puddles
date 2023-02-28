@@ -1,9 +1,10 @@
 import SwiftUI
 import Puddles
+import PreviewDebugTools
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface<Action>
-    let state: ViewState
+    var interface: Interface<Action>
+    var state: ViewState
 
     var body: some View {
         VStack {
@@ -38,14 +39,7 @@ extension HomeView {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         Preview(HomeView.init, state: .mock) { action, $state in
-            switch action {
-            case .buttonTaped:
-                state.buttonTapCount += 1
-            }
-        }
-        .onStart { $state in
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-            state.buttonTapCount = 40
+            
         }
     }
 }

@@ -20,9 +20,6 @@ struct Root: Coordinator {
         switch action {
         case .buttonTaped:
             buttonTapCount += 1
-            if buttonTapCount == 42 {
-                interface.sendAction(.didReachFortyTwo)
-            }
         }
     }
 }

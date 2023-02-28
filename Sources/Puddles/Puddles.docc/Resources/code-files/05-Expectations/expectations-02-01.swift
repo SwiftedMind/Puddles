@@ -3,6 +3,7 @@ import Puddles
 
 struct RootNavigator: Navigator {
     @State private var path: [Path] = []
+    @State private var isShowingConfirmationAlert: Bool = false
 
     var root: some View {
         NavigationStack(path: $path) {
@@ -11,8 +12,21 @@ struct RootNavigator: Navigator {
                     destination(for: path)
                 }
         }
+        .alert(
+            "Do you want to delete this?",
+            isPresented: $isShowingConfirmationAlert
+        ) {
+            Button("Cancel", role: .cancel) {
+                // Cancel
+            }
+            Button("OK") {
+                delete()
+            }
+        } message: {
+            Text("This cannot be reversed!")
+        }
     }
-
+    
     @MainActor @ViewBuilder
     func destination(for path: Path) -> some View {
         switch path {
@@ -26,8 +40,13 @@ struct RootNavigator: Navigator {
         switch configuration {
         case .reset:
             path = []
+            isShowingConfirmationAlert = false
         case .showPage:
             path = [.page]
+            isShowingConfirmationAlert = false
+        case .showDeletionConfirmation:
+            path = []
+            isShowingConfirmationAlert = true
         }
     }
 
@@ -36,7 +55,13 @@ struct RootNavigator: Navigator {
         switch action {
         case .didReachFortyTwo:
             applyStateConfiguration(.showPage)
+        case .didTapShowQueryableDemo:
+            applyStateConfiguration(.showDeletionConfirmation)
         }
+    }
+
+    private func delete() {
+        // Perform deletion
     }
 }
 
@@ -44,6 +69,7 @@ extension RootNavigator {
     enum StateConfiguration: Hashable {
         case reset
         case showPage
+        case showDeletionConfirmation
     }
 
     enum Path: Hashable {

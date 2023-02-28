@@ -9,46 +9,50 @@
         
         Sometimes an action triggers a flow that requires user input or some form of other delayed and disconnected data to complete. An example of this would be a confirmation dialog for a deletion process.
         
-        Such a dialog would typically be triggered in reaction to an action from a view interface. However, the dialog view itself and its completion handlers are defined someplace else. This logically separates the deletion flow and makes it harder to reason about the code. Let's have a look at an example to see the solution to this problem.
+        Such a dialog would typically be triggered in reaction to an action from a view interface. However, the dialog view itself and its completion handlers are defined someplace else. This logically separates the deletion flow and makes it harder to reason about the code. 
+        
+        Let's add such a deletion flow to `RootNavigator` from previous tutorials.
         
         @Steps {            
             @Step {
-                We start by adding a simple view containing a button that sends an action to its `Coordinator` via an ``Puddles/Interface``.
+                Go to `Root.swift`.
                 
-                The action is supposed to represent a delete intention. To make sure the button been tapped intentionally, the app should display a confirmation dialog before actually deleting something.
-                
-                @Code(name: "QueryableDemoView.swift", file: "expectations-01-01")
+                @Code(name: "Root.swift", file: "expectations-01-01")
             }
             
             @Step {
-                Next, we create a `Coordinator` for the view. 
+                Add a toolbar button that simulate the "deletion" of something.
+                
+                The button's action sends an action to the interface.
                                 
-                @Code(name: "QueryableDemo.swift", file: "expectations-01-02")
+                @Code(name: "Root.swift", file: "expectations-01-02")
             }
-            
-            We need a state that's going to drive the confirmation dialog appearance, as well as the dialog view itself, which is an ``Puddles/Alert`` that we place inside the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
             
             @Step {
-                Add `isShowingConfirmationAlert` and an ``Puddles/Alert`` to the `Coordinator`.
+                Go to `RootNavigator`.
                 
-                ``Puddles/Alert`` is only one of the available ``Puddles/NavigationPattern``s. Others include ``Puddles/Sheet``, ``Puddles/Push`` and more.
-                
-                @Code(name: "QueryableDemo.swift", file: "expectations-01-03")
+                @Code(name: "RootNavigator.swift", file: "expectations-01-03")
             }
             @Step {
-                Then we have to trigger the state whenever a `deleteButtonTapped` action has been sent.
+                Add the new action to the interface handler and add a new state configuration to show the deletion confirmation.
                 
-                @Code(name: "QueryableDemo.swift", file: "expectations-01-04")
-            }
+                @Code(name: "RootNavigator.swift", file: "expectations-01-04")
+            }            
             
+            @Step {
+                Next, add an alert to the `root` and trigger it inside of `applyStateConfiguration(_:)`.
+                
+                @Code(name: "RootNavigator.swift", file: "expectations-01-05")
+            }
+
             Finally, we need to add the actual deletion logic that should be triggered upon confirmation. 
             
             @Step {
-                We add a `delete()` method and call it in the action handler of the confirmation button inside the alert.
+                Add a `delete()` method and call it in the action handler of the confirmation button inside the alert.
                 
-                In this case, the cancel button does not need an action, so we can leave it empty.
+                In this case, the cancel button does not need an action, so just leave it empty.
                 
-                @Code(name: "QueryableDemo.swift", file: "expectations-01-05")
+                @Code(name: "RootNavigator.swift", file: "expectations-01-06")
             }
             
             That's it! However, in Section 2, we will take a look at a difference approach. 
@@ -58,47 +62,38 @@
     @Section(title: "A Better Approach") {
         The approach in Section 1 is fine, but it has a significant weakness: We ended up separating logically connected functionality. 
         
-        The call to `delete()` is still an effect of the `.deleteButtonTapped` action that we handle in `handleViewAction(_:)`.
+        The call to `delete()` is still an effect of the `.didTapShowQueryableDemo` action that we handle in `handleRootAction(_:)`.
         The code, however, is split up, since the confirmation dialog with its completion handlers is defined someplace else.
         
-        That's why ``Puddles`` introduces the ``Puddles/Queryable`` property wrapper. A `Queryable` is a type that can be used to trigger the collection of some kind of data (like a `Bool` coming from a confirmation dialog) and asynchronously `await` its retrieval in-place, without ever leaving the scope.
+        That's why ``Puddles`` introduces the ``Puddles/Queryable`` property wrapper. A `Queryable` is a type that can be used to trigger a view presentation from an `async` function and `await` its completion.
         
         @Steps {
             
-            Let's modify the example from Section 1 to use expectations.
+            Let's modify the example from Section 1 to use Queryables.
             
             @Step {
-                Go back to `QueryableDemo.swift`. 
+                Go back to `RootNavigator.swift`. 
                 
-                @Code(name: "QueryableDemo.swift", file: "expectations-02-01")
+                @Code(name: "RootNavigator.swift", file: "expectations-02-01")
             }
             
             @Step {
-                Replace the `isShowingConfirmationAlert` state variable with a `@Queryable<Bool>` property.
+                Replace the `isShowingConfirmationAlert` state variable with a `@Queryable<Bool>` property and the the `alert` with a `queryableAlert`.
                 
-                @Code(name: "QueryableDemo.swift", file: "expectations-02-02")
-            }            
-            
-            @Step {
-                Next, wrap the ``Puddles/Alert`` in a new type called ``Puddles/QueryControlled``. It takes a binding to a `Queryable` as its argument and provides us with a closure that we can use to display any kind of navigation pattern.
+                The `queryableAlert` consumes a `Queryable` and takes care of the presentation of the alert. In the alert's button actions, resolve the query with a boolean result.
                 
-                The closure has two arguments. First, it gives us a binding to an `isActive` state that we can pass to the presentation. It also gives us a query resolver that we can use to answer (i.e. complete) the query.
-                
-                @Code(name: "QueryableDemo.swift", file: "expectations-02-03")
+                @Code(name: "RootNavigator.swift", file: "expectations-02-02")
             }
             
-            Finally, we can modify the `handleViewAction(_:)` method to take advantage of the new `Queryable` property.
-            
             @Step {
+                Finally, trigger the confirmation alert by calling ``Puddles/Queryable/Trigger/query()`` in an `async` context. 
                 
-                To trigger the collection of a deletion confirmation, simply call ``Puddles/Queryable/Wrapper/query()`` on the `Queryable` property. This will suspend the Task until the query has been answered (by the Alert, in our case).
+                The result is identical to the approach from the previous section, but we can now control view presentations from code and await their completion without ever leaving the scope.
                 
-                Calling ``Puddles/Queryable/Wrapper/query()`` causes the associated `isActive` state to be set to true, making the Alert appear. Cancelling the surrounding task will also cancel the ongoing `query`. For more information, see ``Puddles/Queryable``.
-                
-                @Code(name: "QueryableDemo.swift", file: "expectations-02-04")
+                @Code(name: "RootNavigator.swift", file: "expectations-02-03")
             }
             
-            The entire logical flow caused by the `deleteButtonTapped` action now takes place inside the same call to `handleViewAction(_:)`.
+            The entire logical flow caused by the `didTapShowQueryableDemo` action now takes place inside the same call of `queryDeletion()`.
         }
     }
 }

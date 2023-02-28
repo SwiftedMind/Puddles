@@ -2,8 +2,8 @@ import SwiftUI
 import Puddles
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface<Action>
-    let state: ViewState
+    var interface: Interface<Action>
+    var state: ViewState
 
     var body: some View {
         VStack {
@@ -23,10 +23,6 @@ extension HomeView {
 
         init(buttonTapCount: Int = 0) {
             self.buttonTapCount = buttonTapCount
-        }
-
-        static var mock: ViewState {
-            .init(buttonTapCount: 10)
         }
     }
 

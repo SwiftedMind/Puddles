@@ -27,7 +27,7 @@ import SwiftUI
 ///     }
 /// ```
 ///
-/// To actually present the alert and await the boolean result, call ``Puddles/QueryableItem/Trigger/query()`` on the ``Puddles/QueryableItem`` property.
+/// To actually present the alert and await the boolean result, call ``Puddles/QueryableItem/Trigger/query(with:)`` on the ``Puddles/QueryableItem`` property.
 /// This will activate the alert presentation which can then resolve the query in its completion handler.
 ///
 /// ```swift
@@ -37,14 +37,14 @@ import SwiftUI
 /// } catch {}
 /// ```
 ///
-/// When the Task that calls ``Puddles/QueryableItem/Trigger/query()`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation.
+/// When the Task that calls ``Puddles/QueryableItem/Trigger/query(with:)`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation.
 /// In that case, a ``Puddles/QueryCancellationError`` error is thrown.
 ///
 /// For more information, see <doc:05-Queryable>.
 @propertyWrapper
 public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable, Result: Sendable {
 
-    /// A representation of the `Queryable` property wrapper type. This can be passed to ``Puddles/QueryControlled``.
+    /// A representation of the `Queryable` property wrapper type.
     public struct Trigger {
 
         /// A binding to the `item` state inside the `@QueryableItem` property wrapper.
@@ -80,7 +80,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
 
         /// Requests the collection of data by starting a query on the `Result` type, providing an input value.
         ///
-        /// This method will suspend for as long as the query is unanswered and not cancelled. When the parent Task is cancelled, this method will immediately cancel the query and throw a ``Puddles/QueryError/queryCancelled`` error.
+        /// This method will suspend for as long as the query is unanswered and not cancelled. When the parent Task is cancelled, this method will immediately cancel the query and throw a ``Puddles/QueryCancellationError`` error.
         ///
         /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/QueryConflictPolicy`` defined in the initializer of ``Puddles/QueryableItem``. The default policy is ``Puddles/QueryConflictPolicy/cancelPreviousQuery``.
         /// - Returns: The result of the query.

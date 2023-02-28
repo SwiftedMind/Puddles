@@ -13,6 +13,7 @@ struct Root: Coordinator {
                 buttonTapCount: buttonTapCount
             )
         )
+        .navigationTitle("Home")
     }
 
     @MainActor

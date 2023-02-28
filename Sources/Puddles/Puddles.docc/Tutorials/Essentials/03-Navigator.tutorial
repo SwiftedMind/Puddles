@@ -1,6 +1,6 @@
 @Tutorial(time: 10) {
     @Intro(title: "The Navigator") {
-        Navigation is fully handled by the `Coordinator`, so any `sheet`s, `alert`s or `NavigationLink`s should be defined in the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
+        Navigation – like sheets, pushes, or alerts – should be handled by a ``Puddles/Navigator``.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }
     
@@ -8,60 +8,85 @@
         
         Let's modify the example app from the previous tutorials so that it opens a sheet when the button has been tapped 42 times.
         
-        For this, we will implement a ``Puddles/NavigationPattern`` using the ``Puddles/Coordinator/navigation()`` method in our `Coordinator`. 
+        To do this, we will build a `RootNavigator` type that takes responsibility for handling navigation.
         
         @Steps {
             @Step {
-                Go to `Root.swift`.
+                Create a new type `RootNavigator.swift` that conforms to `Navigator`.
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-01-01") {
-                    @Image(source: "03-BasicNavigation-01-01_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                Its root is the `Root` Coordinator from the previous tutorials. `StateConfiguration` is a type that defines all states the navigator can be in. To keep it simple, we have a single state `showPage` that we add besides `reset`.
+                 
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-01") {
+                    @Image(source: "03-BasicNavigation-01-01_image", alt: "A screenshot of an iPhone running the app. It shows the root view.")
                 }
             }
             
             @Step {
-                Add a new state that drives the presentation of the sheet and trigger it when the count has reached 42.
+                Add a sheet to the root coordinator and set it to `true` when the state `showPage` is applied.
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-01-02")
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-02")
             }
             
             @Step {
-                Add a ``Puddles/Sheet`` to to the `Coordinator`'s ``Puddles/Coordinator/navigation()`` method.
+                Go back to `Root.swift`.
                 
-                The ``Puddles/Coordinator/navigation()`` method functions much like a `ViewBuilder`, just with navigation patterns instead of views. Simply list all the patterns you'd like to add and the `Coordinator` will take care of the rest.
+                @Code(name: "Root.swift", file: "03-BasicNavigation-01-03")                
+            }
+            
+            @Step {
+                Just like with `HomeView`, add an interface to `Root` to send actions to its navigator.
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-01-03") {
-                    @Image(source: "03-BasicNavigation-01-03_image", alt: "A screenshot of an iPhone running the app. It shows the home view.")
+                @Code(name: "Root.swift", file: "03-BasicNavigation-01-04")
+            }
+            
+            @Step {
+                Send the action when the count has reached 42.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-01-05")
+            }
+            
+            @Step {
+                Now go back to `RootNavigator.swift`.
+                
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-06")
+            }
+            
+            @Step {
+                Connect the interface and handle the action by calling `applyStateConfiguration(.showPage)`.
+                
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-07") {
+                    @Image(source: "03-BasicNavigation-01-07_image", alt: "A screenshot of an iPhone running the app. It shows the opened sheet.")
                 }
             }
+            
+            That's it! In the next section, we're going to turn the sheet into a push.
         }
     }
     
-    @Section(title: "Adding a NavigationLink") {
+    @Section(title: "Adding a Navigation Push") {
         
-        Say we wanted to turn the sheet presentation into a navigation push instead. Let's do that.
+        Let's turn the sheet presentation into a push presentation inside a `NavigationStack`.
         
         @Steps {
             @Step {
-                Go to `Root.swift`.
+                Go to `RootNavigator.swift`.
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-02-01")
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-02-01")
             }
             
             @Step {
-                Turn the ``Puddles/Sheet`` into a ``Puddles/Push``.
+                Add a `NavigationStack` with a path binding.
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-02-02")
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-02-02")
             }
             
-            Next, we need to wrap the `Coordinator` in a `NavigationView` so that the `Push` actually has an effect.
-            
             @Step {
-                Implement the ``Puddles/Coordinator/modify(coordinator:)-19rqn`` method that provides you with the `Coordinator` content view. Wrap that view with a `NavigationView`.
                 
-                That's it! Launch the app and check if it worked.
+                Now, add a destination view.
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-02-03") {
+                Launch the app to see if it's working.
+                
+                @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-02-03") {
                     @Image(source: "03-BasicNavigation-02-03_image", alt: "A screenshot of an iPhone running the app. It shows the detail view as a push.")
                 }
             }
@@ -69,12 +94,20 @@
             To keep views agnostic of their environment and context, and to keep them reusable in different places, it is recommended to put things like `navigationTitle` or a `toolbar` in the responsible `Coordinator`, in this case `Root`.
             
             @Step {
-                Add a `navigationTitle`.
+                Go back to `Root.swift`
                 
-                @Code(name: "Root.swift", file: "03-BasicNavigation-02-04") {
-                    @Image(source: "03-BasicNavigation-02-04_image", alt: "A screenshot of an iPhone running the app. It shows the home view with the newly added navigation title.")
-                }
+                @Code(name: "Root.swift", file: "03-BasicNavigation-02-04")
             }            
+            
+            @Step {
+                Add a navigation title.
+                
+                @Code(name: "Root.swift", file: "03-BasicNavigation-02-05") {
+                    @Image(source: "03-BasicNavigation-02-05_image", alt: "A screenshot of an iPhone running the app. It shows the home view with the newly added navigation title.")
+                }
+            }
+            
+            And just like that you have a working `NavigationStack`, driven by a `Navigator`!
             
         }
     }

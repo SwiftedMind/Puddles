@@ -13,6 +13,14 @@ struct Root: Coordinator {
                 buttonTapCount: buttonTapCount
             )
         )
+        .navigationTitle("Home")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("Queryable Demo") {
+                    interface.sendAction(.didTapShowQueryableDemo)
+                }
+            }
+        }
     }
 
     @MainActor
@@ -30,5 +38,6 @@ struct Root: Coordinator {
 extension Root {
     enum Action {
         case didReachFortyTwo
+        case didTapShowQueryableDemo
     }
 }
