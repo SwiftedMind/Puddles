@@ -26,7 +26,7 @@ import SwiftUI
 struct FirstChapterApp: App {
     var body: some Scene {
         WindowGroup {
-            Root()
+            RootNavigator()
         }
     }
 }

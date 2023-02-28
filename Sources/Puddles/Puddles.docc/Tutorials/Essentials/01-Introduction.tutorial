@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Building The First Coordinator") {
+    @Intro(title: "The Coordinator") {
         Building an app using `Puddles` is easy and fast.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }
@@ -16,16 +16,17 @@
             }
             
             @Step {
-                Add the two required methods and one required property to `Root`.
+                Add the required property to `entryView`.
                 
-                We'll talk about interfaces and navigation later.
-                @Code(name: "Root.swift", file: "essentials-01-02")
+                For now, let's display a simple `Text`.
             }
             
             That's the most basic `Coordinator` possible. We can now set it as the app's entry point.
             
             @Step {
                 Set `Root` as the root view of the app and run it.
+                
+                This is possible because `Coordinator` conforms to the `View` protocol!
                 @Code(name: "FirstChapterApp.swift", file: "essentials-01-03") {
                     @Image(source: "tutorial_essentials_01_02", alt: "A screenshot of an iPhone running the app. It shows the text 'Hello, World'.")
                 }

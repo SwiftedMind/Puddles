@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		95576BD529A91BCA00E6CE99 /* RootNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95576BD429A91BCA00E6CE99 /* RootNavigator.swift */; };
 		95D666BF29719BC700708286 /* FirstChapterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D666BE29719BC700708286 /* FirstChapterApp.swift */; };
 		95D666C329719BC700708286 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95D666C229719BC700708286 /* Assets.xcassets */; };
 		95D666C629719BC700708286 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95D666C529719BC700708286 /* Preview Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		95576BD429A91BCA00E6CE99 /* RootNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigator.swift; sourceTree = "<group>"; };
 		95D666BB29719BC700708286 /* FirstChapter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstChapter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95D666BE29719BC700708286 /* FirstChapterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstChapterApp.swift; sourceTree = "<group>"; };
 		95D666C229719BC700708286 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -43,6 +45,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		95576BD329A91BBC00E6CE99 /* Navigators */ = {
+			isa = PBXGroup;
+			children = (
+				95576BD429A91BCA00E6CE99 /* RootNavigator.swift */,
+			);
+			path = Navigators;
+			sourceTree = "<group>";
+		};
 		95D666B229719BC700708286 = {
 			isa = PBXGroup;
 			children = (
@@ -65,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				95D666BE29719BC700708286 /* FirstChapterApp.swift */,
+				95576BD329A91BBC00E6CE99 /* Navigators */,
 				95D666D729719FD700708286 /* Coordinators */,
 				95D666D629719CD100708286 /* Views */,
 				95D666C229719BC700708286 /* Assets.xcassets */,
@@ -181,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				95D666D529719CCD00708286 /* HomeView.swift in Sources */,
+				95576BD529A91BCA00E6CE99 /* RootNavigator.swift in Sources */,
 				95D666DD2971B71000708286 /* QueryableDemoView.swift in Sources */,
 				95D666DB2971B6D200708286 /* QueryableDemo.swift in Sources */,
 				95D666BF29719BC700708286 /* FirstChapterApp.swift in Sources */,

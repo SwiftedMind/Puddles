@@ -1,5 +1,5 @@
 @Tutorial(time: 10) {
-    @Intro(title: "Providing Data To The Coordinator") {
+    @Intro(title: "The Provider") {
         Dependency Injection is essential in keeping code reusable, testable and previewable.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }

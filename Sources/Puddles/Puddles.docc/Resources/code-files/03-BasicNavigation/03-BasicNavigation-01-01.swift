@@ -1,35 +1,19 @@
 import SwiftUI
 import Puddles
 
-struct Root: Coordinator {
-    @StateObject var viewInterface: Interface<HomeView.Action> = .init()
-    @State var buttonTapCount: Int = 0
-
-    var viewState: HomeView.ViewState {
-        .init(
-            buttonTapCount: buttonTapCount
-        )
+struct RootNavigator: Navigator {
+    var root: some View {
+        Root()
     }
 
-    var entryView: some View {
-        HomeView(interface: viewInterface, state: viewState)
+    func applyStateConfiguration(_ configuration: StateConfiguration) {
+        // Handle state configurations
     }
+}
 
-    func navigation() -> some NavigationPattern {
-        // Empty for now
+extension RootNavigator {
+    enum StateConfiguration: Hashable {
+        case reset
+        case showPage
     }
-
-    func interfaces() -> some InterfaceObservation {
-        InterfaceObserver(viewInterface) { action in
-            handleViewAction(action)
-        }
-    }
-
-    private func handleViewAction(_ action: Action) {
-        switch action {
-        case .buttonTapped:
-            buttonTapCount += 1
-        }
-    }
-
 }

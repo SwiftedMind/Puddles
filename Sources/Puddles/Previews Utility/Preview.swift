@@ -5,11 +5,10 @@ import SwiftUI
 /// - Important: This is only meant to be used within previews!
 ///
 /// For more details on the view interfacing concept, see ``Puddles/Interface``.
-public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Content: View, Overlay: View>: View {
+public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
     @State var state: ViewState
-    @StateObject var interface: ViewInterface
 
-    var content: (_ interface: ViewInterface, _ state: Binding<ViewState>) -> Content
+    var content: (_ interface: Interface<Action>, _ state: ViewState) -> Content
     var actionHandler: (_ action: Action, _ state: Binding<ViewState>) -> Void
     var onStart: ((_ state: Binding<ViewState>) async -> Void)?
 
@@ -22,36 +21,36 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
     ///
     /// - Important: This is only meant to be used within previews!
     public init(
-        @ViewBuilder _ content: @escaping (_ interface: ViewInterface, _ state: ViewState) -> Content,
+        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: ViewState) -> Content,
         state: @autoclosure @escaping () -> ViewState,
         actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
     ) where Overlay == EmptyView {
         self._state = .init(wrappedValue: state())
-        self._interface = .init(wrappedValue: .init())
-        self.content = { content($0, $1.wrappedValue) }
+        self.content = { content($0, $1) }
         self.actionHandler = actionHandler
         self.debugOverlay = {_ in EmptyView() }
     }
 
     private init(
-        @ViewBuilder _ content: @escaping (_ interface: ViewInterface, _ state: Binding<ViewState>) -> Content,
+        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: ViewState) -> Content,
         @ViewBuilder debugOverlay: @escaping (_ state: Binding<ViewState>) -> Overlay,
         overlayAlignment: Alignment,
         state: @autoclosure () -> ViewState,
         maximizedPreviewFrame: Bool,
+        onStart: ((_ state: Binding<ViewState>) async -> Void)?,
         actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
     ) {
         self._state = .init(wrappedValue: state())
-        self._interface = .init(wrappedValue: .init())
         self.content = content
         self.maximizedPreviewFrame = maximizedPreviewFrame
         self.actionHandler = actionHandler
         self.debugOverlay = debugOverlay
         self.overlayAlignment = overlayAlignment
+        self.onStart = onStart
     }
     
     public var body: some View {
-        content(interface, $state)
+        content(.handled { actionHandler($0, $state) }, state)
             .frame(
                 maxWidth: maximizedPreviewFrame ? .infinity : nil,
                 maxHeight: maximizedPreviewFrame ? .infinity : nil
@@ -59,13 +58,8 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
             .overlay(alignment: overlayAlignment) {
                 debugOverlay($state)
             }
-            .background(
-                ViewLifetimeHelper {
-                    await onStart?($state)
-                } onDeinit: {}
-            )
-            .onReceive(interface.actionPublisher) { action in
-                actionHandler(action, $state)
+            .task {
+                await onStart?($state)
             }
     }
 
@@ -85,13 +79,14 @@ public struct Preview<Action, ViewInterface: Interface<Action>, ViewState, Conte
         alignment: Alignment = .bottom,
         maximizedPreviewFrame: Bool = true,
         @ViewBuilder overlayContent: @escaping (_ state: Binding<ViewState>) -> OverlayContent
-    ) -> Preview<Action, ViewInterface, ViewState, Content, OverlayContent> {
-        Preview<_, _, _, _, OverlayContent>(
+    ) -> Preview<Action, ViewState, Content, OverlayContent> {
+        Preview<_, _, _, OverlayContent>(
             content,
             debugOverlay: overlayContent,
             overlayAlignment: alignment,
             state: state,
             maximizedPreviewFrame: maximizedPreviewFrame,
+            onStart: onStart,
             actionHandler: actionHandler
         )
     }

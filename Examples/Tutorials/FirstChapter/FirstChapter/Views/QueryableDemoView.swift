@@ -23,15 +23,14 @@ import SwiftUI
 import Puddles
 
 struct QueryableDemoView: View {
-    @ObservedObject var interface: Interface<Action>
-    let state: ViewState
+    var interface: Interface<Action>
+    var state: ViewState
 
     var body: some View {
         Button("Delete") {
             interface.sendAction(.deleteButtonTapped)
         }
     }
-
 }
 
 extension QueryableDemoView {

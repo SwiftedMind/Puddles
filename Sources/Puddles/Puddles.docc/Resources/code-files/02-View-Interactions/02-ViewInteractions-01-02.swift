@@ -2,8 +2,8 @@ import SwiftUI
 import Puddles
 
 struct HomeView: View {
-    @ObservedObject var interface: Interface<Action>
-    let state: ViewState
+    var interface: Interface<Action>
+    var state: ViewState
 
     var body: some View {
         VStack {
@@ -13,7 +13,6 @@ struct HomeView: View {
             }
         }
     }
-
 }
 
 extension HomeView {
