@@ -16,7 +16,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 - [Documentation](#documentation)
 - [Why use Puddles?](#why-use-puddles)
 - [Why not to use Puddles?](#why-not-to-use-puddles)
-- [License](#documentation)
+- [License](#license)
 
 ## Features
 
