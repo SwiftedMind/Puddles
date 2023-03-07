@@ -43,22 +43,17 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ### Requirements
 
-Puddles supports the following platforms:
-
-- iOS 15+
-- macOS 12+
-
-You will also need Swift 5.7 to compile the package.
+Puddles supports iOS 15+ and macOS 12+.
 
 ### Installation
 
-The package is installed through the Swift Package Manager. Simply add the following line to your `Package.swift` dependencies:
+You can install Puddles through the Swift Package Manager. Simply add the following line to the dependencies in your `Package.swift` file:
 
 ```swift
 .package(url: "https://github.com/SwiftedMind/Puddles", branch: "main")
 ```
 
-Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
+Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top right. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
 
 ## Documentation
 
@@ -72,7 +67,13 @@ https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials
 
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/223552687-73858101-3031-4494-a1c4-1a42fac5827f.png)
 
+### The Navigator
 
+### The Provider
+
+### The Coordinator
+
+### The View
 
 ## Why use Puddles?
 
