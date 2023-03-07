@@ -12,7 +12,6 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
   - [Installation](#installation)
-  - [First Steps](#first-steps)
 - [Documentation](#documentation)
 - [The Puddles Architecture](#the-puddles-architecture)
 - [Why use Puddles?](#why-use-puddles)
@@ -60,30 +59,6 @@ The package is installed through the Swift Package Manager. Simply add the follo
 ```
 
 Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
-
-### First Steps
-
-It is easy to build an app with Puddles. The entire basic setup looks like this:
-
-```swift
-import SwiftUI
-import Puddles
-
-struct Root: Coordinator {
-  var entryView: some View {
-    Text("Hello, World")
-  }
-}
-
-@main
-struct YourApp: App {
-  var body: some Scene {
-    WindowGroup {
-      Root()
-    }
-  }
-}
-```
 
 ## Documentation
 
