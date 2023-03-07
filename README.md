@@ -14,6 +14,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
   - [Installation](#installation)
   - [First Steps](#first-steps)
 - [Documentation](#documentation)
+- [The Puddles Architecture](#the-puddles-architecture)
 - [Why use Puddles?](#why-use-puddles)
 - [Why not to use Puddles?](#why-not-to-use-puddles)
 - [License](#documentation)
@@ -49,9 +50,6 @@ Puddles supports the following platforms:
 - macOS 12+
 
 You will also need Swift 5.7 to compile the package.
-
-> **Note**
-> iOS 16 completely revamped navigation in SwiftUI and fixed countless bugs. Therefore, if you want to achieve the best results with the smallest amount of work, and have the ability to make that decision, a deployment target of iOS 16 is highly recommended.
 
 ### Installation
 
@@ -94,6 +92,12 @@ https://swiftedmind.github.io/Puddles/documentation/puddles/
 
 Tutorials can be found here:
 https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials
+
+## The Puddles Architecture
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/223537059-005ba094-5f98-4aed-9d3f-069029cbce27.png)
+![Architecture Overview_alt](https://user-images.githubusercontent.com/7083109/223537424-9adbe839-62d4-4644-a42c-a391c0ba9f5c.png)
+
+
 
 ## Why use Puddles?
 
