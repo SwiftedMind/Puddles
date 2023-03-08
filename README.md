@@ -63,8 +63,9 @@ Tutorials can be found here:
 https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials
 
 ## The Puddles Architecture
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/223750274-db452fb0-b797-4866-ba46-83c4ee92e5b4.png)
 
-![Architecture Overview](https://user-images.githubusercontent.com/7083109/223552687-73858101-3031-4494-a1c4-1a42fac5827f.png)
+
 
 ### The Navigator
 
