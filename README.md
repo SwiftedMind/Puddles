@@ -17,13 +17,13 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ## Features
 
-♦️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. The framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality. Many implementations are just convenient wrappers around existing interfaces.
+♦️ **Unique Architecture** - Though it might be a controversial opinion, I am not convinced that MVVM is the right pattern to use within SwiftUI. You lose a lot of functionality and often have to work against the framework. That's why Puddles' main structures – `Coordinator` and `Navigator` – are just plain old SwiftUI views. They act as a wrapper around your actual UI and handle logic and data management. This allows you to make use of *all* the cool features and techniques SwiftUI provides.
 
-♦️ **Architecture** - Though it might be a controversial opinion, I am not convinced that MVVM is the right pattern to use within SwiftUI. You lose a lot of functionality and often have to work against the framework. That's why Puddles' main structures – `Coordinator` and `Navigator` – are just plain old SwiftUI views. They act as a wrapper around your actual UI and handle logic and data management. This allows you to make use of *all* the cool features and techniques SwiftUI provides.
+♦️ **Modular**- Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Coordinators`, which can be swapped out easily and even be moved across different projects!
 
 ♦️ **Flexible** - `Coordinator` and `Navigator` being SwiftUI views has another huge advantage. They can be placed *anywhere* you could place any SwiftUI view, so you are not locked into the architecture. If you need to implement something that doesn't properly fit within the Puddles architecture, simply build it using different techniques and plug it in. **No problem!**
 
-♦️ **Modular**- Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Coordinators`, which can be swapped out easily and even be moved across different projects!
+♦️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. The framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality. Many implementations are just convenient wrappers around existing interfaces.
 
 ♦️ **Unidirectional Data Flow** - While not strictly enforced by the framework, Puddles is designed around one-way communication between components. This greatly reduces complexity while increasing modularity and ease of use in SwiftUI Previews. To do this, Puddles provides an easy to use `Interface` type that lets you send `actions` to an interface observer.
 
