@@ -1,6 +1,7 @@
 ![slice1](https://user-images.githubusercontent.com/7083109/221624800-f99ad5a9-b875-4f95-a394-3d326c1e151d.png)
 
 # Puddles - A SwiftUI Architecture
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/SwiftedMind/Puddles)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SwiftedMind/Puddles)
 ![GitHub](https://img.shields.io/github/license/SwiftedMind/Puddles)
@@ -8,7 +9,7 @@
 Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient. However, it doesn't try to lock you into anything. Every project is unique and while it should be generally discouraged, it has to be easy to deviate from existing patterns. Puddles has been designed from the start with this thought in mind.
 
 - [Features](#features)
-- [Getting Started](#getting-started)
+- [Installation](#installation)
 - [Documentation](#documentation)
 - [The Puddles Architecture](#the-puddles-architecture)
 - [Why use Puddles?](#why-use-puddles)
@@ -33,16 +34,9 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ♦️ **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking and state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
 
-## Getting Started
-
-> **Warning**
-> Puddles is still in early development. Things will break, so please use this carefully and at your own risk. Feedback is always appreciated.
-
-### Requirements
+## Installation
 
 Puddles supports iOS 15+ and macOS 12+.
-
-### Installation
 
 You can install Puddles through the Swift Package Manager. Simply add the following line to the dependencies in your `Package.swift` file:
 
@@ -76,7 +70,7 @@ struct HomeView: View {
     
   var body: some View {
     Button(state.buttonTitle) {
-      // Action coming soon ...
+      // Not much action happening here ...
     }
   }
 }
