@@ -88,6 +88,12 @@ Puddles attempts to offer a helpful guidance and structure for your app, but doe
 
 Puddles is still in early development and things will break regularly. Also, one of the major shortcomings right now is the lack of proper support for unit testing. If you need that, Puddles is not the right choice for now. I will look into it once the rest of the framework has stabilized.
 
+**Puddles is not battle-tested (yet)**
+
+**SwiftUI Lifecycle**
+
+**No proper support for unit testing (yet)**
+
 ## License
 
 MIT License
