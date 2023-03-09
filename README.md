@@ -58,9 +58,21 @@ Tutorials can be found here:
 
 <img alt="A visual diagram of the Puddles architecture. It is fully described in text below." src="https://user-images.githubusercontent.com/7083109/223750274-db452fb0-b797-4866-ba46-83c4ee92e5b4.png">
 
+### The Navigator
+
+![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224144539-6a2650f1-7a8d-494d-b2ee-7691124624d1.png)
+
+### The Provider
+
+![Provider Explanation](https://user-images.githubusercontent.com/7083109/224144590-814fdd11-df54-406d-a522-818e9662c2d4.png)
+
+### The Coordinator
+
+![Coordinator Explanation](https://user-images.githubusercontent.com/7083109/224144670-68bb08b9-e539-4e4d-b3f4-5cdbae0502b7.png)
+
 ### The View
 
-<img alt="TODO" src="https://user-images.githubusercontent.com/7083109/223826387-6a873a3a-a419-48a3-80ac-47b2709f2406.png">
+![View Explanation](https://user-images.githubusercontent.com/7083109/224144744-238b82bd-41ce-4ff8-ad23-7c86d9b47119.png)
 
 The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, in the Puddles architecture, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. 
 
@@ -116,17 +128,7 @@ The reason behind all this is to keep all views absolutely context-free. They sh
 > **Note**:
 > All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
 
-### The Coordinator
-
-Coming soon…
-
-### The Provider
-
-Coming soon…
-
-### The Navigator
-
-Coming soon…
+---
 
 ## Why use Puddles?
 
