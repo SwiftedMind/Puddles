@@ -14,6 +14,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 - [The Puddles Architecture](#the-puddles-architecture)
 - [Why use Puddles?](#why-use-puddles)
 - [Why not to use Puddles?](#why-not-to-use-puddles)
+- [Frequently Asked Questions](#frequently-asked-questions)
 - [License](#license)
 
 ## Features
@@ -59,23 +60,15 @@ Tutorials can be found here:
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/224427199-788128b6-7254-4ae8-b489-0ee6f37b8953.png)
 
 
-
-
 SwiftUI encourages building views from the ground up, wrapping new 
 
 The idea behind Puddles is to use special-purposed SwiftUI views and layer them on top of each other.
 
 The architecture can be summarized as wrapping special kinds of SwiftUI around each other. Each wrapper adds state, a dependency, or some other form of  context.
 
-<img alt="A visual diagram of the Puddles architecture. It is fully described in text below." src="https://user-images.githubusercontent.com/7083109/223750274-db452fb0-b797-4866-ba46-83c4ee92e5b4.png">
-
 ## The Navigator
 
 ![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224144539-6a2650f1-7a8d-494d-b2ee-7691124624d1.png)
-
-## The Provider
-
-![Provider Explanation](https://user-images.githubusercontent.com/7083109/224144590-814fdd11-df54-406d-a522-818e9662c2d4.png)
 
 ## The Provider
 
@@ -160,6 +153,10 @@ Puddles is still in early development and things will break regularly. Also, one
 **SwiftUI Lifecycle**
 
 **No proper support for unit testing (yet)**
+
+## Frequently Asked Questions
+
+Coming Soon...
 
 ## License
 
