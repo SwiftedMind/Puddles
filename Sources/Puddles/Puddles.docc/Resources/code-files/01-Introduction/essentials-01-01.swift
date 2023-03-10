@@ -1,6 +1,6 @@
 import SwiftUI
 import Puddles
 
-struct Root: Coordinator {
+struct Root: Provider {
     
 }

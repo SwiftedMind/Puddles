@@ -1,4 +1,5 @@
 import SwiftUI
+import Puddles
 
 /// A SwiftUI previews helper type allowing to take advantage of view interfacing by providing an in-place mechanism of reacting to the view's actions.
 ///
@@ -50,7 +51,7 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
     }
     
     public var body: some View {
-        content(.handled { actionHandler($0, $state) }, state)
+        content(.consume { actionHandler($0, $state) }, state)
             .frame(
                 maxWidth: maximizedPreviewFrame ? .infinity : nil,
                 maxHeight: maximizedPreviewFrame ? .infinity : nil

@@ -20,7 +20,7 @@ public struct DebugButton: View {
                 .padding(6)
                 .background {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .foregroundColor(Color(uiColor: .systemRed))
+                        .foregroundColor(.red)
                         .opacity(0.8)
                 }
                 .shadow(radius: 5)

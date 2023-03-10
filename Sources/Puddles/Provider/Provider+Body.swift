@@ -1,10 +1,10 @@
 import SwiftUI
 import Combine
 
-/// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Coordinator``.
-public struct CoordinatorBody<C: Coordinator>: View {
+/// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Provider``.
+public struct ProviderBody<C: Provider>: View {
 
-    /// The root view of the `Coordinator` as provided in ``Puddles/Coordinator/entryView-swift.property``.
+    /// The root view of the `Provider` as provided in ``Puddles/Provider/entryView-swift.property``.
     private let entryView: C.EntryView
 
     /// A closure reporting back first appearance of the view.
@@ -13,7 +13,7 @@ public struct CoordinatorBody<C: Coordinator>: View {
     /// A closure reporting back the last disappearance of the view.
     private let finalDisappearHandler: () -> Void
 
-    /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Coordinator``.
+    /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Provider``.
     init(
         entryView: C.EntryView,
         firstAppearHandler: @escaping () async -> Void,

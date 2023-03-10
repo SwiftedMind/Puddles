@@ -1,16 +1,16 @@
 @Tutorial(time: 10) {
-    @Intro(title: "The Coordinator") {
+    @Intro(title: "The Provider") {
         Building an app using `Puddles` is easy and fast.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }
     
-    @Section(title: "The Root Coordinator") {
+    @Section(title: "The Root Provider") {
         
-        The first step is to setup a root ``Puddles/Coordinator`` that acts as the entry point of the app.
+        The first step is to setup a root ``Puddles/Provider`` that acts as the entry point of the app.
         
         @Steps {
             @Step {
-                Create a new struct and conform it to ``Puddles/Coordinator``.
+                Create a new struct and conform it to ``Puddles/Provider``.
        
                 @Code(name: "Root.swift", file: "essentials-01-01")
             }
@@ -21,23 +21,23 @@
                 For now, let's display a simple `Text`.
             }
             
-            That's the most basic `Coordinator` possible. We can now set it as the app's entry point.
+            That's the most basic `Provider` possible. We can now set it as the app's entry point.
             
             @Step {
                 Set `Root` as the root view of the app and run it.
                 
-                This is possible because `Coordinator` conforms to the `View` protocol!
+                This is possible because `Provider` conforms to the `View` protocol!
                 @Code(name: "FirstChapterApp.swift", file: "essentials-01-03") {
                     @Image(source: "tutorial_essentials_01_02", alt: "A screenshot of an iPhone running the app. It shows the text 'Hello, World'.")
                 }
             }
             
-            In the next section, we will add a dedicated entry view for the `Coordinator`.
+            In the next section, we will add a dedicated entry view for the `Provider`.
         }
     }
     
     @Section(title: "The Home View") {
-        We will now add a dedicated home view that we can use in `Root` (or any other `Coordinator` later on).
+        We will now add a dedicated home view that we can use in `Root` (or any other `Provider` later on).
         
         @Steps {
             @Step {
@@ -45,12 +45,12 @@
                 @Code(name: "HomeView.swift", file: "essentials-02-01")
             }
             
-            Next, the view needs a place to hold public state that can be created by and managed through a `Coordinator`.
+            Next, the view needs a place to hold public state that can be created by and managed through a `Provider`.
             
             @Step {
                 Create and add a `ViewState` to `HomeView`.
                 
-                Notice that the view itself cannot manipulate the state. That is the job of a `Coordinator`.
+                Notice that the view itself cannot manipulate the state. That is the job of a `Provider`.
                 
                 @Code(name: "HomeView.swift", file: "essentials-02-02")
             }
@@ -75,9 +75,9 @@
             }
             
             @Step {
-                Add the newly created `HomeView` and set it as the coordinator's entry view.
+                Add the newly created `HomeView` and set it as the provider's entry view.
                 
-                Notice that the `Coordinator` holds the actual `@State` for the view. This is important to keep responsibilities structured and away from the view.
+                Notice that the `Provider` holds the actual `@State` for the view. This is important to keep responsibilities structured and away from the view.
                 @Code(name: "Root.swift", file: "essentials-02-06")
             }
             

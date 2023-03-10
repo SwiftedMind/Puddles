@@ -3,7 +3,7 @@ import SwiftUI
 struct SignalWrapper: Equatable {
     var id: UUID?
     var value: Any?
-    var onSignalHandled: () -> Void
+    var onSignalHandled: @MainActor () -> Void
 
     public static func == (lhs: SignalWrapper, rhs: SignalWrapper) -> Bool {
         lhs.id == rhs.id

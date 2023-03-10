@@ -8,7 +8,7 @@
         
         In the previous tutorials, we have built a simple example app with a single `HomeView` that contains a counter. Let's add support for SwiftUI previews so that we can not only see the view from within Xcode, but also fully interact with it.
         
-        The problem with data-driven views, especially ones with more complex behavior, is that previews can't hold and manipulate state. The solution, then, is to use a wrapper view that takes care of it. That's where ``Puddles/Preview`` comes into play. Thanks to the unidirectional data flow through view interfaces, each preview can act as an impromptu `Coordinator` and listen and react to any actions coming from the view. This way, sample or mock data can be provided in a very easy way, while also allowing to morph the view's functionality to make it properly useful in Previews.
+        The problem with data-driven views, especially ones with more complex behavior, is that previews can't hold and manipulate state. The solution, then, is to use a wrapper view that takes care of it. That's where ``Puddles/Preview`` comes into play. Thanks to the unidirectional data flow through view interfaces, each preview can act as an impromptu `Provider` and listen and react to any actions coming from the view. This way, sample or mock data can be provided in a very easy way, while also allowing to morph the view's functionality to make it properly useful in Previews.
         
         @Steps {
             @Step {
@@ -36,7 +36,7 @@
             @Step {
                 To load or set initial asynchronous data, you can add the ``Puddles/Preview/onStart(perform:)`` modifier, which calls the provided closure when the preview appears.
                 
-                Tip: See ``Puddles/Coordinator/start()-e3dl`` for more information on how the `start()` of a `Coordinator` is defined.
+                Tip: See ``Puddles/Provider/start()-9xt0v`` for more information on how the `start()` of a `Provider` is defined.
        
                 @Code(name: "HomeView.swift", file: "PreviewSupport-01-04")
             }

@@ -1,25 +1,27 @@
 import SwiftUI
 
-/// A type that can send actions to a handler, which is usually a ``Puddles/Coordinator`` or ``Puddles/Navigator``.
+/// A type that can send actions to a handler, which is usually a ``Puddles/Provider`` or ``Puddles/Navigator``.
 public struct Interface<Action> {
     private let actionHandler: @MainActor (_ action: Action) -> Void
 
     /// Initializes an interface that sends actions to the given closure.
     /// - Parameter block: The closure that will handle incoming actions.
     /// - Returns: An instance of the interface.
-    public static func handled(by block: @escaping @MainActor (_ action: Action) -> Void) -> Self {
+    public static func consume(_ block: @escaping @MainActor (_ action: Action) -> Void) -> Self {
         .init(actionHandler: block)
     }
 
-    /// Initializes an interface that sends actions to another interface.
+    /// Initializes an interface that forwards all actions to another interface.
+    ///
+    /// This does not create an indirection since the other interface's closure will be directly accessed and stored as the action handler.
     /// - Parameter otherInterface: The interface that will handle incoming actions.
     /// - Returns: An instance of the interface.
-    public static func handled(by otherInterface: Interface<Action>) -> Self {
+    public static func forward(to otherInterface: Interface<Action>) -> Self {
         .init(actionHandler: otherInterface.actionHandler)
     }
 
     /// Initializes an interface with an empty closure.
-    public static var unhandled: Self {
+    public static var ignore: Self {
         .init(actionHandler: {_ in})
     }
 

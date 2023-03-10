@@ -5,7 +5,7 @@ struct RootNavigator: Navigator {
     @State private var isShowingSheet: Bool = false
 
     var root: some View {
-        Root(interface: .handled(by: handleRootAction))
+        Root(interface: .consume(handleRootAction))
             .sheet(isPresented: $isShowingSheet) {
                 Text("🎉")
                     .font(.largeTitle)

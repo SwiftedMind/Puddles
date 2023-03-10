@@ -118,7 +118,7 @@ public struct Queryable<Result>: DynamicProperty where Result: Sendable {
         }
     }
 
-    /// Boolean flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator`` or ``Puddles/Navigator``.
+    /// Boolean flag indicating if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Provider`` or ``Puddles/Navigator``.
     @State var isActive: Bool = false
 
     public var wrappedValue: Trigger {

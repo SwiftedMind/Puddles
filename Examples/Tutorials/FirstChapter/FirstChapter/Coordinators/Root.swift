@@ -23,14 +23,14 @@
 import SwiftUI
 import Puddles
 
-struct Root: Coordinator {
+struct Root: Provider {
     @State var buttonTapCount: Int = 0
 
     var interface: Interface<Action>
 
     var entryView: some View {
         HomeView(
-            interface: .handled(by: handleViewAction),
+            interface: .consume(handleViewAction),
             state: .init(
                 buttonTapCount: buttonTapCount
             )

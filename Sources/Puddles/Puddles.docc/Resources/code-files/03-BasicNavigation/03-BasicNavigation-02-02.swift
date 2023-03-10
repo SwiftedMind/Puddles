@@ -6,7 +6,7 @@ struct RootNavigator: Navigator {
 
     var root: some View {
         NavigationStack(path: $path) {
-            Root(interface: .handled(by: handleRootAction))
+            Root(interface: .consume(handleRootAction))
         }
     }
 

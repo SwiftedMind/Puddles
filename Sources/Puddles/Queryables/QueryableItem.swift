@@ -116,7 +116,7 @@ public struct QueryableItem<Item, Result>: DynamicProperty where Item: Sendable,
         }
     }
 
-    /// Optional item storing the input value for a query and is used to indicate if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Coordinator`` or ``Puddles/Navigator``.
+    /// Optional item storing the input value for a query and is used to indicate if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Provider`` or ``Puddles/Navigator``.
     @State var item: Item?
 
     public var wrappedValue: Trigger {

@@ -1,11 +1,11 @@
 import Foundation
 
-public struct DebugError: Error {
+public struct PreviewMockError: Error {
     public init() {}
 }
 
-public extension Error where Self == DebugError {
-    static var debug: DebugError {
+public extension Error where Self == PreviewMockError {
+    static var previewMock: PreviewMockError {
         .init()
     }
 }

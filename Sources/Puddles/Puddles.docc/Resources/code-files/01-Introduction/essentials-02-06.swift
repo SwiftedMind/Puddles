@@ -1,7 +1,7 @@
 import SwiftUI
 import Puddles
 
-struct Root: Coordinator {
+struct Root: Provider {
     @State var buttonTapCount: Int = 0
 
     var entryView: some View {

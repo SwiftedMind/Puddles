@@ -23,12 +23,12 @@
 import SwiftUI
 import Puddles
 
-struct QueryableDemo: Coordinator {
+struct QueryableDemo: Provider {
     @Queryable<Bool> private var deletionConfirmation
 
     var entryView: some View {
         QueryableDemoView(
-            interface: .handled(by: handleViewAction),
+            interface: .consume(handleViewAction),
             state: .init()
         )
         .queryableAlert(

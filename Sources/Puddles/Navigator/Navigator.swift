@@ -22,7 +22,7 @@
 
 import SwiftUI
 
-/// A type that coordinates the navigation of `Coordinators`.
+/// A type that coordinates the navigation of `Providers`.
 public protocol Navigator: View {
 
     /// The type of the ``Puddles/Navigator/root`` view for a ``Puddles/Navigator``.
@@ -35,12 +35,12 @@ public protocol Navigator: View {
     /// This can be inferred by defining the ``Puddles/Navigator/applyStateConfiguration(_:)`` method in a ``Puddles/Navigator``.
     associatedtype StateConfiguration
 
-    /// An identifier that can be used to name the `Coordinator`.
+    /// An identifier that can be used to name the `Provider`.
     ///
     /// This might be helpful while debugging.
     static var debugIdentifier: String { get }
 
-    /// The entry point for the navigator, which is usually is a `NavigationStack`, `NavigationSplitView` or `TabView` with its `Coordinators`.
+    /// The entry point for the navigator, which is usually is a `NavigationStack`, `NavigationSplitView` or `TabView` with its `Providers`.
     @MainActor @ViewBuilder var root: RootView { get }
 
     /// Sets the state of the navigator according to the provided configuration.
@@ -69,7 +69,7 @@ public protocol Navigator: View {
     ///
     /// More specifically, this method is called when SwiftUI deinitializes the `Navigator`'s data objects (think `@StateObject`), which,
     /// may occur some time *after* the final disappearance (due to optimizations by SwiftUI). It is, however, guaranteed to be called.
-    /// Immediately before it is called, the `Task` that runs the ``Puddles/Coordinator/start()-7oqfy`` method is cancelled.
+    /// Immediately before it is called, the `Task` that runs the ``Puddles/Provider/start()-9xt0v`` method is cancelled.
     ///
     ///- Important: This method is intentionally *not* called `onDisappear()`.
     /// It does not behave like the `.onDisappear(perform:)` view modifier,

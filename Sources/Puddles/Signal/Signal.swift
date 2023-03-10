@@ -51,11 +51,12 @@ public extension Signal {
     struct Wrapped: Equatable {
         var id: UUID
         var value: Value?
-        var onSend: (_ value: Value) -> Void
+        var onSend: @MainActor (_ value: Value) -> Void
         var removeValue: () -> Void
 
         /// Sends a signal.
         /// - Parameter value: The value of the signal.
+        @MainActor
         public func send(_ value: Value) {
             onSend(value)
         }

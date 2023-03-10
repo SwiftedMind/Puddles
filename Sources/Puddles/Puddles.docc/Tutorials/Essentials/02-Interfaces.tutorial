@@ -1,6 +1,6 @@
 @Tutorial(time: 10) {
     @Intro(title: "Interfaces") {
-        Communication between a view and its `Coordinator` should be unidirectional.
+        Communication between a view and its `Provider` should be unidirectional.
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }
     
@@ -8,9 +8,9 @@
         
         In the previous tutorial, we built a simple view with a button that increases a counter value. However, since the view's state is immutable, the button cannot actually update that value itself.  
         
-        That's by design. Views should not modify their own public state. Instead, they should define signals (called actions) that their parent `Coordinator` can observe and act upon.
+        That's by design. Views should not modify their own public state. Instead, they should define signals (called actions) that their parent `Provider` can observe and act upon.
         
-        This can be achieved through the ``Puddles/Interface`` class. It exposes a ``Puddles/Interface/sendAction(_:)`` method that takes an `Action` (usually an `enum` defined by a view). A `Coordinator` creates and observes such an interface and provides it to the view. Whenever an action is sent, the `Coordinator` can detect it and make modifications to the state or start any necessary other work.
+        This can be achieved through the ``Puddles/Interface`` class. It exposes a ``Puddles/Interface/sendAction(_:)`` method that takes an `Action` (usually an `enum` defined by a view). A `Provider` creates and observes such an interface and provides it to the view. Whenever an action is sent, the `Provider` can detect it and make modifications to the state or start any necessary other work.
         
         Adding this to the example app is easy.
         
@@ -32,12 +32,12 @@
             @Step {
                 Inside the button's action closure, use the interface to send the action `.buttonTapped`.
                 
-                What's important here is that the view is fully unaware of its context or consequences for any of its actions. This is great, because we can place it anywhere in the app and let the responsible `Coordinator` decide what should happen. 
+                What's important here is that the view is fully unaware of its context or consequences for any of its actions. This is great, because we can place it anywhere in the app and let the responsible `Provider` decide what should happen. 
        
                 @Code(name: "HomeView.swift", file: "02-ViewInteractions-01-03")
             }
             
-            Now we need to listen to the sent actions in the `Coordinator`.
+            Now we need to listen to the sent actions in the `Provider`.
             
             @Step {
                 Go back to `Root.swift`.
