@@ -1,4 +1,4 @@
-![slice1](https://user-images.githubusercontent.com/7083109/221624800-f99ad5a9-b875-4f95-a394-3d326c1e151d.png)
+<img width="150px" src="https://user-images.githubusercontent.com/7083109/224431115-f58a8d38-1018-4204-9fcd-1a6694c58351.png">
 
 # Puddles - A SwiftUI Architecture
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
@@ -56,7 +56,8 @@ Tutorials can be found here:
 
 # The Puddles Architecture
 
-![Architecture Overview](https://user-images.githubusercontent.com/7083109/224408655-00b1a814-0998-4bc3-9766-acbd3fa14f31.png)
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/224427199-788128b6-7254-4ae8-b489-0ee6f37b8953.png)
+
 
 
 
