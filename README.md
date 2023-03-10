@@ -22,16 +22,8 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ♦️ **Modular**- Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Providers`, which can be swapped out easily and even be moved across different projects!
 
-♻️ **Unidirectional Data Flow** - While not strictly enforced by the framework, Puddles is designed around one-way communication between components. This greatly reduces complexity while increasing modularity and ease of use in SwiftUI Previews. To do this, Puddles provides an easy to use `Interface` type that lets you send `actions` to an interface observer.
-
-⚓ **Deep Link Support** - Support for deep linking and arbitrary state restoration is built-in from the start and does not require much extra work or setup.
-
-⁉️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
-
-🚦 **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking and state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
 ♦️ **Flexible** - `Provider` and `Navigator` being SwiftUI views has another huge advantage. They can be placed *anywhere* you could place any SwiftUI view, so you are not locked into the architecture. If you need to implement something that doesn't properly fit within the Puddles architecture, simply build it using different techniques and plug it in. **No problem!**
 
-## Getting Started
 ♦️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. The framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality. Many implementations are just convenient wrappers around existing interfaces.
 
 ♦️ **Unidirectional Data Flow** - While not strictly enforced by the framework, Puddles is designed around one-way communication between components. This greatly reduces complexity while increasing modularity and ease of use in SwiftUI Previews. To do this, Puddles provides an easy to use `Interface` type that lets you send `actions` to an interface observer.
@@ -44,7 +36,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ## Installation
 
-Puddles supports iOS 15+ and macOS 12+.
+Puddles supports iOS 15+, macOS 12+, watchOS 8+ and tvOS 15+.
 
 You can install Puddles through the Swift Package Manager. Simply add the following line to the dependencies in your `Package.swift` file:
 
@@ -64,7 +56,8 @@ Tutorials can be found here:
 
 # The Puddles Architecture
 
-![Alternative Overview](https://user-images.githubusercontent.com/7083109/224164891-84963134-ef8d-4850-999d-5c84797dc132.png)
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/224408655-00b1a814-0998-4bc3-9766-acbd3fa14f31.png)
+
 
 
 SwiftUI encourages building views from the ground up, wrapping new 
