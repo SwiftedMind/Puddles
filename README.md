@@ -12,8 +12,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 - [Installation](#installation)
 - [Documentation](#documentation)
 - **[The Puddles Architecture](#the-puddles-architecture)**
-- [Why use Puddles?](#why-use-puddles)
-- [Why not to use Puddles?](#why-not-to-use-puddles)
+- [Should you use Puddles?](#should-you-use-puddles)
 - [Frequently Asked Questions](#frequently-asked-questions)
 - [License](#license)
 
@@ -56,10 +55,10 @@ Tutorials can be found here:
 [Tutorials](https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials)
 
 # The Puddles Architecture
+
+SwiftUI encourages building views from the ground up, layering functionality on top of each other, by wrapping views in other views. At its core, Puddles does the exact same thing. You start with a view and then wrap new stuff around it.
+
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
-
-
-SwiftUI encourages building views from the ground up, wrapping new 
 
 The idea behind Puddles is to use special-purposed SwiftUI views and layer them on top of each other.
 
@@ -67,7 +66,6 @@ The architecture can be summarized as wrapping special kinds of SwiftUI around e
 ## The View
 
 ![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
-
 
 The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, in the Puddles architecture, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. 
 
@@ -145,7 +143,7 @@ The reason behind all this is to keep all views absolutely context-free. They sh
 
 ---
 
-## Why use Puddles?
+## Should you use Puddles?
 
 Finding a solid foundation to build well-structured apps based on the SwiftUI lifecycle has been a challenging problem since the framework's release. While SwiftUI excels at fast paced composition of view hierarchies, it is surprisingly easy to create lots of hard couplings between logic and UI, making it virtually impossible to keep a project modular and flexible. 
 
@@ -155,7 +153,7 @@ Puddles is trying to be as flexible and dynamic as possible. Every app is unique
 
 Puddles attempts to offer a helpful guidance and structure for your app, but does not force you into anything. It is built to be fully compatible with any other SwiftUI project, allowing you to incrementally adopt Puddles in existing projects, as well as link to any traditional SwiftUI view from within the scope of a Puddle `Provider` or `Navigator`.
 
-## Why not to use Puddles?
+### Why not to use Puddles
 
 Puddles is still in early development and things will break regularly. Also, one of the major shortcomings right now is the lack of proper support for unit testing. If you need that, Puddles is not the right choice for now. I will look into it once the rest of the framework has stabilized.
 
