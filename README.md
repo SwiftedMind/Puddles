@@ -38,13 +38,17 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 Puddles supports iOS 15+, macOS 12+, watchOS 8+ and tvOS 15+.
 
-You can install Puddles through the Swift Package Manager. Simply add the following line to the dependencies in your `Package.swift` file:
+### In Swift Package
+
+Add the following line to the dependencies in your `Package.swift` file:
 
 ```swift
 .package(url: "https://github.com/SwiftedMind/Puddles", branch: "main")
 ```
 
-Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top right. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
+### In Xcode project
+
+Go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top right. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
 
 ## Documentation
 
@@ -56,13 +60,14 @@ Tutorials can be found here:
 
 # The Puddles Architecture
 
-SwiftUI encourages building views from the ground up, layering functionality on top of each other, by wrapping views in other views. At its core, Puddles does the exact same thing. You start with a view and then wrap new stuff around it.
+SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include dependencies in the layering.
+
+Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides the view state and performs any needed logic. Around that state provider, you would then add dependency wrappers like a type that fetches items from an API and hands it down the view hierarchy. Finally, in the outermost layer, a `Navigator` handles the navigation logic between the screens in your app.
 
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
 
-The idea behind Puddles is to use special-purposed SwiftUI views and layer them on top of each other.
+Instead of putting logic in a view model, you put it in a special wrapper view and layer it on top. This makes it easy to reuse the underlying view..
 
-The architecture can be summarized as wrapping special kinds of SwiftUI around each other. Each wrapper adds state, a dependency, or some other form of  context.
 ## The View
 
 ![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
