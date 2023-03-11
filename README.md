@@ -1,4 +1,4 @@
-<img width="150px" src="https://user-images.githubusercontent.com/7083109/224431115-f58a8d38-1018-4204-9fcd-1a6694c58351.png">
+<img width="150px" src="https://user-images.githubusercontent.com/7083109/224473065-48694bcd-4d97-4caf-bd60-8500513770a4.png">
 
 # Puddles - A SwiftUI Architecture
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
@@ -8,10 +8,10 @@
 
 Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient. However, it doesn't try to lock you into anything. Every project is unique and while it should be generally discouraged, it has to be easy to deviate from existing patterns. Puddles has been designed from the start with this thought in mind.
 
-- [Features](#features)
+- **[Features](#features)**
 - [Installation](#installation)
 - [Documentation](#documentation)
-- [The Puddles Architecture](#the-puddles-architecture)
+- **[The Puddles Architecture](#the-puddles-architecture)**
 - [Why use Puddles?](#why-use-puddles)
 - [Why not to use Puddles?](#why-not-to-use-puddles)
 - [Frequently Asked Questions](#frequently-asked-questions)
