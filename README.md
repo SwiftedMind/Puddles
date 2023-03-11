@@ -18,7 +18,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ## Features
 
-♦️ **Unique Architecture** - Though it might be a controversial opinion, I am not convinced that strict MVVM is the right pattern to use within SwiftUI. You lose a lot of functionality and often have to work against the framework. That's why Puddles' main structures – `Provider` and `Navigator` – are just plain old SwiftUI views. They act as a wrapper around your actual UI and handle logic and data management. This allows you to make use of *all* the cool features and techniques SwiftUI provides.
+♦️ **Architecture** - Though it might be a controversial opinion, I am not convinced that strict MVVM is the right pattern to use within SwiftUI. You lose a lot of functionality and often have to work against the framework. That's why Puddles' main structures – `Provider` and `Navigator` – are just plain old SwiftUI views. They act as a wrapper around your actual UI and handle logic and data management. This allows you to make use of *all* the cool features and techniques SwiftUI provides.
 
 ♦️ **Modular**- Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Providers`, which can be swapped out easily and even be moved across different projects!
 
@@ -60,11 +60,14 @@ Tutorials can be found here:
 
 # The Puddles Architecture
 
-SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include dependencies in the layering.
-
-Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides the view state and performs any needed logic. Around that state provider, you would then add dependency wrappers like a type that fetches items from an API and hands it down the view hierarchy. Finally, in the outermost layer, a `Navigator` handles the navigation logic between the screens in your app.
+SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies in the layering.
 
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
+
+Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides and manages the view's state. This wrapper essentially subsumes the tasks of a traditional view model with the key distinction that it is still a view itself, meaning it has access to the full suite of features the SwiftUI environment provides. 
+
+TODO:
+Around that state wrapper, you would then add dependency wrappers like a type that fetches items from an API and hands it down the view hierarchy. Finally, in the outermost layer, a `Navigator` handles the navigation logic between the screens in your app.
 
 Instead of putting logic in a view model, you put it in a special wrapper view and layer it on top. This makes it easy to reuse the underlying view..
 
