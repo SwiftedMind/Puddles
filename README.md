@@ -56,8 +56,7 @@ Tutorials can be found here:
 [Tutorials](https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials)
 
 # The Puddles Architecture
-
-![Architecture Overview](https://user-images.githubusercontent.com/7083109/224427199-788128b6-7254-4ae8-b489-0ee6f37b8953.png)
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
 
 
 SwiftUI encourages building views from the ground up, wrapping new 
@@ -74,11 +73,12 @@ The view is at the base of the architecture. It contains a traditional SwiftUI `
 
 ```swift
 struct HomeView: View {
+  var interface: Interface<Action>
   var state: ViewState
     
   var body: some View {
     Button(state.buttonTitle) {
-      // Not much action happening here ...
+      interface.sendAction(.didTapButton)
     }
   }
 }
@@ -86,6 +86,9 @@ struct HomeView: View {
 extension HomeView {
   struct ViewState {
     var buttonTitle: String
+  }
+  enum Action {
+    case didTapButton
   }
 }
 ```
