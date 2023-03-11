@@ -65,18 +65,10 @@ SwiftUI encourages building views from the ground up, wrapping new
 The idea behind Puddles is to use special-purposed SwiftUI views and layer them on top of each other.
 
 The architecture can be summarized as wrapping special kinds of SwiftUI around each other. Each wrapper adds state, a dependency, or some other form of  context.
-
-## The Navigator
-
-![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224144539-6a2650f1-7a8d-494d-b2ee-7691124624d1.png)
-
-## The Provider
-
-![Provider Explanation](https://user-images.githubusercontent.com/7083109/224144670-68bb08b9-e539-4e4d-b3f4-5cdbae0502b7.png)
-
 ## The View
 
-![View Explanation](https://user-images.githubusercontent.com/7083109/224144744-238b82bd-41ce-4ff8-ad23-7c86d9b47119.png)
+![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
+
 
 The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, in the Puddles architecture, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. 
 
@@ -131,6 +123,22 @@ The reason behind all this is to keep all views absolutely context-free. They sh
 
 > **Note**:
 > All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
+
+
+## The View Provider
+
+![View Provider Explanation](https://user-images.githubusercontent.com/7083109/224484721-07a7c5d3-5cb9-4804-8911-442bf6ce0214.png)
+
+
+## The Data Provider
+
+![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/224484732-bd859271-084d-4f8b-9c06-568998853289.png)
+
+
+## The Navigator
+
+![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224484737-5e204683-69cd-43f1-ac0c-4dfaff8c38c3.png)
+
 
 ---
 
