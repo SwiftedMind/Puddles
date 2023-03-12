@@ -82,15 +82,22 @@ struct HomeView: View {
   var state: ViewState
     
   var body: some View {
-    Button(state.buttonTitle) {
-      interface.sendAction(.didTapButton)
+    VStack {
+      Text("Hello, \(state.username)!")
+      Button("Tap Me") {
+        interface.sendAction(.didTapButton)
+      }
+      if let message = state.secretMessage {
+        Text(message)
+      }
     }
   }
 }
 
 extension HomeView {
   struct ViewState {
-    var buttonTitle: String
+    var username: String
+    var secretMessage: String?
   }
   enum Action {
     case didTapButton
@@ -114,14 +121,19 @@ Moreover, we also gain better control over the encapsulation of the view's data.
 struct Home: Provider {
   // The view provider can have its own interface to send information upstream
   var interface: Interface<Action>
+
+  // If the view provider depends on external data, it is just declared as a property that is passed in from a parent view
+  var username: String
   
-  @State private var buttonTitle = "Tap that Button"
+  // Here, we store some of the view's non-dependent data
+  @State private var secretMessage: String?
 
   var entryView: some View {
     HomeView(
       interface: .consume(handleViewInterface), // We consume the view's interface and handle incoming actions
       state: .init(
-        buttonTitle: buttonTitle
+        username: username,
+        secretMessage: secretMessage
       )
     )
   }
@@ -131,7 +143,7 @@ struct Home: Provider {
     // Here, we react to user interaction and doe whatever needs to be done to the view's state
     switch action {
     case .didTapButton:
-      buttonTitle = "You tapped that button!"
+      secretMessage = "You tapped that button!"
       interface.sendAction(.userDidInteractWithButton)
     }
   }
@@ -147,7 +159,6 @@ extension Home {
 ## The Data Provider
 
 ![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/224484732-bd859271-084d-4f8b-9c06-568998853289.png)
-
 
 ## The Navigator
 
