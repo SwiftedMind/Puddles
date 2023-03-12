@@ -104,6 +104,45 @@ This setup for the view prevents it from ever modifying its own state in any way
 
 ![View Provider Explanation](https://user-images.githubusercontent.com/7083109/224484721-07a7c5d3-5cb9-4804-8911-442bf6ce0214.png)
 
+The View Provider is the owner of a view's state and takes full responsibility of its data management. Effectively, this is the view's view model but instead of it being defined *inside* the view, it is defined *around* it. That's possible because a View Provider is just another SwiftUI view itself. 
+
+Not only does this free the view from any kind of context – making it highly modular – it also means that the View Provider has access to all the amazing features SwiftUI has to offer, like the environment. 
+
+Moreover, we also gain better control over the encapsulation of the view's data. With traditional view models, all of the state properties – marked with `@Published` – have to have a public getter and often a public setter as well (for access to bindings). This exposes everything and makes it unclear who is actually responsible for managing the state, since technically anyone can read and write to it. As mentioned above, Puddles is all about unidirectional data flow which means it should always be clear where information is coming from and where it is going. And that is exactly what View Providers give us. They are not defined laterally, but rather vertically, keeping a clear and concise flow of information both upstream *and* downstream.
+
+```swift
+struct Home: Provider {
+  // The view provider can have its own interface to send information upstream
+  var interface: Interface<Action>
+  
+  @State private var buttonTitle = "Tap that Button"
+
+  var entryView: some View {
+    HomeView(
+      interface: .consume(handleViewInterface), // We consume the view's interface and handle incoming actions
+      state: .init(
+        buttonTitle: buttonTitle
+      )
+    )
+  }
+
+  @MainActor
+  private func handleViewInterface(_ action: HomeView.Action) {
+    // Here, we react to user interaction and doe whatever needs to be done to the view's state
+    switch action {
+    case .didTapButton:
+      buttonTitle = "You tapped that button!"
+      interface.sendAction(.userDidInteractWithButton)
+    }
+  }
+}
+
+extension Home {
+    enum Action {
+      case userDidInteractWithButton
+    }
+}
+```
 
 ## The Data Provider
 
@@ -141,7 +180,8 @@ One of the major shortcomings right now is the lack of proper support for unit t
 
 ## Frequently Asked Questions
 
-Coming Soon...
+**Q: Do `ObservableObjects` still have a place in this architecture?**
+Absolutely! TODO
 
 ## License
 
