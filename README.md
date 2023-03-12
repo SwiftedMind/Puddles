@@ -64,18 +64,17 @@ SwiftUI encourages building views from the ground up, constructing increasingly 
 
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
 
-Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides and manages the view's state. This wrapper essentially subsumes the tasks of a traditional view model with the key distinction that it is still a view itself, meaning it has access to the full suite of features the SwiftUI environment provides. 
+Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides and manages the view's state. This wrapper essentially subsumes the tasks of a traditional view model with the key distinction that it is still a view itself, meaning it has access to the full suite of features that the SwiftUI environment provides. 
 
-TODO:
-Around that state wrapper, you would then add dependency wrappers like a type that fetches items from an API and hands it down the view hierarchy. Finally, in the outermost layer, a `Navigator` handles the navigation logic between the screens in your app.
+You would then have additional wrapper views that add data dependencies – like a backend or database – which the views in the layers beneath can access. This keeps all the layers really modular. You can switch out a backend dependency without the underlying views ever knowing or caring about it.
 
-Instead of putting logic in a view model, you put it in a special wrapper view and layer it on top. This makes it easy to reuse the underlying view..
+Let's have a look at the individual layers and their respective purpose.
 
 ## The View
 
 ![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
 
-The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, in the Puddles architecture, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. 
+The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. Also, any user interaction should be communicated upstream through an `Interface`, which is a lightweight mechanism to send actions to a parent view, like `Action.didTapButton` for a button tap.
 
 ```swift
 struct HomeView: View {
@@ -99,40 +98,7 @@ extension HomeView {
 }
 ```
 
-The read-only nature of the `state` property does bear one implication: The view is not capable of modifying its own state in any way. That is by design. Puddles is designed around the notion of _unidirectional communication_.
-
-It is important to note that the `ViewState` is added to the view as a read-only property _A view should not be able to modify its own state_!
-
-As a consequence, you shouldn't use traditional bindings as they 
-
-```swift
-struct HomeView: View {
-  var interface: Interface<Action>
-  var state: ViewState
-    
-  var body: some View {
-    VStack {
-      Text(state.message)
-      TextField("Name:", text: interface.binding(state.name, to: { .didChangeName($0) }))
-    }
-  }
-}
-
-extension HomeView {
-  struct ViewState {
-    var message: String
-  }
-  enum Action {
-    case didChangeName(String)
-  }
-}
-```
-
-The reason behind all this is to keep all views absolutely context-free. They should not care about who is displaying them or where they are being displayed in the app. They are purely defined by the values inside of their `ViewState` struct and that's it. Finally, this approach makes using SwiftUI Previews much easier and much more powerful as we will see below.
-
-> **Note**:
-> All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
-
+This setup for the view prevents it from ever modifying its own state in any way. That is by design. Puddles is designed around the notion of _unidirectional data flow_. Everything the view does is sending actions to its parent view, whose task it is to decide in what way the state should change and what side effects need to be triggered. This frees the view of any kind of context or responsibility, making it reusable and highly modular. It is literally just the description of your UI and that's it.
 
 ## The View Provider
 
@@ -148,6 +114,8 @@ The reason behind all this is to keep all views absolutely context-free. They sh
 
 ![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224484737-5e204683-69cd-43f1-ac0c-4dfaff8c38c3.png)
 
+> **Note**:
+> All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
 
 ---
 
@@ -163,13 +131,13 @@ Puddles attempts to offer a helpful guidance and structure for your app, but doe
 
 ### Why not to use Puddles
 
-Puddles is still in early development and things will break regularly. Also, one of the major shortcomings right now is the lack of proper support for unit testing. If you need that, Puddles is not the right choice for now. I will look into it once the rest of the framework has stabilized.
-
 **Puddles is not battle-tested (yet)**
 
-**SwiftUI Lifecycle**
+Puddles is still a new framework and things might change a lot. You will likely find yourself refactoring your code often, should you decide to use Puddles. Hopefully, this will improve over time as more and more projects are built with this architecture.
 
 **No proper support for unit testing (yet)**
+
+One of the major shortcomings right now is the lack of proper support for unit testing. If you need that, Puddles is not the right choice for now. I will look into it once the rest of the framework has stabilized.
 
 ## Frequently Asked Questions
 
