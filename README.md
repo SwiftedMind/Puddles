@@ -180,8 +180,7 @@ One of the major shortcomings right now is the lack of proper support for unit t
 
 ## Frequently Asked Questions
 
-**Q: Do `ObservableObjects` still have a place in this architecture?**
-
+**Q: Do `ObservableObjects` still have a place in this architecture?**<br>
 Absolutely! TODO
 
 ## License
