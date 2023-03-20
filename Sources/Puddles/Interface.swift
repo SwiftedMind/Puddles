@@ -13,7 +13,9 @@ public struct Interface<Action> {
 
     /// Initializes an interface that forwards all actions to another interface.
     ///
-    /// This does not create an indirection since the other interface's closure will be directly accessed and stored as the action handler.
+    /// This is a convenient method that is equivalent to simply passing the other interface as a property. Use this, to clarify the nature of the interface forwarding.
+    ///
+    /// This method does not create an additional indirection since the other interface's closure will be directly accessed and stored as the action handler.
     /// - Parameter otherInterface: The interface that will handle incoming actions.
     /// - Returns: An instance of the interface.
     public static func forward(to otherInterface: Interface<Action>) -> Self {
@@ -28,7 +30,7 @@ public struct Interface<Action> {
     /// Sends an action to the interface.
     /// - Parameter action: The action to send.
     @MainActor
-    public func sendAction(_ action: Action) {
+    public func fire(_ action: Action) {
         actionHandler(action)
     }
 

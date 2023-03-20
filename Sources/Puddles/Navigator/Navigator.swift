@@ -83,16 +83,18 @@ public extension Navigator {
 
     @MainActor var body: some View {
         NavigatorBody<Self>(
-            root: root
-        ) { state in
-            applyStateConfiguration(state)
-        } firstAppearHandler: {
-            await start()
-        } finalDisappearHandler: {
-            stop()
-        } deepLinkHandler: { url in
-            handleDeepLink(url)
-        }
+            root: root,
+            applyStateConfigurationHandler: applyStateConfiguration,
+            firstAppearHandler: {
+                await start()
+            },
+            finalDisappearHandler: {
+                stop()
+            },
+            deepLinkHandler: { url in
+                handleDeepLink(url)
+            }
+        )
     }
 }
 

@@ -39,7 +39,7 @@ struct Root: Provider {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("Queryable Demo") {
-                    interface.sendAction(.didTapShowQueryableDemo)
+                    interface.fire(.didTapShowQueryableDemo)
                 }
             }
         }
@@ -51,7 +51,7 @@ struct Root: Provider {
         case .buttonTaped:
             buttonTapCount += 1
             if buttonTapCount == 42 {
-                interface.sendAction(.didReachFortyTwo)
+                interface.fire(.didReachFortyTwo)
             }
         }
     }

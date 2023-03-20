@@ -32,7 +32,7 @@ struct HomeView: View {
         VStack {
             Text("Button tapped \(state.buttonTapCount) times.")
             Button("Tap Me") {
-                interface.sendAction(.buttonTaped)
+                interface.fire(.buttonTaped)
             }
         }
     }

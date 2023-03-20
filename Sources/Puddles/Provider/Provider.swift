@@ -9,6 +9,11 @@ public protocol Provider: View {
     /// This can be inferred by providing an `entryView`.
     associatedtype EntryView: View
 
+    /// The type of the state configuration.
+    ///
+    /// This can be inferred by defining the ``Puddles/Provider/applyStateConfiguration(_:)`` method in a ``Puddles/Provider``.
+    associatedtype StateConfiguration
+
     /// The final `View` type for the ``Puddles/Provider``,
     /// which is determined by the ``Puddles/Provider/modify(provider:)-9enjl method.
     associatedtype FinalBody: View
@@ -54,6 +59,11 @@ public protocol Provider: View {
     /// - Returns: A view that modifies the provided provider.
     @ViewBuilder @MainActor func modify(provider: ProviderContent) -> FinalBody
 
+    /// Sets the state of the navigator according to the provided configuration.
+    ///
+    /// - Parameter configuration: The state configuration.
+    @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
+
     /// A method that is called when the provider has first appeared.
     ///
     /// The parent task is bound to the Provider's lifetime and is cancelled once it ends.
@@ -89,6 +99,7 @@ public extension Provider {
         modify(
             provider: ProviderBody(
                 entryView: entryView,
+                applyStateConfigurationHandler: applyStateConfiguration,
                 firstAppearHandler: {
                     await start()
                 },

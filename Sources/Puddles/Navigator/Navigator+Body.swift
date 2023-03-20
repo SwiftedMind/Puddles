@@ -55,16 +55,14 @@ public struct NavigatorBody<N: Navigator>: View {
     public var body: some View {
         root
             .environment(\.signal, nil)
-            .background {
-                ViewLifetimeHelper {
-                    if let configuration = signal?.value as? N.StateConfiguration {
-                        applyStateConfigurationHandler(configuration)
-                        signal?.onSignalHandled()
-                    }
-                    await firstAppearHandler()
-                } onDeinit: {
-                    finalDisappearHandler()
+            .lifetimeHandlers {
+                if let configuration = signal?.value as? N.StateConfiguration {
+                    applyStateConfigurationHandler(configuration)
+                    signal?.onSignalHandled()
                 }
+                await firstAppearHandler()
+            } onFinalDisappear: {
+                finalDisappearHandler()
             }
             .onOpenURL { url in
                 logger.debug("Received deep link: »\(url, privacy: .public)«")

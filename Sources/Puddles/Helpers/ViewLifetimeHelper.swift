@@ -21,6 +21,17 @@ struct ViewLifetimeHelper: View {
     }
 }
 
+extension View {
+    func lifetimeHandlers(
+        onFirstAppear: @escaping () async -> Void,
+        onFinalDisappear: @escaping () -> Void
+    ) -> some View {
+        background {
+            ViewLifetimeHelper(onInit: onFirstAppear, onDeinit: onFinalDisappear)
+        }
+    }
+}
+
 final class LifetimeViewModel: ObservableObject {
 
     private let task: Task<Void, Never>

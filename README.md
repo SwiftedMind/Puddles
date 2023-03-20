@@ -85,7 +85,7 @@ struct HomeView: View {
     VStack {
       Text("Hello, \(state.username)!")
       Button("Tap Me") {
-        interface.sendAction(.didTapButton)
+        interface.fire(.didTapButton)
       }
       if let message = state.secretMessage {
         Text(message)
@@ -144,7 +144,7 @@ struct Home: Provider {
     switch action {
     case .didTapButton:
       secretMessage = "You tapped that button!"
-      interface.sendAction(.userDidInteractWithButton)
+      interface.fire(.userDidInteractWithButton)
     }
   }
 }
