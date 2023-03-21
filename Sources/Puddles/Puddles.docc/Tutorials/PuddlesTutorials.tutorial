@@ -1,7 +1,7 @@
 @Tutorials(name: "Puddles") {
     @Intro(title: "Meet Puddles") {
         A modern and native SwiftUI app architecture
-        @Image(source: "logo.png", alt: "An illustration of a sleeping sloth, hanging from a tree branch.")
+        @Image(source: "Puddles_Logo.png", alt: "An illustration of a sleeping sloth, hanging from a tree branch.")
     }
     
     @Chapter(name: "Getting Started") {
