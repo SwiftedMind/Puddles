@@ -75,33 +75,54 @@ Let's have a look at the individual layers and their respective purpose.
 ![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
 
 The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. Also, any user interaction should be communicated upstream through an `Interface`, which is a lightweight mechanism to send actions to a parent view, like `Action.didTapButton` for a button tap.
+  
+```swift
+struct Book: Identifiable, Equatable, Hashable {
+  var id = UUID()
+  var name: String
+  var description: String
+}
+```
 
 ```swift
-struct HomeView: View {
-  var interface: Interface<Action>
-  var state: ViewState
-    
-  var body: some View {
-    VStack {
-      Text("Hello, \(state.username)!")
-      Button("Tap Me") {
-        interface.fire(.didTapButton)
-      }
-      if let message = state.secretMessage {
-        Text(message)
-      }
+struct BookListView: View {
+
+    var interface: Interface<Action> // Upstream communication
+    var state: ViewState // Read-only state
+
+    var body: some View {
+        List {
+            Button("Toggle Subscriptions") {
+                interface.fire(.showDescriptionsToggled)
+            }
+            ForEach(state.books) { book in
+                Button {
+                    interface.fire(.bookTapped(book))
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(book.name)
+                        if state.isShowingDescriptions {
+                            Text(book.description)
+                                .font(.caption)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
-  }
 }
 
-extension HomeView {
-  struct ViewState {
-    var username: String
-    var secretMessage: String?
-  }
-  enum Action {
-    case didTapButton
-  }
+extension BookListView {
+    struct ViewState {
+        var books: [Book]
+        var isShowingDescriptions: Bool
+    }
+
+    enum Action {
+        case showDescriptionsToggled
+        case bookTapped(Book)
+    }
 }
 ```
 
@@ -116,42 +137,64 @@ The View Provider is the owner of a view's state and takes full responsibility o
 Not only does this free the view from any kind of context – making it highly modular – it also means that the View Provider has access to all the amazing features SwiftUI has to offer, like the environment. 
 
 Moreover, we also gain better control over the encapsulation of the view's data. With traditional view models, all of the state properties – marked with `@Published` – have to have a public getter and often a public setter as well (for access to bindings). This exposes everything and makes it unclear who is actually responsible for managing the state, since technically anyone can read and write to it. As mentioned above, Puddles is all about unidirectional data flow which means it should always be clear where information is coming from and where it is going. And that is exactly what View Providers give us. They are not defined laterally, but rather vertically, keeping a clear and concise flow of information both upstream *and* downstream.
-
-```swift
-struct Home: Provider {
-  // The view provider can have its own interface to send information upstream
-  var interface: Interface<Action>
-
-  // If the view provider depends on external data, it is just declared as a property that is passed in from a parent view
-  var username: String
   
-  // Here, we store some of the view's non-dependent data
-  @State private var secretMessage: String?
+```swift
+// This is actually a SwiftUI view. It manages the BookListView's state.
+struct BookList: Provider {
 
-  var entryView: some View {
-    HomeView(
-      interface: .consume(handleViewInterface), // We consume the view's interface and handle incoming actions
-      state: .init(
-        username: username,
-        secretMessage: secretMessage
-      )
-    )
-  }
+    // Interface to send actions to a parent
+    var interface: Interface<Action>
 
-  @MainActor
-  private func handleViewInterface(_ action: HomeView.Action) {
-    // Here, we react to user interaction and doe whatever needs to be done to the view's state
-    switch action {
-    case .didTapButton:
-      secretMessage = "You tapped that button!"
-      interface.fire(.userDidInteractWithButton)
+    // External dependency passed in from parent, which usually is a data provider
+    // This makes this view provider highly reusable, since it does not know anything about the origin of the books
+    var books: [Book]
+
+    // View state lives here
+    @State private var isShowingDescriptions: Bool = false
+
+    // Set BookListView as the entryView
+    var entryView: some View {
+        BookListView(
+            interface: .consume(handleViewInterface), // Handle the view's interface
+            state: .init( // Create the view's state
+                books: books,
+                isShowingDescriptions: isShowingDescriptions
+            )
+        )
     }
-  }
+
+    // MARK: - Interface Handler
+
+    // React to user interaction and update the view's state
+    @MainActor
+    private func handleViewInterface(_ action: BookListView.Action) {
+        switch action {
+        case .showDescriptionsToggled:
+            isShowingDescriptions.toggle()
+        case .bookTapped(let book):
+            interface.fire(.bookTapped(book)) // Relay this tap to the interface for a parent navigator to handle navigation
+        }
+    }
+
+    // MARK: - State Configurations
+
+    @MainActor
+    func applyStateConfiguration(_ configuration: StateConfiguration) {
+        switch configuration {
+        case .reset:
+            isShowingDescriptions = false
+        }
+    }
 }
 
-extension Home {
-    enum Action {
-      case userDidInteractWithButton
+extension BookList {
+
+    enum StateConfiguration {
+        case reset
+    }
+
+    enum Action: Hashable {
+        case bookTapped(Book)
     }
 }
 ```
@@ -160,10 +203,123 @@ extension Home {
 
 ![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/224484732-bd859271-084d-4f8b-9c06-568998853289.png)
 
+```swift
+// A data provider for BookList. This one provides all of the user's favorite books
+private struct BookList_Favorites: Provider {
+  // A repository, service or manager can be used as an interface with a database or backend or anything else
+  @EnvironmentObject private var favoriteBooksRepository: FavoriteBooksRepository
+
+  // Relay for the BookList interface
+  var interface: Interface<BookList.Action>
+
+  // Here, the books live
+  @State private var books: [Book] = []
+
+  var entryView: some View {
+      BookList(
+          interface: .forward(to: interface), // Forward the interface
+          books: books
+      )
+  }
+
+  func start() async {
+      do {
+          // Fetch the books
+          books = try await favoriteBooksRepository.fetchBooks()
+      } catch {}
+  }
+
+  // MARK: - State Configurations
+
+  @MainActor
+  func applyStateConfiguration(_ configuration: StateConfiguration) {
+      switch configuration {
+      case .reset:
+          books = []
+      }
+  }
+}
+
+extension BookList_Favorites {
+    enum StateConfiguration {
+        case reset
+    }
+}
+
+// Convenience initializer for BookList
+extension BookList {
+    static func favorites(interface: Interface<BookList.Action>) -> some View {
+        BookList_Favorites(interface: interface)
+    }
+}
+```
+  
 ## The Navigator
 
 ![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224484737-5e204683-69cd-43f1-ac0c-4dfaff8c38c3.png)
 
+```swift
+// A Navigator is also just a SwiftUI view. It manages a navigational path.
+struct BooksNavigator: Navigator {
+  @StateObject private var favoriteBooksRepository: FavoriteBooksRepository = .init()
+
+  // MARK: - Root
+
+  @State private var path: [Path] = []
+
+  var root: some View {
+      NavigationStack(path: $path) {
+          // Set the BookList as root, with the favorites data provider fetching the books
+          BookList.favorites(interface: .consume(handleBookListInterface))
+              .navigationDestination(for: Path.self) { path in
+                  destination(for: path)
+              }
+      }
+      .environmentObject(favoriteBooksRepository)
+  }
+
+  // MARK: - State Configuration
+
+  func applyStateConfiguration(_ configuration: StateConfiguration) {
+      switch configuration {
+      case .reset:
+          path.removeAll()
+      }
+  }
+
+  // MARK: - Destinations
+
+  @ViewBuilder @MainActor
+  private func destination(for path: Path) -> some View {
+      switch path {
+      case .bookDetail(let book):
+          Text(book.name)
+      }
+  }
+
+
+  // MARK: - Interface Handlers
+
+  @MainActor
+  private func handleBookListInterface(_ action: BookList.Action) {
+      switch action {
+      case .bookTapped(let book):
+          path.append(.bookDetail(book))
+      }
+  }
+}
+
+extension BooksNavigator {
+    enum StateConfiguration: Hashable {
+        case reset
+    }
+
+    enum Path: Hashable {
+        case bookDetail(Book)
+    }
+}
+```
+  
 > **Note**:
 > All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
 
