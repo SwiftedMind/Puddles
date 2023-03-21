@@ -76,34 +76,40 @@ Let's have a look at the individual layers and their respective purpose.
 
 The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. Also, any user interaction should be communicated upstream through an `Interface`, which is a lightweight mechanism to send actions to a parent view, like `Action.didTapButton` for a button tap.
 
-```swift
-struct HomeView: View {
-  var interface: Interface<Action>
-  var state: ViewState
-    
-  var body: some View {
-    VStack {
-      Text("Hello, \(state.username)!")
-      Button("Tap Me") {
-        interface.fire(.didTapButton)
-      }
-      if let message = state.secretMessage {
-        Text(message)
+<details>
+  <summary><b>Code Example</b></summary>
+  
+  ```swift
+  struct HomeView: View {
+    var interface: Interface<Action>
+    var state: ViewState
+
+    var body: some View {
+      VStack {
+        Text("Hello, \(state.username)!")
+        Button("Tap Me") {
+          interface.fire(.didTapButton)
+        }
+        if let message = state.secretMessage {
+          Text(message)
+        }
       }
     }
   }
-}
 
-extension HomeView {
-  struct ViewState {
-    var username: String
-    var secretMessage: String?
+  extension HomeView {
+    struct ViewState {
+      var username: String
+      var secretMessage: String?
+    }
+    enum Action {
+      case didTapButton
+    }
   }
-  enum Action {
-    case didTapButton
-  }
-}
-```
+  ```
+  
+</details>
+
 
 This setup for the view prevents it from ever modifying its own state in any way. That is by design. Puddles is designed around the notion of _unidirectional data flow_. Everything the view does is sending actions to its parent view, whose task it is to decide in what way the state should change and what side effects need to be triggered. This frees the view of any kind of context or responsibility, making it reusable and highly modular. It is literally just the description of your UI and that's it.
 
@@ -116,54 +122,75 @@ The View Provider is the owner of a view's state and takes full responsibility o
 Not only does this free the view from any kind of context – making it highly modular – it also means that the View Provider has access to all the amazing features SwiftUI has to offer, like the environment. 
 
 Moreover, we also gain better control over the encapsulation of the view's data. With traditional view models, all of the state properties – marked with `@Published` – have to have a public getter and often a public setter as well (for access to bindings). This exposes everything and makes it unclear who is actually responsible for managing the state, since technically anyone can read and write to it. As mentioned above, Puddles is all about unidirectional data flow which means it should always be clear where information is coming from and where it is going. And that is exactly what View Providers give us. They are not defined laterally, but rather vertically, keeping a clear and concise flow of information both upstream *and* downstream.
-
-```swift
-struct Home: Provider {
-  // The view provider can have its own interface to send information upstream
-  var interface: Interface<Action>
-
-  // If the view provider depends on external data, it is just declared as a property that is passed in from a parent view
-  var username: String
   
-  // Here, we store some of the view's non-dependent data
-  @State private var secretMessage: String?
+<details>
+  <summary><b>Code Example</b></summary>
+  
+  ```swift
+  struct Home: Provider {
+    // The view provider can have its own interface to send information upstream
+    var interface: Interface<Action>
 
-  var entryView: some View {
-    HomeView(
-      interface: .consume(handleViewInterface), // We consume the view's interface and handle incoming actions
-      state: .init(
-        username: username,
-        secretMessage: secretMessage
+    // If the view provider depends on external data, it is just declared as a property that is passed in from a parent view
+    var username: String
+
+    // Here, we store some of the view's non-dependent data
+    @State private var secretMessage: String?
+
+    var entryView: some View {
+      HomeView(
+        interface: .consume(handleViewInterface), // We consume the view's interface and handle incoming actions
+        state: .init(
+          username: username,
+          secretMessage: secretMessage
+        )
       )
-    )
-  }
+    }
 
-  @MainActor
-  private func handleViewInterface(_ action: HomeView.Action) {
-    // Here, we react to user interaction and doe whatever needs to be done to the view's state
-    switch action {
-    case .didTapButton:
-      secretMessage = "You tapped that button!"
-      interface.fire(.userDidInteractWithButton)
+    @MainActor
+    private func handleViewInterface(_ action: HomeView.Action) {
+      // Here, we react to user interaction and doe whatever needs to be done to the view's state
+      switch action {
+      case .didTapButton:
+        secretMessage = "You tapped that button!"
+        interface.fire(.userDidInteractWithButton)
+      }
     }
   }
-}
 
-extension Home {
-    enum Action {
-      case userDidInteractWithButton
-    }
-}
-```
+  extension Home {
+      enum Action {
+        case userDidInteractWithButton
+      }
+  }
+  ```
+  
+</details>
 
 ## The Data Provider
 
 ![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/224484732-bd859271-084d-4f8b-9c06-568998853289.png)
 
+<details>
+  <summary><b>Code Example</b></summary>
+  
+  ```swift
+  Test
+  ```
+</details>
+  
 ## The Navigator
 
 ![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224484737-5e204683-69cd-43f1-ac0c-4dfaff8c38c3.png)
 
+<details>
+  <summary><b>Code Example</b></summary>
+
+  ```swift
+  Test
+  ```
+</details>
+  
 > **Note**:
 > All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
 
