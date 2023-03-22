@@ -202,7 +202,7 @@ extension BookList {
 
 ## The Data Provider
 
-![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/224484732-bd859271-084d-4f8b-9c06-568998853289.png)
+![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/226828345-0460c86c-70da-49b3-a007-7b9e0344b350.png)
 
 ```swift
 // A data provider for BookList. This one provides all of the user's favorite books
