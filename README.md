@@ -60,13 +60,13 @@ Tutorials can be found here:
 
 # The Puddles Architecture
 
-SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies in the layering.
+SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies and navigational context in the layering.
 
 ![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
 
 Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides and manages the view's state. This wrapper essentially subsumes the tasks of a traditional view model with the key distinction that it is still a view itself, meaning it has access to the full suite of features that the SwiftUI environment provides. 
 
-You would then have additional wrapper views that add data dependencies – like a backend or database – which the views in the layers beneath can access. This keeps all the layers really modular. You can switch out a backend dependency without the underlying views ever knowing or caring about it.
+You would then have additional wrapper views that add data dependencies – like a backend or database – to pass down to the layers below. This keeps everything really modular. You can switch out a backend dependency without the underlying views ever knowing or caring about it.
 
 Let's have a look at the individual layers and their respective purpose.
 
