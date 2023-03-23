@@ -14,7 +14,7 @@
             @Step {
                 Create a new type `RootNavigator.swift` that conforms to `Navigator`.
                 
-                Its root is the `Root` Provider from the previous tutorials. `StateConfiguration` is a type that defines all states the navigator can be in. To keep it simple, we have a single state `showPage` that we add besides `reset`.
+                Its root is the `Root` Provider from the previous tutorials. `TargetState` is a type that defines all states the navigator can be in. To keep it simple, we have a single state `showPage` that we add besides `reset`.
                  
                 @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-01") {
                     @Image(source: "03-BasicNavigation-01-01_image", alt: "A screenshot of an iPhone running the app. It shows the root view.")
@@ -52,7 +52,7 @@
             }
             
             @Step {
-                Connect the interface and handle the action by calling `applyStateConfiguration(.showPage)`.
+                Connect the interface and handle the action by calling `applyTargetState(.showPage)`.
                 
                 @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-07") {
                     @Image(source: "03-BasicNavigation-01-07_image", alt: "A screenshot of an iPhone running the app. It shows the opened sheet.")

@@ -12,8 +12,8 @@ struct RootNavigator: Navigator {
             }
     }
 
-    func applyStateConfiguration(_ configuration: StateConfiguration) {
-        switch configuration {
+    func applyTargetState(_ state: TargetState) {
+        switch state {
         case .reset:
             isShowingSheet = false
         case .showPage:
@@ -23,7 +23,7 @@ struct RootNavigator: Navigator {
 }
 
 extension RootNavigator {
-    enum StateConfiguration: Hashable {
+    enum TargetState: Hashable {
         case reset
         case showPage
     }

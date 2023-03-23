@@ -65,16 +65,16 @@ struct RootNavigator: Navigator {
     private func handleRootAction(_ action: Root.Action) {
         switch action {
         case .didReachFortyTwo:
-            applyStateConfiguration(.showPage)
+            applyTargetState(.showPage)
         case .didTapShowQueryableDemo:
-            applyStateConfiguration(.showDeletionConfirmation)
+            applyTargetState(.showDeletionConfirmation)
         }
     }
 
     // MARK: - Configurations
 
-    func applyStateConfiguration(_ configuration: StateConfiguration) {
-        switch configuration {
+    func applyTargetState(_ state: TargetState) {
+        switch state {
         case .reset:
             deletionConfirmation.cancel()
             path = []
@@ -103,14 +103,14 @@ struct RootNavigator: Navigator {
         print("Delete")
     }
 
-    func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
+    func handleDeepLink(_ deepLink: URL) -> TargetState? {
         nil
     }
 }
 
 extension RootNavigator {
 
-    enum StateConfiguration: Hashable {
+    enum TargetState: Hashable {
         case reset
         case showPage
         case showDeletionConfirmation

@@ -4,7 +4,7 @@ import SwiftUI
 
 public extension View {
 
-    /// Shows an alert controlled by a ``Puddles/QueryableItem``.
+    /// Shows an alert controlled by a ``Puddles/QueryableWithInput``.
     ///
     /// The alert is automatically presented when a query is ongoing.
     func queryableAlert<Result, Actions: View, Message: View>(
@@ -30,11 +30,11 @@ public extension View {
 
 public extension View {
     
-    /// Shows an alert controlled by a ``Puddles/QueryableItem``.
+    /// Shows an alert controlled by a ``Puddles/QueryableWithInput``.
     ///
     /// The alert is automatically presented when a query is ongoing.
     func queryableAlert<Item, Result, Actions: View, Message: View>(
-        controlledBy queryable: QueryableItem<Item, Result>.Trigger,
+        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
         title: String,
         @ViewBuilder actions: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Actions,
         @ViewBuilder message: @escaping (_ item: Item) -> Message

@@ -30,10 +30,10 @@ public protocol Navigator: View {
     /// This can be inferred by providing a `root` view.
     associatedtype RootView: View
 
-    /// The type of the state configuration.
+    /// The type of the target state.
     ///
-    /// This can be inferred by defining the ``Puddles/Navigator/applyStateConfiguration(_:)`` method in a ``Puddles/Navigator``.
-    associatedtype StateConfiguration
+    /// This can be inferred by defining the ``Puddles/Navigator/applyTargetState(_:)`` method in a ``Puddles/Navigator``.
+    associatedtype TargetState
 
     /// An identifier that can be used to name the `Provider`.
     ///
@@ -43,16 +43,20 @@ public protocol Navigator: View {
     /// The entry point for the navigator, which is usually is a `NavigationStack`, `NavigationSplitView` or `TabView` with its `Providers`.
     @MainActor @ViewBuilder var root: RootView { get }
 
-    /// Sets the state of the navigator according to the provided configuration.
+    /// Sets the state of the navigator according to the provided target state.
     ///
     /// This can be called manually but it is also automatically called, for example as a result of a ``Puddles/Navigator/handleDeepLink(_:)-6yc8o`` call.
-    /// - Parameter configuration: The state configuration.
-    @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
+    /// - Parameter state: The target state.
+    @MainActor func applyTargetState(_ state: TargetState)
 
-    /// Converts the provided deep link into a state configuration which is then automatically applied by calling ``Puddles/Navigator/applyStateConfiguration(_:)``.
+    /// Converts the provided deep link into a target state which is then automatically applied by calling ``Puddles/Navigator/applyTargetState(_:)``.
+    ///
+    /// - Important: You should only implement this method at the root navigator of your app and propagate any needed information to child views
+    /// via ``Puddles/TargetStateSetter``.
+    ///
     /// - Parameter deepLink: The incoming deep link
-    /// - Returns: The state configuration to apply or `nil` if the deep link should not be handled.
-    @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration?
+    /// - Returns: The target state to apply or `nil` if the deep link should not be handled.
+    @MainActor func handleDeepLink(_ deepLink: URL) -> TargetState?
 
         /// A method that is called when the navigator has first appeared.
     ///
@@ -84,7 +88,7 @@ public extension Navigator {
     @MainActor var body: some View {
         NavigatorBody<Self>(
             root: root,
-            applyStateConfigurationHandler: applyStateConfiguration,
+            applyTargetStateHandler: applyTargetState,
             firstAppearHandler: {
                 await start()
             },
@@ -100,7 +104,7 @@ public extension Navigator {
 
 public extension Navigator {
 
-    @MainActor func handleDeepLink(_ deepLink: URL) -> StateConfiguration? {
+    @MainActor func handleDeepLink(_ deepLink: URL) -> TargetState? {
         return nil
     }
 

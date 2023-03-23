@@ -3,12 +3,12 @@ import Combine
 
 /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Provider``.
 public struct ProviderBody<C: Provider>: View {
-    @Environment(\.signal) private var signal
+    @Environment(\.targetStateSetter) private var targetStateSetter
 
     /// The root view of the `Provider` as provided in ``Puddles/Provider/entryView-swift.property``.
     private let entryView: C.EntryView
 
-    private let applyStateConfigurationHandler: (_ state: C.StateConfiguration) -> Void
+    private let applyTargetStateHandler: (_ state: C.TargetState) -> Void
 
     /// A closure reporting back first appearance of the view.
     private let firstAppearHandler: () async -> Void
@@ -19,12 +19,12 @@ public struct ProviderBody<C: Provider>: View {
     /// A helper view taking an `entryView` and configuring it for use as a ``Puddles/Provider``.
     init(
         entryView: C.EntryView,
-        applyStateConfigurationHandler: @escaping (_ state: C.StateConfiguration) -> Void,
+        applyTargetStateHandler: @escaping (_ state: C.TargetState) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void
     ) {
         self.entryView = entryView
-        self.applyStateConfigurationHandler = applyStateConfigurationHandler
+        self.applyTargetStateHandler = applyTargetStateHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
     }
@@ -34,18 +34,18 @@ public struct ProviderBody<C: Provider>: View {
             entryView
         }
         .lifetimeHandlers {
-            if let configuration = signal?.value as? C.StateConfiguration {
-                applyStateConfigurationHandler(configuration)
-                signal?.onSignalHandled()
+            if let targetState = targetStateSetter?.value as? C.TargetState {
+                applyTargetStateHandler(targetState)
+                targetStateSetter?.onTargetStateSet()
             }
             await firstAppearHandler()
         } onFinalDisappear: {
             finalDisappearHandler()
         }
-        .onChange(of: signal) { newValue in
-            guard let configuration = newValue?.value as? C.StateConfiguration else { return }
-            applyStateConfigurationHandler(configuration)
-            signal?.onSignalHandled()
+        .onChange(of: targetStateSetter) { newValue in
+            guard let targetState = newValue?.value as? C.TargetState else { return }
+            applyTargetStateHandler(targetState)
+            targetStateSetter?.onTargetStateSet()
         }
     }
 }

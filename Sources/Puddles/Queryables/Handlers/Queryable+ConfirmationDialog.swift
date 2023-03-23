@@ -30,11 +30,11 @@ public extension View {
 
 public extension View {
 
-    /// Shows a confirmation dialog controlled by a ``Puddles/QueryableItem``.
+    /// Shows a confirmation dialog controlled by a ``Puddles/QueryableWithInput``.
     ///
     /// The dialog is automatically presented when a query is ongoing.
     func queryableConfirmationDialog<Item, Result, Actions: View, Message: View>(
-        controlledBy queryable: QueryableItem<Item, Result>.Trigger,
+        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
         title: String,
         @ViewBuilder actions: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Actions,
         @ViewBuilder message: @escaping (_ item: Item) -> Message

@@ -26,7 +26,7 @@ public extension View {
 public extension View {
     /// Calls the given closure whenever a query is ongoing.
     func queryableHandler<Item, Result>(
-        controlledBy queryable: QueryableItem<Item, Result>.Trigger,
+        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
         queryHandler: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Void
     ) -> some View {
         self

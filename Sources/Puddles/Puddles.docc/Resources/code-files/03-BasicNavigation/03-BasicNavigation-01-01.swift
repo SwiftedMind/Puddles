@@ -6,13 +6,13 @@ struct RootNavigator: Navigator {
         Root()
     }
 
-    func applyStateConfiguration(_ configuration: StateConfiguration) {
-        // Handle state configurations
+    func applyTargetState(_ state: TargetState) {
+        // Handle target states
     }
 }
 
 extension RootNavigator {
-    enum StateConfiguration: Hashable {
+    enum TargetState: Hashable {
         case reset
         case showPage
     }

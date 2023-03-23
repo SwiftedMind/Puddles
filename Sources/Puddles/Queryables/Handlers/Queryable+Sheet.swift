@@ -23,9 +23,9 @@ public extension View {
 
 public extension View {
 
-    /// Presents a sheet controlled by a ``Puddles/QueryableItem``.
+    /// Presents a sheet controlled by a ``Puddles/QueryableWithInput``.
     func queryableSheet<Item, Result, Content: View>(
-        controlledBy queryable: QueryableItem<Item, Result>.Trigger,
+        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
     ) -> some View where Item: Identifiable {

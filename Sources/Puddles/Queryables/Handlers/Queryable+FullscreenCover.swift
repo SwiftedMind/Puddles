@@ -27,11 +27,11 @@ public extension View {
 @available(macOS, unavailable)
 public extension View {
 
-    /// Shows a fullscreen cover controlled by a ``Puddles/QueryableItem``.
+    /// Shows a fullscreen cover controlled by a ``Puddles/QueryableWithInput``.
     ///
     /// The fullscreen cover is automatically presented when a query is ongoing.
     func queryableFullScreenCover<Item, Result, Content: View>(
-        controlledBy queryable: QueryableItem<Item, Result>.Trigger,
+        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
     ) -> some View where Item: Identifiable {

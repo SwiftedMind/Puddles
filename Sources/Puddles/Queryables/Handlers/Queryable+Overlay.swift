@@ -30,11 +30,11 @@ public extension View {
 
 public extension View {
 
-    /// Shows an overlay controlled by a ``Puddles/QueryableItem``.
+    /// Shows an overlay controlled by a ``Puddles/QueryableWithInput``.
     ///
     /// The overlay is automatically presented when a query is ongoing.
     func queryableOverlay<Item, Result, Content: View>(
-        controlledBy queryable: QueryableItem<Item, Result>.Trigger,
+        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
         animation: Animation? = nil,
         @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
     ) -> some View {

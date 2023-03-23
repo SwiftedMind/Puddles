@@ -22,7 +22,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ⁉️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
 
-🚦 **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deeplinking, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
+🚦 **TargetStates** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `TargetState` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deeplinking, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
 
 ## First Steps
 
@@ -59,5 +59,5 @@ struct YourApp: App {
 - ``Puddles/Provider``
 - ``Puddles/Navigator``
 - ``Puddles/Queryable``
-- ``Puddles/QueryableItem``
-- ``Puddles/Signal``
+- ``Puddles/QueryableWithInput``
+- ``Puddles/TargetState``

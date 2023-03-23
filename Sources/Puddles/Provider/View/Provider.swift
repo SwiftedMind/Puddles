@@ -2,17 +2,17 @@ import SwiftUI
 import Combine
 
 /// A type that handles state and data management of a child.
-public protocol Provider: View {
+public protocol Provider<TargetState>: View {
 
     /// The type of the ``Puddles/Provider/entryView-swift.property`` for the ``Puddles/Provider``.
     ///
     /// This can be inferred by providing an `entryView`.
     associatedtype EntryView: View
 
-    /// The type of the state configuration.
+    /// The type of the target state.
     ///
-    /// This can be inferred by defining the ``Puddles/Provider/applyStateConfiguration(_:)`` method in a ``Puddles/Provider``.
-    associatedtype StateConfiguration
+    /// This can be inferred by defining the ``Puddles/Provider/applyTargetState(_:)`` method in a ``Puddles/Provider``.
+    associatedtype TargetState
 
     /// The final `View` type for the ``Puddles/Provider``,
     /// which is determined by the ``Puddles/Provider/modify(provider:)-9enjl method.
@@ -59,10 +59,10 @@ public protocol Provider: View {
     /// - Returns: A view that modifies the provided provider.
     @ViewBuilder @MainActor func modify(provider: ProviderContent) -> FinalBody
 
-    /// Sets the state of the navigator according to the provided configuration.
+    /// Sets the state of the provider according to the provided target state.
     ///
-    /// - Parameter configuration: The state configuration.
-    @MainActor func applyStateConfiguration(_ configuration: StateConfiguration)
+    /// - Parameter state: The target state to apply.
+    @MainActor func applyTargetState(_ state: TargetState)
 
     /// A method that is called when the provider has first appeared.
     ///
@@ -99,7 +99,7 @@ public extension Provider {
         modify(
             provider: ProviderBody(
                 entryView: entryView,
-                applyStateConfigurationHandler: applyStateConfiguration,
+                applyTargetStateHandler: applyTargetState,
                 firstAppearHandler: {
                     await start()
                 },

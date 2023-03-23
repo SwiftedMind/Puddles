@@ -1,16 +1,16 @@
 import Combine
 import SwiftUI
 
-/// A property wrapper that lets you send one-time signals down the view hierarchy,
+/// A property wrapper that lets you send one-time TargetStateSetters down the view hierarchy,
 /// which is particularly useful for deep linking and state restoration without exposing all internal states of the child views.
 ///
-/// You can think of this as the opposite of closures, which are signals going from child view to a parent (like a button's action).
+/// You can think of this as the opposite of closures, which are TargetStateSetters going from child view to a parent (like a button's action).
 ///
-/// To make a ``Puddles/Navigator`` receive signals,
-/// use the `updatingStateConfiguration(on:)` view modifier and provide a signal whose value is the target navigator's
-/// ``Puddles/Navigator/StateConfiguration``.
+/// To make a ``Puddles/Navigator`` receive TargetStateSetters,
+/// use the `updatingTargetStateSetter(on:)` view modifier and provide a TargetStateSetter whose value is the target navigator's
+/// ``Puddles/Navigator/TargetStateSetter``.
 @propertyWrapper
-public struct Signal<Value>: DynamicProperty {
+public struct TargetStateSetter<Value>: DynamicProperty {
     @StateObject private var stateHolder = StateHolder()
 
     public var wrappedValue: Wrapped {
@@ -21,12 +21,12 @@ public struct Signal<Value>: DynamicProperty {
         }
     }
 
-    public init(initialSignal value: Value? = nil) {
+    public init(initialTargetStateSetter value: Value? = nil) {
         _stateHolder = .init(wrappedValue: .init(value: value))
     }
 }
 
-public extension Signal {
+public extension TargetStateSetter {
 
     @MainActor
     final class StateHolder: ObservableObject {
@@ -54,14 +54,14 @@ public extension Signal {
         var onSend: @MainActor (_ value: Value) -> Void
         var removeValue: () -> Void
 
-        /// Sends a signal.
-        /// - Parameter value: The value of the signal.
+        /// Sends a TargetStateSetter.
+        /// - Parameter value: The value of the TargetStateSetter.
         @MainActor
-        public func send(_ value: Value) {
+        public func `set`(_ value: Value) {
             onSend(value)
         }
 
-        public static func == (lhs: Signal<Value>.Wrapped, rhs: Signal<Value>.Wrapped) -> Bool {
+        public static func == (lhs: TargetStateSetter<Value>.Wrapped, rhs: TargetStateSetter<Value>.Wrapped) -> Bool {
             lhs.id == rhs.id
         }
     }

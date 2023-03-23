@@ -1,23 +1,23 @@
 import SwiftUI
 
-struct SignalWrapper: Equatable {
+struct TargetStateSetterWrapper: Equatable {
     var id: UUID?
     var value: Any?
-    var onSignalHandled: @MainActor () -> Void
+    var onTargetStateSet: @MainActor () -> Void
 
-    public static func == (lhs: SignalWrapper, rhs: SignalWrapper) -> Bool {
+    public static func == (lhs: TargetStateSetterWrapper, rhs: TargetStateSetterWrapper) -> Bool {
         lhs.id == rhs.id
     }
 }
 
-private struct SignalKey: EnvironmentKey {
-    static let defaultValue: SignalWrapper? = nil
+private struct TargetStateSetterKey: EnvironmentKey {
+    static let defaultValue: TargetStateSetterWrapper? = nil
 }
 
 extension EnvironmentValues {
-    var signal: SignalWrapper? {
-        get { self[SignalKey.self] }
-        set { self[SignalKey.self] = newValue }
+    var targetStateSetter: TargetStateSetterWrapper? {
+        get { self[TargetStateSetterKey.self] }
+        set { self[TargetStateSetterKey.self] = newValue }
     }
 }
 
@@ -25,12 +25,12 @@ extension EnvironmentValues {
 
 public extension Navigator {
 
-    /// Configures the navigator to receive signals that send state configurations. The received signals are automatically applied by calling ``Puddles/Navigator/applyStateConfiguration(_:)``.
+    /// Configures the navigator to receive TargetStateSetters that send target states. The received TargetStateSetters are automatically applied by calling ``Puddles/Navigator/applyTargetStateSetter(_:)``.
     ///
-    /// - Parameter signal: The signal that sends the navigator's `StateConfiguration`.
-    /// - Returns: A view with a configured signal reception.
-    func updateStateConfiguration(on signal: Signal<StateConfiguration>.Wrapped) -> some View {
-        environment(\.signal, .init(id: signal.id, value: signal.value, onSignalHandled: signal.removeValue))
+    /// - Parameter TargetStateSetter: The TargetStateSetter that sends the navigator's `TargetStateSetter`.
+    /// - Returns: A view with a configured TargetStateSetter reception.
+    func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
+        environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
     }
 }
 
@@ -38,11 +38,11 @@ public extension Navigator {
 
 public extension Provider {
 
-    /// Configures the provider to receive signals that send state configurations. The received signals are automatically applied by calling ``Puddles/Provider/applyStateConfiguration(_:)``.
+    /// Configures the provider to receive TargetStateSetters that send target states. The received TargetStateSetters are automatically applied by calling ``Puddles/Provider/applyTargetStateSetter(_:)``.
     ///
-    /// - Parameter signal: The signal that sends the provider's `StateConfiguration`.
-    /// - Returns: A view with a configured signal reception.
-    func updateStateConfiguration(on signal: Signal<StateConfiguration>.Wrapped) -> some View {
-        environment(\.signal, .init(id: signal.id, value: signal.value, onSignalHandled: signal.removeValue))
+    /// - Parameter TargetStateSetter: The TargetStateSetter that sends the provider's `TargetStateSetter`.
+    /// - Returns: A view with a configured TargetStateSetter reception.
+    func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
+        environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
     }
 }

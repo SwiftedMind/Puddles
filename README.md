@@ -32,7 +32,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ♦️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
 
-♦️ **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking and state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
+♦️ **TargetStates** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `TargetState` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking and state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
 
 ## Installation
 
@@ -179,8 +179,8 @@ struct BookList: Provider {
     // MARK: - State Configurations
 
     @MainActor
-    func applyStateConfiguration(_ configuration: StateConfiguration) {
-        switch configuration {
+    func applyTargetState(_ state: TargetState) {
+        switch state {
         case .reset:
             isShowingDescriptions = false
         }
@@ -189,7 +189,7 @@ struct BookList: Provider {
 
 extension BookList {
 
-    enum StateConfiguration {
+    enum TargetState {
         case reset
     }
 
@@ -232,8 +232,8 @@ private struct BookList_Favorites: Provider {
   // MARK: - State Configurations
 
   @MainActor
-  func applyStateConfiguration(_ configuration: StateConfiguration) {
-      switch configuration {
+  func applyTargetState(_ state: TargetState) {
+      switch state {
       case .reset:
           books = []
       }
@@ -241,7 +241,7 @@ private struct BookList_Favorites: Provider {
 }
 
 extension BookList_Favorites {
-    enum StateConfiguration {
+    enum TargetState {
         case reset
     }
 }
@@ -280,8 +280,8 @@ struct BooksNavigator: Navigator {
 
   // MARK: - State Configuration
 
-  func applyStateConfiguration(_ configuration: StateConfiguration) {
-      switch configuration {
+  func applyTargetState(_ state: TargetState) {
+      switch state {
       case .reset:
           path.removeAll()
       }
@@ -310,7 +310,7 @@ struct BooksNavigator: Navigator {
 }
 
 extension BooksNavigator {
-    enum StateConfiguration: Hashable {
+    enum TargetState: Hashable {
         case reset
     }
 

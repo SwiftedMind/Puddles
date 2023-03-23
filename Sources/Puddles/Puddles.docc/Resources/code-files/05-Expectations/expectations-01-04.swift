@@ -22,8 +22,8 @@ struct RootNavigator: Navigator {
         }
     }
 
-    func applyStateConfiguration(_ configuration: StateConfiguration) {
-        switch configuration {
+    func applyTargetState(_ state: TargetState) {
+        switch state {
         case .reset:
             path = []
         case .showPage:
@@ -37,15 +37,15 @@ struct RootNavigator: Navigator {
     private func handleRootAction(_ action: Root.Action) {
         switch action {
         case .didReachFortyTwo:
-            applyStateConfiguration(.showPage)
+            applyTargetState(.showPage)
         case .didTapShowQueryableDemo:
-            applyStateConfiguration(.showDeletionConfirmation)
+            applyTargetState(.showDeletionConfirmation)
         }
     }
 }
 
 extension RootNavigator {
-    enum StateConfiguration: Hashable {
+    enum TargetState: Hashable {
         case reset
         case showPage
         case showDeletionConfirmation

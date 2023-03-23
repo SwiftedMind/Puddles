@@ -34,13 +34,13 @@
                 @Code(name: "RootNavigator.swift", file: "expectations-01-03")
             }
             @Step {
-                Add the new action to the interface handler and add a new state configuration to show the deletion confirmation.
+                Add the new action to the interface handler and add a new target state to show the deletion confirmation.
                 
                 @Code(name: "RootNavigator.swift", file: "expectations-01-04")
             }            
             
             @Step {
-                Next, add an alert to the `root` and trigger it inside of `applyStateConfiguration(_:)`.
+                Next, add an alert to the `root` and trigger it inside of `applyTargetState(_:)`.
                 
                 @Code(name: "RootNavigator.swift", file: "expectations-01-05")
             }

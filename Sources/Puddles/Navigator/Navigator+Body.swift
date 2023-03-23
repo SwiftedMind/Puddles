@@ -23,14 +23,35 @@
 import SwiftUI
 import Combine
 
+public enum DeeplinkTarget: Hashable {
+    case editScrum(Bool)
+}
+
+@MainActor
+final class DeepLinkHandler: ObservableObject {
+    static let shared: DeepLinkHandler = .init()
+
+    var id: UUID = .init()
+    var url: URL?
+
+    init() {}
+
+    static func resolve(for url: URL) -> DeeplinkTarget? {
+        .editScrum(true)
+    }
+}
+
 public struct NavigatorBody<N: Navigator>: View {
-    @Environment(\.signal) private var signal
+    @Environment(\.targetStateSetter) private var targetStateSetter
+    @ObservedObject private var _deepLinkHandler: DeepLinkHandler = .shared
+
+    @State private var handledId: UUID?
 
     private let root: N.RootView
 
-    private var deepLinkHandler: (_ url: URL) -> N.StateConfiguration?
+    private var deepLinkHandler: (_ url: URL) -> N.TargetState?
 
-    private let applyStateConfigurationHandler: (_ state: N.StateConfiguration) -> Void
+    private let applyTargetStateHandler: (_ state: N.TargetState) -> Void
 
     /// A closure reporting back first appearance of the view.
     private let firstAppearHandler: () async -> Void
@@ -40,13 +61,13 @@ public struct NavigatorBody<N: Navigator>: View {
 
     init(
         root: N.RootView,
-        applyStateConfigurationHandler: @escaping (_ state: N.StateConfiguration) -> Void,
+        applyTargetStateHandler: @escaping (_ state: N.TargetState) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
-        deepLinkHandler: @escaping (_ url: URL) -> N.StateConfiguration?
+        deepLinkHandler: @escaping (_ url: URL) -> N.TargetState?
     ) {
         self.root = root
-        self.applyStateConfigurationHandler = applyStateConfigurationHandler
+        self.applyTargetStateHandler = applyTargetStateHandler
         self.firstAppearHandler = firstAppearHandler
         self.finalDisappearHandler = finalDisappearHandler
         self.deepLinkHandler = deepLinkHandler
@@ -54,12 +75,12 @@ public struct NavigatorBody<N: Navigator>: View {
 
     public var body: some View {
         root
-            .environment(\.signal, nil)
             .lifetimeHandlers {
-                if let configuration = signal?.value as? N.StateConfiguration {
-                    applyStateConfigurationHandler(configuration)
-                    signal?.onSignalHandled()
+                if let targetState = targetStateSetter?.value as? N.TargetState {
+                    applyTargetStateHandler(targetState)
+                    targetStateSetter?.onTargetStateSet()
                 }
+
                 await firstAppearHandler()
             } onFinalDisappear: {
                 finalDisappearHandler()
@@ -67,12 +88,12 @@ public struct NavigatorBody<N: Navigator>: View {
             .onOpenURL { url in
                 logger.debug("Received deep link: »\(url, privacy: .public)«")
                 guard let state = deepLinkHandler(url) else { return }
-                applyStateConfigurationHandler(state)
+                applyTargetStateHandler(state)
             }
-            .onChange(of: signal) { newValue in
-                guard let configuration = newValue?.value as? N.StateConfiguration else { return }
-                applyStateConfigurationHandler(configuration)
-                signal?.onSignalHandled()
+            .onChange(of: targetStateSetter) { newValue in
+                guard let targetState = newValue?.value as? N.TargetState else { return }
+                applyTargetStateHandler(targetState)
+                targetStateSetter?.onTargetStateSet()
             }
     }
 }
