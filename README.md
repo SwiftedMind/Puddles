@@ -1,4 +1,4 @@
-<img width="140px" src="https://user-images.githubusercontent.com/7083109/224485383-15c5798b-a916-4354-bcde-bc9cc951520b.png">
+<img width="150px" src="https://user-images.githubusercontent.com/7083109/227087336-6f7c76ea-1800-491c-9b77-b2f5b5d75908.png">
 
 # Puddles - A SwiftUI Architecture
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
@@ -18,21 +18,21 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 
 ## Features
 
-♦️ **Architecture** - Though it might be a controversial opinion, I am not convinced that strict MVVM is the right pattern to use within SwiftUI. You lose a lot of functionality and often have to work against the framework. That's why Puddles' main structures – `Provider` and `Navigator` – are just plain old SwiftUI views. They act as a wrapper around your actual UI and handle logic and data management. This allows you to make use of *all* the cool features and techniques SwiftUI provides.
+➖ **Architecture** - Puddles diverges from strict MVVM in SwiftUI, opting for two main structures called `Provider` and `Navigator`, which are plain SwiftUI views. These structures wrap around your UI to handle logic and data management, while maintaining access to all SwiftUI features and techniques.
 
-♦️ **Modular**- Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Providers`, which can be swapped out easily and even be moved across different projects!
+➖ **Modular** - Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Providers`, which can be swapped out easily and even be moved across different projects!
 
-♦️ **Flexible** - `Provider` and `Navigator` being SwiftUI views has another huge advantage. They can be placed *anywhere* you could place any SwiftUI view, so you are not locked into the architecture. If you need to implement something that doesn't properly fit within the Puddles architecture, simply build it using different techniques and plug it in. **No problem!**
+➖ **Flexible** - Since `Provider` and `Navigator` are SwiftUI views, they can be placed anywhere a SwiftUI view can be placed, offering flexibility in architecture. If Puddles' architecture doesn't suit your needs in specific cases, simply use alternative techniques and integrate them seamlessly.
 
-♦️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. The framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality. Many implementations are just convenient wrappers around existing interfaces.
+➖ **Designed to Feel Native** - Puddles is built to integrate with SwiftUI API without relying on hacks, workarounds, or internal methods. Many implementations are convenient wrappers around existing interfaces.
 
-♦️ **Unidirectional Data Flow** - While not strictly enforced by the framework, Puddles is designed around one-way communication between components. This greatly reduces complexity while increasing modularity and ease of use in SwiftUI Previews. To do this, Puddles provides an easy to use `Interface` type that lets you send `actions` to an interface observer.
+➖ **Unidirectional Data Flow** - Puddles is designed for one-way communication between components, reducing complexity and enhancing modularity and ease of use with SwiftUI Previews. It provides an `Interface` type for sending actions to an interface observer.
 
-♦️ **Deep Link Support** - Support for deep linking and arbitrary state restoration is built-in from the start and does not require much extra work or setup.
+➖ **Deep Link Support** - Puddles includes built-in support for deep linking and arbitrary state restoration with minimal additional setup.
 
-♦️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
+➖ **Queryables** - Queryables enable you to present a view and `await` its completion with a single async function call that automatically takes care of setting presentation state. This simplifies tasks like triggering a deletion confirmation alert and awaiting its result, all from a single scope.
 
-♦️ **TargetStates** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `TargetState` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking and state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
+➖ **Target States** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles introduces a `TargetState` type that sends data down the view hierarchy without enforcing a new state. This is particularly useful for deep linking and state restoration, allowing state changes from outside a view without locking new states from the parent.
 
 ## Installation
 
@@ -60,29 +60,30 @@ Tutorials can be found here:
 
 # The Puddles Architecture
 
-SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies in the layering.
+SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies and navigational context in the layering.
 
-![Architecture Overview](https://user-images.githubusercontent.com/7083109/224485578-9f8ee043-a56d-4221-8183-b6ca60cd0135.png)
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/226821969-2b5681db-ba80-414a-9262-a56b637d8fde.png)
 
 Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides and manages the view's state. This wrapper essentially subsumes the tasks of a traditional view model with the key distinction that it is still a view itself, meaning it has access to the full suite of features that the SwiftUI environment provides. 
 
-You would then have additional wrapper views that add data dependencies – like a backend or database – which the views in the layers beneath can access. This keeps all the layers really modular. You can switch out a backend dependency without the underlying views ever knowing or caring about it.
+You would then have additional wrapper views that add data dependencies – like a backend or database – to pass down to the layers below. This keeps everything really modular. You can switch out a backend dependency without the underlying views ever knowing or caring about it.
 
-Let's have a look at the individual layers and their respective purpose.
+Let's have a look at the individual layers and their respective purpose by building a small example component that displays a list of books.
 
-## The View
-
-![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
-
-The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. Also, any user interaction should be communicated upstream through an `Interface`, which is a lightweight mechanism to send actions to a parent view, like `Action.didTapButton` for a button tap.
-  
 ```swift
+// A simplified data model for the book list component
 struct Book: Identifiable, Equatable, Hashable {
   var id = UUID()
   var name: String
   var description: String
 }
 ```
+
+## The View
+
+![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
+
+The view is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. However, these views should not own any kind of state. Instead, all required data needed to display itself, should be passed in as a read-only property through a `ViewState` struct. Also, any user interaction should be communicated upstream through an `Interface`, which is a lightweight mechanism to send actions to a parent view, like `Action.didTapButton` for a button tap.
 
 ```swift
 struct BookListView: View {
@@ -201,7 +202,7 @@ extension BookList {
 
 ## The Data Provider
 
-![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/224484732-bd859271-084d-4f8b-9c06-568998853289.png)
+![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/226828345-0460c86c-70da-49b3-a007-7b9e0344b350.png)
 
 ```swift
 // A data provider for BookList. This one provides all of the user's favorite books
