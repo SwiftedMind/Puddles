@@ -1,4 +1,4 @@
-<img width="150px" src="https://user-images.githubusercontent.com/7083109/227086962-3012b25e-95b1-4d0f-ad8d-8df558738800.png">
+<img width="150px" src="https://user-images.githubusercontent.com/7083109/227087336-6f7c76ea-1800-491c-9b77-b2f5b5d75908.png">
 
 # Puddles - A SwiftUI Architecture
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
