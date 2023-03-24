@@ -8,7 +8,7 @@ public extension View {
     ///
     /// The alert is automatically presented when a query is ongoing.
     func queryableAlert<Result, Actions: View, Message: View>(
-        controlledBy queryable: Queryable<Result>.Trigger,
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
         title: String,
         @ViewBuilder actions: @escaping (_ query: QueryResolver<Result>) -> Actions,
         @ViewBuilder message: @escaping () -> Message
@@ -26,18 +26,18 @@ public extension View {
     }
 }
 
-// MARK: - Queryable Item
+
 
 public extension View {
     
     /// Shows an alert controlled by a ``Puddles/QueryableWithInput``.
     ///
     /// The alert is automatically presented when a query is ongoing.
-    func queryableAlert<Item, Result, Actions: View, Message: View>(
-        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
+    func queryableAlert<Input, Result, Actions: View, Message: View>(
+        controlledBy queryable: Queryable<Input, Result>.Trigger,
         title: String,
-        @ViewBuilder actions: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Actions,
-        @ViewBuilder message: @escaping (_ item: Item) -> Message
+        @ViewBuilder actions: @escaping (_ item: Input, _ query: QueryResolver<Result>) -> Actions,
+        @ViewBuilder message: @escaping (_ item: Input) -> Message
     ) -> some View {
         alert(
             title,

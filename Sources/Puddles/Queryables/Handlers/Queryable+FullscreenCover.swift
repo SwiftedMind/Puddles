@@ -9,7 +9,7 @@ public extension View {
     ///
     /// The fullscreen cover is automatically presented when a query is ongoing.
     func queryableFullScreenCover<Result, Content: View>(
-        controlledBy queryable: Queryable<Result>.Trigger,
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (_ query: QueryResolver<Result>) -> Content
     ) -> some View {
@@ -22,7 +22,7 @@ public extension View {
     }
 }
 
-// MARK: - Queryable Item
+
 
 @available(macOS, unavailable)
 public extension View {
@@ -31,7 +31,7 @@ public extension View {
     ///
     /// The fullscreen cover is automatically presented when a query is ongoing.
     func queryableFullScreenCover<Item, Result, Content: View>(
-        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
+        controlledBy queryable: Queryable<Item, Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
     ) -> some View where Item: Identifiable {

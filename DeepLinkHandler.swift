@@ -32,6 +32,6 @@ final class DeepLinkHandler: ObservableObject {
     init() {}
 
     static func targetState(for url: URL) -> Root.TargetState? {
-        return .editScrumOnDetailPage(.mock)
+        return .createScrum(draft: .mock)
     }
 }

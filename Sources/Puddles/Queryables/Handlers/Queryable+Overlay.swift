@@ -8,7 +8,7 @@ public extension View {
     ///
     /// The overlay is automatically presented when a query is ongoing. 
     func queryableOverlay<Result, Content: View>(
-        controlledBy queryable: Queryable<Result>.Trigger,
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
         animation: Animation? = nil,
         @ViewBuilder content: @escaping (_ query: QueryResolver<Result>) -> Content
     ) -> some View {
@@ -26,7 +26,7 @@ public extension View {
     }
 }
 
-// MARK: - Queryable Item
+
 
 public extension View {
 
@@ -34,7 +34,7 @@ public extension View {
     ///
     /// The overlay is automatically presented when a query is ongoing.
     func queryableOverlay<Item, Result, Content: View>(
-        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
+        controlledBy queryable: Queryable<Item, Result>.Trigger,
         animation: Animation? = nil,
         @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
     ) -> some View {

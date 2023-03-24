@@ -14,7 +14,7 @@
 - Renamed `Interface.handled(by:)` to `Interface.consume(_:)` and `Interface.forward(to:)` to clarify functionality
 - Renamed `Interface.unhandled` to `Interface.ignore` to clarify functionality
 - Renamed `Interface.sendAction(_:)` to `Interface.fire(_:)` to de-conflict with Xcode's `.self` auto-complete suggestion, which always forces you to type `sen` to get the correct completion.
-- Renamed the`QueryableItem` property wrapper to `QueryableWithInput` to clarify its purpose.
+- Unified the`QueryableItem` and `Queryable` property wrappers. Both are now called `Queryable`. Slightly more verbose (since you always have to specify 2 generic arguments, even if the first one is `Void`), but much more clearer and discoverable.
 - Renamed `StateConfiguration` inside `Navigator` to `TargetState`
 - Renamed the `Signal` property wrapper to `TargetStateSetter` to clarify its purpose.
 

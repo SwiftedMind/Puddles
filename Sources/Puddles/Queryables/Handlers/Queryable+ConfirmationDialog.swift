@@ -8,7 +8,7 @@ public extension View {
     ///
     /// The dialog is automatically presented when a query is ongoing.
     func queryableConfirmationDialog<Result, Actions: View, Message: View>(
-        controlledBy queryable: Queryable<Result>.Trigger,
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
         title: String,
         @ViewBuilder actions: @escaping (_ query: QueryResolver<Result>) -> Actions,
         @ViewBuilder message: @escaping () -> Message
@@ -26,7 +26,7 @@ public extension View {
     }
 }
 
-// MARK: - Queryable Item
+
 
 public extension View {
 
@@ -34,7 +34,7 @@ public extension View {
     ///
     /// The dialog is automatically presented when a query is ongoing.
     func queryableConfirmationDialog<Item, Result, Actions: View, Message: View>(
-        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
+        controlledBy queryable: Queryable<Item, Result>.Trigger,
         title: String,
         @ViewBuilder actions: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Actions,
         @ViewBuilder message: @escaping (_ item: Item) -> Message

@@ -6,7 +6,7 @@ public extension View {
 
     /// Calls the given closure whenever a query is ongoing.
     func queryableHandler<Result>(
-        controlledBy queryable: Queryable<Result>.Trigger,
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
         queryHandler: @escaping (_ query: QueryResolver<Result>) -> Void
     ) -> some View {
         self
@@ -21,12 +21,12 @@ public extension View {
 }
 
 
-// MARK: - Queryable Item
+
 
 public extension View {
     /// Calls the given closure whenever a query is ongoing.
     func queryableHandler<Item, Result>(
-        controlledBy queryable: QueryableWithInput<Item, Result>.Trigger,
+        controlledBy queryable: Queryable<Item, Result>.Trigger,
         queryHandler: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Void
     ) -> some View {
         self
