@@ -103,7 +103,7 @@ struct RootNavigator: Navigator {
         print("Delete")
     }
 
-    func handleDeepLink(_ deepLink: URL) -> TargetState? {
+    func urlOpenHandler(_ url: URL) -> TargetState? {
         nil
     }
 }

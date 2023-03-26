@@ -45,7 +45,7 @@ public protocol Navigator: View {
 
     /// Sets the state of the navigator according to the provided target state.
     ///
-    /// This can be called manually but it is also automatically called, for example as a result of a ``Puddles/Navigator/handleDeepLink(_:)-6yc8o`` call.
+    /// This can be called manually but it is also automatically called, for example as a result of a ``Puddles/Navigator/urlOpenHandler(_:)-7vt8i`` call.
     /// - Parameter state: The target state.
     @MainActor func applyTargetState(_ state: TargetState)
 
@@ -56,7 +56,7 @@ public protocol Navigator: View {
     ///
     /// - Parameter deepLink: The incoming deep link
     /// - Returns: The target state to apply or `nil` if the deep link should not be handled.
-    @MainActor func handleDeepLink(_ deepLink: URL) -> TargetState?
+    @MainActor func urlOpenHandler(_ url: URL) -> TargetState?
 
         /// A method that is called when the navigator has first appeared.
     ///
@@ -96,7 +96,7 @@ public extension Navigator {
                 stop()
             },
             deepLinkHandler: { url in
-                handleDeepLink(url)
+                urlOpenHandler(url)
             }
         )
     }
@@ -104,7 +104,7 @@ public extension Navigator {
 
 public extension Navigator {
 
-    @MainActor func handleDeepLink(_ deepLink: URL) -> TargetState? {
+    @MainActor func urlOpenHandler(_ url: URL) -> TargetState? {
         return nil
     }
 

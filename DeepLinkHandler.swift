@@ -27,11 +27,33 @@ import Puddles
 @MainActor
 final class DeepLinkHandler: ObservableObject {
 
-    @Published var d: Bool = false
-
     init() {}
 
     static func targetState(for url: URL) -> Root.TargetState? {
-        return .createScrum(draft: .mock)
+        switch url.absoluteString {
+        case let value where value.contains("createEmptyScrum"):
+            return .createScrum(draft: .draft)
+        case let value where value.contains("createMockScrum"):
+            return .createScrum(draft: .mock)
+        case let value where value.contains("editRandomScrum"):
+            return .editRandomScrumOnDetailPage
+        case let value where value.contains("showScrum"):
+            guard let parameters = url.queryParameters else { return nil }
+            guard let id = parameters["id"], let uuid = UUID(uuidString: id) else { return nil }
+            return .showScrumById(uuid)
+        default:
+            return nil
+        }
+    }
+}
+
+private extension URL {
+    var queryParameters: [String: String]? {
+        guard
+            let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
+            let queryItems = components.queryItems else { return nil }
+        return queryItems.reduce(into: [String: String]()) { (result, item) in
+            result[item.name] = item.value
+        }
     }
 }

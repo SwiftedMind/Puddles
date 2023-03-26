@@ -1,53 +1,60 @@
 import SwiftUI
 
-// MARK: - Queryable
-
 public extension View {
 
     /// Shows an overlay controlled by a ``Puddles/Queryable``.
-    ///
-    /// The overlay is automatically presented when a query is ongoing. 
-    func queryableOverlay<Result, Content: View>(
-        controlledBy queryable: Queryable<Void, Result>.Trigger,
-        animation: Animation? = nil,
-        @ViewBuilder content: @escaping (_ query: QueryResolver<Result>) -> Content
-    ) -> some View {
-        overlay {
-            ZStack {
-                if queryable.isActive.wrappedValue {
-                    content(queryable.resolver)
-                        .onDisappear {
-                            queryable.resolver.cancelQueryIfNeeded()
-                        }
-                }
-            }
-            .animation(animation, value: queryable.isActive.wrappedValue)
-        }
-    }
-}
-
-
-
-public extension View {
-
-    /// Shows an overlay controlled by a ``Puddles/QueryableWithInput``.
-    ///
-    /// The overlay is automatically presented when a query is ongoing.
+    @MainActor
     func queryableOverlay<Item, Result, Content: View>(
         controlledBy queryable: Queryable<Item, Result>.Trigger,
         animation: Animation? = nil,
+        alignment: Alignment = .center,
         @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
     ) -> some View {
-        overlay {
+        overlay(alignment: alignment) {
             ZStack {
-                if let item = queryable.item.wrappedValue {
-                    content(item, queryable.resolver)
-                        .onDisappear {
-                            queryable.resolver.cancelQueryIfNeeded()
-                        }
+                if let initialItemContainer = queryable.itemContainer.wrappedValue {
+                    StableItemContainerView(itemContainer: initialItemContainer) { itemContainer in
+                        content(itemContainer.item, initialItemContainer.resolver)
+                            .onDisappear {
+                                queryable.manager.autoCancelContinuation(id: itemContainer.id, reason: .presentationEnded)
+                            }
+                    }
                 }
             }
-            .animation(animation, value: queryable.item.wrappedValue == nil)
+            .animation(animation, value: queryable.itemContainer.wrappedValue == nil)
         }
+    }
+
+    /// Shows an overlay controlled by a ``Puddles/Queryable`` whose `Input` is of type `Void`.
+    ///
+    /// This is a convenience overload to remove the unnecessary `item` argument in the `content` ViewBuilder.
+    @MainActor
+    func queryableOverlay<Result, Content: View>(
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
+        animation: Animation? = nil,
+        alignment: Alignment = .center,
+        @ViewBuilder content: @escaping (_ query: QueryResolver<Result>) -> Content
+    ) -> some View {
+        overlay(alignment: alignment) {
+            ZStack {
+                if let initialItemContainer = queryable.itemContainer.wrappedValue {
+                    StableItemContainerView(itemContainer: initialItemContainer) { itemContainer in
+                        content(itemContainer.resolver)
+                            .onDisappear {
+                                queryable.manager.autoCancelContinuation(id: itemContainer.id, reason: .presentationEnded)
+                            }
+                    }
+                }
+            }
+            .animation(animation, value: queryable.itemContainer.wrappedValue == nil)
+        }
+    }
+
+    @MainActor
+    func queryableToast<Item, Result, Content: View>(
+        controlledBy queryable: Queryable<Item, Result>.Trigger,
+        @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
+    ) {
+
     }
 }

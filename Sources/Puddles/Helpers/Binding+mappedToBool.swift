@@ -1,6 +1,8 @@
 import SwiftUI
 
 extension Binding where Value == Bool {
+
+    @MainActor
     init<Wrapped>(bindingOptional: Binding<Wrapped?>) {
         self.init(
             get: {
@@ -15,6 +17,8 @@ extension Binding where Value == Bool {
 }
 
 extension Binding {
+
+    @MainActor
     func mappedToBool<Wrapped>() -> Binding<Bool> where Value == Wrapped? {
         return Binding<Bool>(bindingOptional: self)
     }

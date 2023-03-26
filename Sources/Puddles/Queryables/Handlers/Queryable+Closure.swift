@@ -1,41 +1,44 @@
 import SwiftUI
 
-// MARK: - Queryable
+/// Helper type allowing for `nil` checks in SwiftUI without losing the checked item.
+///
+/// This allows to support item types that are not `Equatable`.
+private struct NilEquatableWrapper<WrappedValue>: Equatable {
+    let wrappedValue: WrappedValue?
 
-public extension View {
+    init(_ wrappedValue: WrappedValue?) {
+        self.wrappedValue = wrappedValue
+    }
 
-    /// Calls the given closure whenever a query is ongoing.
-    func queryableHandler<Result>(
-        controlledBy queryable: Queryable<Void, Result>.Trigger,
-        queryHandler: @escaping (_ query: QueryResolver<Result>) -> Void
-    ) -> some View {
-        self
-            .onChange(of: queryable.isActive.wrappedValue) { wrapped in
-                if wrapped {
-                    queryHandler(queryable.resolver)
-                } else {
-                    queryable.resolver.cancelQueryIfNeeded()
-                }
-            }
+    static func ==(lhs: NilEquatableWrapper<WrappedValue>, rhs: NilEquatableWrapper<WrappedValue>) -> Bool {
+        if lhs.wrappedValue == nil {
+            return rhs.wrappedValue == nil
+        } else {
+            return rhs.wrappedValue != nil
+        }
     }
 }
 
-
-
-
 public extension View {
-    /// Calls the given closure whenever a query is ongoing.
-    func queryableHandler<Item, Result>(
+    func queryableClosure<Item, Result>(
         controlledBy queryable: Queryable<Item, Result>.Trigger,
-        queryHandler: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Void
+        block: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Void
     ) -> some View {
-        self
-            .onChange(of: NilEquatableWrapper(item: queryable.item)) { wrapped in
-                if let item = wrapped.item?.wrappedValue {
-                    queryHandler(item, queryable.resolver)
-                } else {
-                    queryable.resolver.cancelQueryIfNeeded()
-                }
+        onChange(of: NilEquatableWrapper(queryable.itemContainer.wrappedValue)) { wrapper in
+            if let itemContainer = wrapper.wrappedValue {
+                block(itemContainer.item, itemContainer.resolver)
             }
+        }
+    }
+
+    func queryableClosure<Result>(
+        controlledBy queryable: Queryable<Void, Result>.Trigger,
+        block: @escaping (_ query: QueryResolver<Result>) -> Void
+    ) -> some View {
+        onChange(of: NilEquatableWrapper(queryable.itemContainer.wrappedValue)) { wrapper in
+            if let itemContainer = wrapper.wrappedValue {
+                block(itemContainer.resolver)
+            }
+        }
     }
 }

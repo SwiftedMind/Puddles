@@ -1,45 +1,40 @@
 import SwiftUI
 
-// MARK: - Queryable
-
-@available(macOS, unavailable)
 public extension View {
 
-    /// Shows a fullscreen cover controlled by a ``Puddles/Queryable``.
+    /// Presents a sheet controlled by a ``Puddles/Queryable``.
+    @MainActor
+    func queryableFullScreenCover<Item, Result, Content: View>(
+        controlledBy queryable: Queryable<Item, Result>.Trigger,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
+    ) -> some View {
+        fullScreenCover(item: queryable.itemContainer, onDismiss: onDismiss) { initialItemContainer in
+            StableItemContainerView(itemContainer: initialItemContainer) { itemContainer in
+                content(itemContainer.item, itemContainer.resolver)
+                    .onDisappear {
+                        queryable.manager.autoCancelContinuation(id: itemContainer.id, reason: .presentationEnded)
+                    }
+            }
+        }
+    }
+
+    /// Presents a sheet controlled by a ``Puddles/Queryable`` whose `Input` is of type `Void`.
     ///
-    /// The fullscreen cover is automatically presented when a query is ongoing.
+    /// This is a convenience overload to remove the unnecessary `item` argument in the `content` ViewBuilder.
+    @MainActor
     func queryableFullScreenCover<Result, Content: View>(
         controlledBy queryable: Queryable<Void, Result>.Trigger,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (_ query: QueryResolver<Result>) -> Content
     ) -> some View {
-        fullScreenCover(isPresented: queryable.isActive, onDismiss: onDismiss) {
-            content(queryable.resolver)
-                .onDisappear {
-                    queryable.resolver.cancelQueryIfNeeded()
-                }
-        }
-    }
-}
-
-
-
-@available(macOS, unavailable)
-public extension View {
-
-    /// Shows a fullscreen cover controlled by a ``Puddles/QueryableWithInput``.
-    ///
-    /// The fullscreen cover is automatically presented when a query is ongoing.
-    func queryableFullScreenCover<Item, Result, Content: View>(
-        controlledBy queryable: Queryable<Item, Result>.Trigger,
-        onDismiss: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping (_ item: Item, _ query: QueryResolver<Result>) -> Content
-    ) -> some View where Item: Identifiable {
-        fullScreenCover(item: queryable.item, onDismiss: onDismiss) { item in
-            content(item, queryable.resolver)
-                .onDisappear {
-                    queryable.resolver.cancelQueryIfNeeded()
-                }
+        fullScreenCover(item: queryable.itemContainer, onDismiss: onDismiss) { initialItemContainer in
+            StableItemContainerView(itemContainer: initialItemContainer) { itemContainer in
+                content(itemContainer.resolver)
+                    .onDisappear {
+                        queryable.manager.autoCancelContinuation(id: itemContainer.id, reason: .presentationEnded)
+                    }
+            }
         }
     }
 }

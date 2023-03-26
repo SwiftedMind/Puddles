@@ -15,8 +15,11 @@
 - Renamed `Interface.unhandled` to `Interface.ignore` to clarify functionality
 - Renamed `Interface.sendAction(_:)` to `Interface.fire(_:)` to de-conflict with Xcode's `.self` auto-complete suggestion, which always forces you to type `sen` to get the correct completion.
 - Unified the`QueryableItem` and `Queryable` property wrappers. Both are now called `Queryable`. Slightly more verbose (since you always have to specify 2 generic arguments, even if the first one is `Void`), but much more clearer and discoverable.
+- Redesigned how `Queryables` work behind the scenes. They should now work more reliably. 
+    - `queryableAlert` and `queryableConfirmationDialog` might still glitch in some edge cases when cancelling an ongoing query and then immediately starting a new query. This is due to some strange SwiftUI behavior with replacing presented alerts and confirmation dialogs with new ones. Workaround is adding a small time delay between cancellation and the new query.
 - Renamed `StateConfiguration` inside `Navigator` to `TargetState`
 - Renamed the `Signal` property wrapper to `TargetStateSetter` to clarify its purpose.
+- Renamed `queryableHandler(controlledBy:queryHandler:)` to `queryableClosure(controlledBy:block:)` to clarify its purpose.
 
 ### Fixed
 

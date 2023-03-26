@@ -1,7 +1,8 @@
 import Foundation
 
 /// A type that lets you answer a query made by a call to ``Puddles/Queryable/Trigger/query()``.
-public struct QueryResolver<Result> {
+@MainActor
+public struct QueryResolver<Result>: Sendable {
 
     private let answerHandler: (Result) -> Void
     private let cancelHandler: (Error) -> Void
@@ -45,12 +46,5 @@ public struct QueryResolver<Result> {
     /// Cancels the query by throwing a ``Puddles/QueryCancellationError`` error.
     public func cancelQuery() {
         cancelHandler(QueryCancellationError())
-    }
-
-    /// Cancels the query by throwing a `QueryInternalError.queryAutoCancel` error.
-    ///
-    /// This is an internal helper method to distinguish between a user canceled query and a system-cancelled query, like when the user uses a swipe gesture to close a sheet.
-    func cancelQueryIfNeeded() {
-        cancelHandler(QueryInternalError.queryAutoCancel)
     }
 }

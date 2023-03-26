@@ -1,6 +1,8 @@
 import Combine
 import SwiftUI
 
+var activeContinuations: [UUID: CheckedContinuation<Any, Swift.Error>] = [:]
+
 /// A property wrapper type that can trigger a view presentation from within an `async` function and `await` its completion and potential result value.
 ///
 /// An example use case would be a boolean coming from a confirmation dialog view. First, create a property of the desired data type:
@@ -44,55 +46,31 @@ import SwiftUI
 @propertyWrapper
 public struct Queryable<Input, Result>: DynamicProperty where Input: Sendable, Result: Sendable {
 
-    /// Optional item storing the input value for a query and is used to indicate if the query has started, which usually coincides with a presentation being shown in a ``Puddles/Provider`` or ``Puddles/Navigator``.
-    @State var item: Input?
-
     public var wrappedValue: Trigger {
-        .init(item: $item, resolver: resolver, buffer: buffer)
-    }
-
-    /// Internal helper type that stores and continues a `CheckedContinuation` created by calling ``Puddles/QueryableWithInput/Trigger/query()``.
-    private var buffer: QueryBuffer<Result>
-
-    /// Helper type to hide implementation details of ``Puddles/QueryableWithInput``.
-    /// This type exposes convenient methods to answer (i.e. complete) a query.
-    private var resolver: QueryResolver<Result> {
         .init(
-            answerHandler: resumeContinuation(returning:),
-            errorHandler: resumeContinuation(throwing:)
+            itemContainer: $manager.itemContainer,
+            manager: manager
         )
     }
 
-    public init(queryConflictPolicy: QueryConflictPolicy = .cancelNewQuery) {
-        buffer = QueryBuffer(queryConflictPolicy: queryConflictPolicy)
+    @StateObject private var manager: QueryableManager<Input, Result>
+
+    public init(queryConflictPolicy: QueryConflictPolicy = .cancelPreviousQuery) {
+        _manager = .init(wrappedValue: .init(queryConflictPolicy: queryConflictPolicy))
     }
 
-    /// Completes the query with a result.
-    /// - Parameter result: The answer to the query.
-    private func resumeContinuation(returning result: Result) {
-        Task {
-            await buffer.resumeContinuation(returning: result)
-            item = nil
-        }
-    }
-
-    /// Completes the query with an error.
-    /// - Parameter result: The error that should be thrown.
-    private func resumeContinuation(throwing error: Error) {
-        Task {
-            // Catch an unanswered query and cancel it to prevent the stored continuation from leaking.
-            if case QueryInternalError.queryAutoCancel = error,
-               await buffer.hasContinuation {
-                logger.notice("Cancelling query of »\(Result.self, privacy: .public)« because presentation has terminated.")
-                await buffer.resumeContinuation(throwing: QueryCancellationError())
-                item = nil
-                return
-            }
-
-            await buffer.resumeContinuation(throwing: error)
-            item = nil
-        }
-    }
+//    /// Completes the query with a result.
+//    /// - Parameter result: The answer to the query.
+//    @MainActor
+//    private func resumeContinuation(returning result: Result, queryId: UUID) {
+//        manager.resumeContinuation(returning: result)
+//    }
+//
+//    /// Completes the query with an error.
+//    /// - Parameter result: The error that should be thrown.
+//    private func resumeContinuation(throwing error: Error, queryId: UUID) {
+//        manager.resumeContinuation(throwing: error)
+//    }
 
     /// A type that is capable of triggering and cancelling a query.
     public struct Trigger {
@@ -100,36 +78,22 @@ public struct Queryable<Input, Result>: DynamicProperty where Input: Sendable, R
         /// A binding to the `item` state inside the `@QueryableWithInput` property wrapper.
         ///
         /// This is used internally inside ``Puddles/QueryableWithInput/Wrapper/query()``.
-        var item: Binding<Input?>
-
-        var isActive: Binding<Bool> {
-            item.mappedToBool()
-        }
-
-        /// A pointer to the ``Puddles/QueryResolver`` object that is used to resolve the query.
-        ///
-        /// This is used in the `queryable` prefixed presentation modifiers, like `queryableSheet`.
-        var resolver: QueryResolver<Result>
+        var itemContainer: Binding<QueryableManager<Input, Result>.ItemContainer?>
 
         /// A property that stores the `Result` type to be used in logging messages.
         var expectedType: Result.Type {
             Result.self
         }
 
-        /// A pointer to the `Buffer` object type.
-        ///
-        /// This is used internally inside ``Puddles/QueryableWithInput/Wrapper/query()``.
-        private var buffer: QueryBuffer<Result>
+        var manager: QueryableManager<Input, Result>
 
         /// A representation of the `Queryable` property wrapper type. This can be passed to `queryable` prefixed presentation modifiers, like `queryableSheet`.
         init(
-            item: Binding<Input?>,
-            resolver: QueryResolver<Result>,
-            buffer: QueryBuffer<Result>
+            itemContainer: Binding<QueryableManager<Input, Result>.ItemContainer?>,
+            manager: QueryableManager<Input, Result>
         ) {
-            self.item = item
-            self.resolver = resolver
-            self.buffer = buffer
+            self.itemContainer = itemContainer
+            self.manager = manager
         }
 
         /// Requests the collection of data by starting a query on the `Result` type, providing an input value.
@@ -138,39 +102,36 @@ public struct Queryable<Input, Result>: DynamicProperty where Input: Sendable, R
         ///
         /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/QueryConflictPolicy`` defined in the initializer of ``Puddles/QueryableWithInput``. The default policy is ``Puddles/QueryConflictPolicy/cancelPreviousQuery``.
         /// - Returns: The result of the query.
+        @MainActor
         public func query(with item: Input) async throws -> Result {
+            let id = UUID()
             return try await withTaskCancellationHandler {
                 try await withCheckedThrowingContinuation { continuation in
-                    Task {
-                        let couldStore = await buffer.storeContinuation(continuation)
-                        if couldStore {
-                            self.item.wrappedValue = item
-                        }
-                    }
+                    manager.storeContinuation(continuation, withId: id, item: item)
                 }
             } onCancel: {
                 Task {
-                    await buffer.resumeContinuation(throwing: QueryCancellationError())
-                    self.item.wrappedValue = nil
+                    await manager.autoCancelContinuation(id: id, reason: .taskCancelled)
                 }
             }
         }
 
+        @MainActor
         public func query() async throws -> Result where Input == Void {
             try await query(with: ())
         }
 
         /// Cancels any ongoing queries.
+        @MainActor
         public func cancel() {
-            Task {
-                await buffer.resumeContinuation(throwing: QueryCancellationError())
-                item.wrappedValue = nil
-            }
+            print("init cancel")
+            manager.itemContainer?.resolver.answer(throwing: QueryCancellationError())
         }
 
         /// A flag indicating if a query is active.
+        @MainActor
         public var isQuerying: Bool {
-            item.wrappedValue != nil
+            itemContainer.wrappedValue != nil
         }
     }
 }
