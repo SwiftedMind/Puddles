@@ -1,14 +1,12 @@
 import Combine
 import SwiftUI
 
-var activeContinuations: [UUID: CheckedContinuation<Any, Swift.Error>] = [:]
-
 /// A property wrapper type that can trigger a view presentation from within an `async` function and `await` its completion and potential result value.
 ///
 /// An example use case would be a boolean coming from a confirmation dialog view. First, create a property of the desired data type:
 ///
 /// ```swift
-/// @QueryableWithInput<String, Bool> var deletionConfirmation
+/// @Queryable<String, Bool> var deletionConfirmation
 /// ```
 ///
 /// Then, use one of the `queryable` prefixed presentation modifiers to show the deletion confirmation. Here, we use an alert:
@@ -29,7 +27,7 @@ var activeContinuations: [UUID: CheckedContinuation<Any, Swift.Error>] = [:]
 ///     }
 /// ```
 ///
-/// To actually present the alert and await the boolean result, call ``Puddles/QueryableWithInput/Trigger/query(with:)`` on the ``Puddles/QueryableWithInput`` property.
+/// To actually present the alert and await the boolean result, call ``Puddles/Queryable/Trigger/query(with:)`` on the ``Puddles/Queryable`` property.
 /// This will activate the alert presentation which can then resolve the query in its completion handler.
 ///
 /// ```swift
@@ -39,7 +37,7 @@ var activeContinuations: [UUID: CheckedContinuation<Any, Swift.Error>] = [:]
 /// } catch {}
 /// ```
 ///
-/// When the Task that calls ``Puddles/QueryableWithInput/Trigger/query(with:)`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation.
+/// When the Task that calls ``Puddles/Queryable/Trigger/query(with:)`` is cancelled, the suspended query will also cancel and deactivate (i.e. close) the wrapped navigation presentation.
 /// In that case, a ``Puddles/QueryCancellationError`` error is thrown.
 ///
 /// For more information, see <doc:05-Queryable>.
@@ -59,25 +57,12 @@ public struct Queryable<Input, Result>: DynamicProperty where Input: Sendable, R
         _manager = .init(wrappedValue: .init(queryConflictPolicy: queryConflictPolicy))
     }
 
-//    /// Completes the query with a result.
-//    /// - Parameter result: The answer to the query.
-//    @MainActor
-//    private func resumeContinuation(returning result: Result, queryId: UUID) {
-//        manager.resumeContinuation(returning: result)
-//    }
-//
-//    /// Completes the query with an error.
-//    /// - Parameter result: The error that should be thrown.
-//    private func resumeContinuation(throwing error: Error, queryId: UUID) {
-//        manager.resumeContinuation(throwing: error)
-//    }
-
     /// A type that is capable of triggering and cancelling a query.
     public struct Trigger {
 
-        /// A binding to the `item` state inside the `@QueryableWithInput` property wrapper.
+        /// A binding to the `item` state inside the `@Queryable` property wrapper.
         ///
-        /// This is used internally inside ``Puddles/QueryableWithInput/Wrapper/query()``.
+        /// This is used internally inside ``Puddles/Queryable/Wrapper/query()``.
         var itemContainer: Binding<QueryableManager<Input, Result>.ItemContainer?>
 
         /// A property that stores the `Result` type to be used in logging messages.
@@ -100,7 +85,7 @@ public struct Queryable<Input, Result>: DynamicProperty where Input: Sendable, R
         ///
         /// This method will suspend for as long as the query is unanswered and not cancelled. When the parent Task is cancelled, this method will immediately cancel the query and throw a ``Puddles/QueryCancellationError`` error.
         ///
-        /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/QueryConflictPolicy`` defined in the initializer of ``Puddles/QueryableWithInput``. The default policy is ``Puddles/QueryConflictPolicy/cancelPreviousQuery``.
+        /// Creating multiple queries at the same time will cause a query conflict which is resolved using the ``Puddles/QueryConflictPolicy`` defined in the initializer of ``Puddles/Queryable``. The default policy is ``Puddles/QueryConflictPolicy/cancelPreviousQuery``.
         /// - Returns: The result of the query.
         @MainActor
         public func query(with item: Input) async throws -> Result {
@@ -124,7 +109,6 @@ public struct Queryable<Input, Result>: DynamicProperty where Input: Sendable, R
         /// Cancels any ongoing queries.
         @MainActor
         public func cancel() {
-            print("init cancel")
             manager.itemContainer?.resolver.answer(throwing: QueryCancellationError())
         }
 

@@ -30,6 +30,8 @@ final class DeepLinkHandler: ObservableObject {
     init() {}
 
     static func targetState(for url: URL) -> Root.TargetState? {
+        // To test, run this in a console (replace the URL with one of the options below):
+        // xcrun simctl openurl booted "scrumdinger://createEmptyScrum"
         switch url.absoluteString {
         case let value where value.contains("createEmptyScrum"):
             return .createScrum(draft: .draft)
@@ -41,6 +43,10 @@ final class DeepLinkHandler: ObservableObject {
             guard let parameters = url.queryParameters else { return nil }
             guard let id = parameters["id"], let uuid = UUID(uuidString: id) else { return nil }
             return .showScrumById(uuid)
+        case let value where value.contains("startMeeting"):
+            guard let parameters = url.queryParameters else { return nil }
+            guard let id = parameters["scrumId"], let uuid = UUID(uuidString: id) else { return nil }
+            return .startMeetingForScrumWithId(uuid)
         default:
             return nil
         }

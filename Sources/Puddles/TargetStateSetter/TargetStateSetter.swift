@@ -7,7 +7,7 @@ import SwiftUI
 /// You can think of this as the opposite of closures, which are TargetStateSetters going from child view to a parent (like a button's action).
 ///
 /// To make a ``Puddles/Navigator`` receive TargetStateSetters,
-/// use the `updatingTargetStateSetter(on:)` view modifier and provide a TargetStateSetter whose value is the target navigator's
+/// use the `.targetStateSetter(_:)` view modifier and provide a TargetStateSetter whose value is the target navigator's
 /// ``Puddles/Navigator/TargetStateSetter``.
 @propertyWrapper
 public struct TargetStateSetter<Value>: DynamicProperty {
@@ -21,7 +21,7 @@ public struct TargetStateSetter<Value>: DynamicProperty {
         }
     }
 
-    public init(initialTargetStateSetter value: Value? = nil) {
+    public init(initialTargetState value: Value? = nil) {
         _stateHolder = .init(wrappedValue: .init(value: value))
     }
 }

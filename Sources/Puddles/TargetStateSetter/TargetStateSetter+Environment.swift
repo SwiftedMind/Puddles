@@ -25,9 +25,9 @@ extension EnvironmentValues {
 
 public extension Navigator {
 
-    /// Configures the navigator to receive TargetStateSetters that send target states. The received TargetStateSetters are automatically applied by calling ``Puddles/Navigator/applyTargetStateSetter(_:)``.
+    /// Configures the navigator to receive TargetStateSetters that send target states.
     ///
-    /// - Parameter TargetStateSetter: The TargetStateSetter that sends the navigator's `TargetStateSetter`.
+    /// - Parameter targetStateSetter: The TargetStateSetter that sends the navigator's `TargetState`.
     /// - Returns: A view with a configured TargetStateSetter reception.
     func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
         environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
@@ -38,9 +38,9 @@ public extension Navigator {
 
 public extension Provider {
 
-    /// Configures the provider to receive TargetStateSetters that send target states. The received TargetStateSetters are automatically applied by calling ``Puddles/Provider/applyTargetStateSetter(_:)``.
+    /// Configures the provider to receive TargetStateSetters that send target states.
     ///
-    /// - Parameter TargetStateSetter: The TargetStateSetter that sends the provider's `TargetStateSetter`.
+    /// - Parameter targetStateSetter: The TargetStateSetter that sends the provider's `TargetState`.
     /// - Returns: A view with a configured TargetStateSetter reception.
     func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
         environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
