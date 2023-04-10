@@ -75,9 +75,9 @@ Let's have a look at the individual layers and their respective purpose by build
 ```swift
 // A simplified data model for the book list component
 struct Book: Identifiable, Equatable, Hashable {
-	var id = UUID()
-	var name: String
-	var description: String
+  var id = UUID()
+  var name: String
+  var description: String
 }
 ```
 
@@ -95,43 +95,43 @@ Here's the view for our book list example:
 
 ```swift
 struct BookListView: View {
-	// Only two properties
-	var interface: Interface<Action> // Upstream communication
-	var state: ViewState // Read-only state
+  // Only two properties
+  var interface: Interface<Action> // Upstream communication
+  var state: ViewState // Read-only state
 
-	var body: some View {
-		List {
-			Button("Toggle Descriptions") {
-				interface.fire(.showDescriptionsToggled)
-			}
-			ForEach(state.books) { book in
-				Button {
-					interface.fire(.bookTapped(book))
-				} label: {
-					VStack(alignment: .leading) {
-						Text(book.name)
-						if state.isShowingDescriptions {
-							Text(book.description)
-								.font(.caption)
-						}
-					}
-				}
-				.buttonStyle(.plain)
-			}
-		}
-	}
+  var body: some View {
+    List {
+      Button("Toggle Descriptions") {
+        interface.fire(.showDescriptionsToggled)
+      }
+      ForEach(state.books) { book in
+        Button {
+          interface.fire(.bookTapped(book))
+        } label: {
+          VStack(alignment: .leading) {
+            Text(book.name)
+            if state.isShowingDescriptions {
+              Text(book.description)
+                .font(.caption)
+            }
+          }
+        }
+        .buttonStyle(.plain)
+      }
+    }
+  }
 }
 
 extension BookListView {
-	// The ViewState contains all the data that the view needs
-	struct ViewState {
-		var books: [Book]
-		var isShowingDescriptions: Bool
-	}
-	enum Action {
-		case showDescriptionsToggled
-		case bookTapped(Book)
-	}
+  // The ViewState contains all the data that the view needs
+  struct ViewState {
+    var books: [Book]
+    var isShowingDescriptions: Bool
+  }
+  enum Action {
+    case showDescriptionsToggled
+    case bookTapped(Book)
+  }
 }
 ```
 
@@ -150,53 +150,53 @@ Here's the View Provider for our example. Notice the `entryView` property – wh
 ```swift
 // This is actually a SwiftUI view. It manages the BookListView's state.
 struct BookList: Provider {
-    // Interface to send actions to a parent
-	var interface: Interface<Action>
+  // Interface to send actions to a parent
+  var interface: Interface<Action>
 
-    // External dependency passed in from a parent, which is usually a data provider (but can be anything, really).
-	var books: [Book]
+  // External dependency passed in from a parent, which is usually a data provider (but can be anything, really).
+  var books: [Book]
 
-    // View state lives here
-	@State private var isShowingDescriptions: Bool = false
+  // View state lives here
+  @State private var isShowingDescriptions: Bool = false
 
-    // The entry view will be used to build the Provider's SwiftUI body
-	var entryView: some View {
-		BookListView(
-			interface: .consume(handleViewInterface), // Handle the View's interface
-			state: .init( // Create the View's state
-				books: books,
-				isShowingDescriptions: isShowingDescriptions
-			)
-		)
-	}
+  // The entry view will be used to build the Provider's SwiftUI body
+  var entryView: some View {
+    BookListView(
+      interface: .consume(handleViewInterface), // Handle the View's interface
+      state: .init( // Create the View's state
+        books: books,
+        isShowingDescriptions: isShowingDescriptions
+      )
+    )
+  }
 
-    // React to user interaction and update the View's state
-	@MainActor private func handleViewInterface(_ action: BookListView.Action) {
-		switch action {
-		case .showDescriptionsToggled:
-			isShowingDescriptions.toggle()
-		case .bookTapped(let book):
-			// Relay this tap so that a navigator upstream can handle navigation
-			interface.fire(.bookTapped(book))
-		}
-	}
+  // React to user interaction and update the View's state
+  @MainActor private func handleViewInterface(_ action: BookListView.Action) {
+    switch action {
+    case .showDescriptionsToggled:
+      isShowingDescriptions.toggle()
+    case .bookTapped(let book):
+      // Relay this tap so that a navigator upstream can handle navigation
+      interface.fire(.bookTapped(book))
+    }
+  }
 
-	// Here, you can define target states that you want to access easily by calling applyTargetState(.someState)
-	func applyTargetState(_ state: TargetState) {
-		switch state {
-		case .reset:
-			isShowingDescriptions = false
-		}
-	}
+  // Here, you can define target states that you want to access easily by calling applyTargetState(.someState)
+  func applyTargetState(_ state: TargetState) {
+    switch state {
+    case .reset:
+      isShowingDescriptions = false
+    }
+  }
 }
 
 extension BookList {
-	enum TargetState {
-		case reset
-	}
-	enum Action: Hashable {
-		case bookTapped(Book)
-	}
+  enum TargetState {
+    case reset
+  }
+  enum Action: Hashable {
+    case bookTapped(Book)
+  }
 }
 ```
 
@@ -214,44 +214,44 @@ For our book list example, the Data Provider could look like this:
 
 ```swift
 extension BookList {
-	// A data provider for BookList. This one provides all of the user's favorite books
-	struct Favorites: Provider {
-		// A repository, service or manager can be used as an interface with a database or backend or anything else
-		@EnvironmentObject private var favoriteBooksRepository: FavoriteBooksRepository
+  // A data provider for BookList. This one provides all of the user's favorite books
+  struct Favorites: Provider {
+    // A repository, service or manager can be used as an interface with a database or backend or anything else
+    @EnvironmentObject private var favoriteBooksRepository: FavoriteBooksRepository
 
-		// Relay for the BookList interface
-		var interface: Interface<BookList.Action>
+    // Relay for the BookList interface
+    var interface: Interface<BookList.Action>
 
-		// Here, the books live
-		@State private var books: [Book] = []
+    // Here, the books live
+    @State private var books: [Book] = []
 
-		var entryView: some View {
-			BookList(
-				interface: .forward(to: interface), // Forward the interface
-				books: books
-			)
-		}
+    var entryView: some View {
+      BookList(
+        interface: .forward(to: interface), // Forward the interface
+        books: books
+      )
+    }
 
-		func start() async {
-			do {
-				// Fetch the books
-				books = try await favoriteBooksRepository.fetchBooks()
-			} catch {}
-		}
+    func start() async {
+      do {
+        // Fetch the books
+        books = try await favoriteBooksRepository.fetchBooks()
+      } catch {}
+    }
 
-		@MainActor func applyTargetState(_ state: TargetState) {
-			switch state {
-			case .reset:
-				books = []
-			}
-		}
-	}
+    @MainActor func applyTargetState(_ state: TargetState) {
+      switch state {
+      case .reset:
+        books = []
+      }
+    }
+  }
 }
 
 extension BookList.Favorites {
-	enum TargetState {
-		case reset
-	}
+  enum TargetState {
+    case reset
+  }
 }
 ```
 
@@ -273,35 +273,35 @@ For our example, it could look like this:
 ```swift
 // View Provider
 struct BookList: Provider {
-	var interface: Interface<Action>
-	var dataInterface: Interface<DataAction> // Additional data interface
-	var books: [Book]
-	// ...
+  var interface: Interface<Action>
+  var dataInterface: Interface<DataAction> // Additional data interface
+  var books: [Book]
+  // ...
 }
 
 extension BookList {
-	enum DataAction: Hashable {
-		case reloadBooks
-		case filterChanged(Filter)
-		case searchQueryChanged(String)
-	}
+  enum DataAction: Hashable {
+    case reloadBooks
+    case filterChanged(Filter)
+    case searchQueryChanged(String)
+  }
 }
 
 // Data Provider
 extension BookList {
-	struct Favorites: Provider {
-		var interface: Interface<BookList.Action>
-		var entryView: some View {
-			BookList(
-				interface: .forward(to: interface),
-				dataInterface: .consume(handleDataInterface), // handle data interface
-				books: books
-			)
-		}
+  struct Favorites: Provider {
+    var interface: Interface<BookList.Action>
+    var entryView: some View {
+      BookList(
+        interface: .forward(to: interface),
+        dataInterface: .consume(handleDataInterface), // handle data interface
+        books: books
+      )
+    }
           
-		@MainActor private func handleDataInterface(_ action: BookList.DataAction) {/* ... */}
-		// ...
-	}
+    @MainActor private func handleDataInterface(_ action: BookList.DataAction) {/* ... */}
+    // ...
+  }
 }
 ```
 
@@ -315,52 +315,52 @@ extension BookList {
 ```swift
 // A Navigator is also just a SwiftUI view. It manages a navigational path.
 struct BooksNavigator: Navigator {
-	@StateObject private var favoriteBooksRepository: FavoriteBooksRepository = .init()
-	@State private var path: [Path] = []
+  @StateObject private var favoriteBooksRepository: FavoriteBooksRepository = .init()
+  @State private var path: [Path] = []
 
-	 var entryView: some View {
-		NavigationStack(path: $path) {
-			// Set the BookList as root, with the favorites data provider fetching the books
-			BookList.favorites(interface: .consume(handleBookListInterface))
-				.navigationDestination(for: Path.self) { path in
-					destination(for: path)
-				}
-		}
-		.environmentObject(favoriteBooksRepository)
-	}
+   var entryView: some View {
+    NavigationStack(path: $path) {
+      // Set the BookList as root, with the favorites data provider fetching the books
+      BookList.favorites(interface: .consume(handleBookListInterface))
+        .navigationDestination(for: Path.self) { path in
+          destination(for: path)
+        }
+    }
+    .environmentObject(favoriteBooksRepository)
+  }
 
-	func applyTargetState(_ state: TargetState) {
-		switch state {
-		case .reset:
-			path.removeAll()
-		}
-	}
-	
-	@ViewBuilder @MainActor
-	private func destination(for path: Path) -> some View {
-		switch path {
-		case .bookDetail(let book):
-			Text(book.name)
-		}
-	}
+  func applyTargetState(_ state: TargetState) {
+    switch state {
+    case .reset:
+      path.removeAll()
+    }
+  }
+  
+  @ViewBuilder @MainActor
+  private func destination(for path: Path) -> some View {
+    switch path {
+    case .bookDetail(let book):
+      Text(book.name)
+    }
+  }
 
-	@MainActor
-	private func handleBookListInterface(_ action: BookList.Action) {
-		switch action {
-		case .bookTapped(let book):
-			path.append(.bookDetail(book))
-		}
-	}
+  @MainActor
+  private func handleBookListInterface(_ action: BookList.Action) {
+    switch action {
+    case .bookTapped(let book):
+      path.append(.bookDetail(book))
+    }
+  }
 }
 
 extension BooksNavigator {
-	enum TargetState: Hashable {
-		case reset
-	}
+  enum TargetState: Hashable {
+    case reset
+  }
 
-	enum Path: Hashable {
-		case bookDetail(Book)
-	}
+  enum Path: Hashable {
+    case bookDetail(Book)
+  }
 }
 ```
 
