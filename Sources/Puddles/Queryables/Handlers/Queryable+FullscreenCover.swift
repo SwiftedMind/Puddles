@@ -1,5 +1,6 @@
 import SwiftUI
 
+// TODO: Fix macOS support
 public extension View {
 
     /// Presents a sheet controlled by a ``Puddles/Queryable``.

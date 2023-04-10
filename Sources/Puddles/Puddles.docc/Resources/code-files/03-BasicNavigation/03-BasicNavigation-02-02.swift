@@ -4,7 +4,7 @@ import Puddles
 struct RootNavigator: Navigator {
     @State private var path: [Path] = []
 
-    var root: some View {
+    var entryView: some View {
         NavigationStack(path: $path) {
             Root(interface: .consume(handleRootAction))
         }

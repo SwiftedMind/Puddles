@@ -21,6 +21,7 @@
 - Renamed `StateConfiguration` to `TargetState` to clarify its purpose.
 - Renamed the `Signal` property wrapper to `TargetStateSetter` to clarify its purpose.
 - Renamed `queryableHandler(controlledBy:queryHandler:)` to `queryableClosure(controlledBy:block:)` to clarify its purpose.
+- Renamed `Navigator.root` to `Navigator.entryView` to make it more similar to `Provider`, since they both do the exact same thing, basically.
 
 ### Fixed
 

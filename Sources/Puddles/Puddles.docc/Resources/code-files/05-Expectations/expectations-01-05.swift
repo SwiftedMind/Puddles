@@ -5,7 +5,7 @@ struct RootNavigator: Navigator {
     @State private var path: [Path] = []
     @State private var isShowingConfirmationAlert: Bool = false
 
-    var root: some View {
+    var entryView: some View {
         NavigationStack(path: $path) {
             Root(interface: .consume(handleRootAction))
                 .navigationDestination(for: Path.self) { path in

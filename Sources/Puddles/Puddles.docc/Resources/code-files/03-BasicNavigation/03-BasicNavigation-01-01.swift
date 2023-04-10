@@ -2,7 +2,7 @@ import SwiftUI
 import Puddles
 
 struct RootNavigator: Navigator {
-    var root: some View {
+    var entryView: some View {
         Root()
     }
 

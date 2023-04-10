@@ -25,10 +25,10 @@ import SwiftUI
 /// A type that coordinates the navigation of `Providers`.
 public protocol Navigator: View {
 
-    /// The type of the ``Puddles/Navigator/root`` view for a ``Puddles/Navigator``.
+    /// The type of the ``Puddles/Navigator/entryView`` view for a ``Puddles/Navigator``.
     ///
-    /// This can be inferred by providing a `root` view.
-    associatedtype RootView: View
+    /// This can be inferred by providing an `entryView`.
+    associatedtype EntryView: View
 
     /// The type of the target state.
     ///
@@ -41,7 +41,7 @@ public protocol Navigator: View {
     static var debugIdentifier: String { get }
 
     /// The entry point for the navigator, which is usually is a `NavigationStack`, `NavigationSplitView` or `TabView` with its `Providers`.
-    @MainActor @ViewBuilder var root: RootView { get }
+    @MainActor @ViewBuilder var entryView: EntryView { get }
 
     /// Sets the state of the navigator according to the provided target state.
     ///
@@ -87,7 +87,7 @@ public extension Navigator {
 
     @MainActor var body: some View {
         NavigatorBody<Self>(
-            root: root,
+            root: entryView,
             applyTargetStateHandler: applyTargetState,
             firstAppearHandler: {
                 await start()

@@ -268,7 +268,7 @@ struct BooksNavigator: Navigator {
 
   @State private var path: [Path] = []
 
-  var root: some View {
+  var entryView: some View {
       NavigationStack(path: $path) {
           // Set the BookList as root, with the favorites data provider fetching the books
           BookList.favorites(interface: .consume(handleBookListInterface))

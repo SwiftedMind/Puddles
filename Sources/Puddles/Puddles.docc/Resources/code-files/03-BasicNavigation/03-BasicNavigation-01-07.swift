@@ -4,7 +4,7 @@ import Puddles
 struct RootNavigator: Navigator {
     @State private var isShowingSheet: Bool = false
 
-    var root: some View {
+    var entryView: some View {
         Root(interface: .consume(handleRootAction))
             .sheet(isPresented: $isShowingSheet) {
                 Text("🎉")
