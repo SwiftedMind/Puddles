@@ -47,7 +47,7 @@ public struct NavigatorBody<N: Navigator>: View {
 
     @State private var handledId: UUID?
 
-    private let root: N.RootView
+    private let root: N.EntryView
 
     private var deepLinkHandler: (_ url: URL) -> N.TargetState?
 
@@ -60,7 +60,7 @@ public struct NavigatorBody<N: Navigator>: View {
     private let finalDisappearHandler: () -> Void
 
     init(
-        root: N.RootView,
+        root: N.EntryView,
         applyTargetStateHandler: @escaping (_ state: N.TargetState) -> Void,
         firstAppearHandler: @escaping () async -> Void,
         finalDisappearHandler: @escaping () -> Void,
