@@ -204,6 +204,8 @@ extension BookList {
 
 ![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/226828345-0460c86c-70da-49b3-a007-7b9e0344b350.png)
 
+*[Work in Progress]*
+
 ```swift
 // A data provider for BookList. This one provides all of the user's favorite books
 private struct BookList_Favorites: Provider {
@@ -258,6 +260,8 @@ extension BookList {
 ## The Navigator
 
 ![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224484737-5e204683-69cd-43f1-ac0c-4dfaff8c38c3.png)
+
+*[Work in Progress]*
 
 ```swift
 // A Navigator is also just a SwiftUI view. It manages a navigational path.
@@ -320,9 +324,6 @@ extension BooksNavigator {
     }
 }
 ```
-  
-> **Note**:
-> All of the above given rules should be considered to be _leninent guidelines_ that can be broken or circumvented if needed. If it makes sense to have actual bindings, or pass in a dependency in some cases, then do it. Though you might lose some convenience functionality for the SwiftUI Previews, the architecture does support it.
 
 ---
 
@@ -338,18 +339,17 @@ Puddles attempts to offer a helpful guidance and structure for your app, but doe
 
 ### Why not to use Puddles
 
-**Puddles is not battle-tested (yet)**
+**Puddles is not battle-tested**
 
 Puddles is still a new framework and things might change a lot. You will likely find yourself refactoring your code often, should you decide to use Puddles. Hopefully, this will improve over time as more and more projects are built with this architecture.
 
-**No proper support for unit testing (yet)**
+**No proper support for unit testing**
 
 One of the major shortcomings right now is the lack of proper support for unit testing. If you need that, Puddles is not the right choice for now. I will look into it once the rest of the framework has stabilized.
 
 ## Frequently Asked Questions
 
-**Q: Do `ObservableObjects` still have a place in this architecture?**<br>
-Absolutely! TODO
+*[Work in Progress]*
 
 ## License
 
