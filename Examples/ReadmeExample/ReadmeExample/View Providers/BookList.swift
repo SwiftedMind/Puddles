@@ -36,7 +36,7 @@ struct BookList: Provider {
     // View state lives here
     @State private var isShowingDescriptions: Bool = false
 
-    // Set BookListView as the entryView
+    // The entry view will be used to build the Provider's SwiftUI body
     var entryView: some View {
         BookListView(
             interface: .consume(handleViewInterface), // Handle the view's interface
@@ -56,13 +56,14 @@ struct BookList: Provider {
         case .showDescriptionsToggled:
             isShowingDescriptions.toggle()
         case .bookTapped(let book):
-            interface.fire(.bookTapped(book)) // Relay this tap to the interface for a parent navigator to handle navigation
+            // Relay this tap so that a navigator upstream can handle navigation
+            interface.fire(.bookTapped(book))
         }
     }
 
     // MARK: - State Configurations
 
-    @MainActor
+    // Here, you can define target states that you want to access easily by calling applyTargetState(.someState)
     func applyTargetState(_ state: TargetState) {
         switch state {
         case .reset:

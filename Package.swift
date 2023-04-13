@@ -22,17 +22,21 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.1.0")
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.1.0"),
+        .package(url: "https://github.com/SwiftedMind/Queryable", branch: "main")
     ],
     targets: [
         .target(
             name: "Puddles",
-            dependencies: []
+            dependencies: [
+                "Queryable"
+            ]
         ),
         .target(
             name: "PreviewDebugTools",
             dependencies: [
-                "Puddles"
+                "Puddles",
+                "Queryable"
             ]
         )
     ]

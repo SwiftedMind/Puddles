@@ -53,6 +53,7 @@ struct BookListView: View {
 }
 
 extension BookListView {
+    // The ViewState contains all the data that the view needs
     struct ViewState {
         var books: [Book]
         var isShowingDescriptions: Bool
