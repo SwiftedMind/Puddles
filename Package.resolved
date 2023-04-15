@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "queryable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftedMind/Queryable",
+      "state" : {
+        "branch" : "main",
+        "revision" : "19795741a90c31a6447d8c4b53741c8bb12098fd"
+      }
+    },
+    {
       "identity" : "swift-docc-plugin",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-docc-plugin",
