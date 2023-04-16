@@ -46,7 +46,7 @@ Puddles supports iOS 15+, macOS 12+, watchOS 8+ and tvOS 15+.
 Add the following line to the dependencies in your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/SwiftedMind/Puddles", branch: "main")
+.package(url: "https://github.com/SwiftedMind/Puddles", from: "1.0.0")
 ```
 
 ### In Xcode project
