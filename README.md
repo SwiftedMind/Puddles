@@ -65,7 +65,7 @@ Tutorials can be found here:
 
 SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies and navigational context in the layering.
 
-![Architecture Overview](https://user-images.githubusercontent.com/7083109/226821969-2b5681db-ba80-414a-9262-a56b637d8fde.png)
+![Architecture Overview](https://user-images.githubusercontent.com/7083109/232222438-ca21b1f8-c87a-4b27-b6f2-05af6aacfc61.png)
 
 Starting from the base view that describes the UI of a screen or component, you add a wrapper view that provides and manages the view's state. This wrapper essentially subsumes the tasks of a traditional view model with the key distinction that it is still a view itself, meaning it has access to the full suite of features that the SwiftUI environment provides. 
 
@@ -84,7 +84,7 @@ struct Book: Identifiable, Equatable, Hashable {
 
 ## The View
 
-![View Explanation](https://user-images.githubusercontent.com/7083109/224484750-8aae5d3d-9c4b-4e26-955d-b95c0ccd2ea1.png)
+![View Explanation](https://user-images.githubusercontent.com/7083109/232221735-9f21f3ca-669e-46b4-bf95-13a7d70434cf.png)
 
 The View is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. The only difference is that it is usually comprised of only two nonmutating properties, a `ViewState` and an `Interface`. The `ViewState` provided the view with all the data it needs to display itself whereas the `Interface` is a lightweight mechanism to send user interactions – like a button tap – upstream.
 
@@ -138,7 +138,7 @@ extension BookListView {
 
 ## The View Provider
 
-![View Provider Explanation](https://user-images.githubusercontent.com/7083109/224484721-07a7c5d3-5cb9-4804-8911-442bf6ce0214.png)
+![View Provider Explanation](https://user-images.githubusercontent.com/7083109/232221825-311d810a-bd3c-407b-b379-5c0bf2a94529.png)
 
 The View Provider is the owner of a View's state and is responsible for its data management. Effectively, this is the view's view model but instead of it being defined *inside* the view, it is defined *around* it. That's possible because a View Provider is just another SwiftUI view itself. 
 
@@ -203,7 +203,7 @@ extension BookList {
 
 ## The Dependency Provider
 
-![Dependency Provider Explanation](https://user-images.githubusercontent.com/7083109/226828345-0460c86c-70da-49b3-a007-7b9e0344b350.png)
+![Dependency Provider Explanation](https://user-images.githubusercontent.com/7083109/232221879-de0a8fe5-4bde-409a-9cdf-297a0c36f51c.png)
 
 Technically, a Dependency Provider is identical to a View Provider. The difference is only semantic in nature. A Dependency Provider is meant to wrap around a View Provider to add any kind of dependencies that the View Provider needs.
 
@@ -309,7 +309,7 @@ extension BookList {
   
 ## The Navigator
 
-![Navigator Explanation](https://user-images.githubusercontent.com/7083109/224484737-5e204683-69cd-43f1-ac0c-4dfaff8c38c3.png)
+![Navigator Explanation](https://user-images.githubusercontent.com/7083109/232221932-cfad854b-9ca2-446d-ac0d-467ae665b10f.png)
 
 *[Work in Progress]*
 
