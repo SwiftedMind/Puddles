@@ -154,7 +154,7 @@ struct BookList: Provider {
   // Interface to send actions to a parent
   var interface: Interface<Action>
 
-  // External dependency passed in from a parent, which is usually a Dependency Provider (but can be anything, really).
+  // External dependency passed in from a parent, which is usually a Data Provider (but can be anything, really).
   var books: [Book]
 
   // View state lives here
@@ -201,21 +201,21 @@ extension BookList {
 }
 ```
 
-## The Dependency Provider
+## The Data Provider
 
-![Dependency Provider Explanation](https://user-images.githubusercontent.com/7083109/232221879-de0a8fe5-4bde-409a-9cdf-297a0c36f51c.png)
+![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/232221879-de0a8fe5-4bde-409a-9cdf-297a0c36f51c.png)
 
-Technically, a Dependency Provider is identical to a View Provider. The difference is only semantic in nature. A Dependency Provider is meant to wrap around a View Provider to add any kind of dependencies that the View Provider needs.
+Technically, a Data Provider is identical to a View Provider. The difference is only semantic in nature. A Data Provider is meant to wrap around a View Provider to add any kind of dependencies that the View Provider needs.
 
-In our example, we have a `FavoriteBooksRepository` that fetches the user's favorite books. The `BookList.Favorites` Dependency Provider uses that repository to fetch and provide the books to the `BookList` View Provider.
+In our example, we have a `FavoriteBooksRepository` that fetches the user's favorite books. The `BookList.Favorites` Data Provider uses that repository to fetch and provide the books to the `BookList` View Provider.
 
-Again, this layered approach to building a SwiftUI app allows you to easily swap out dependencies. All the `BookList` View Provider does, is accept an array of books without assuming anything about it. For instance, you could create a new Dependency Provider `BookList.ReadingList` that fetches the user's reading list and provides those books to `BookList`.
+Again, this layered approach to building a SwiftUI app allows you to easily swap out dependencies. All the `BookList` View Provider does, is accept an array of books without assuming anything about it. For instance, you could create a new Data Provider `BookList.ReadingList` that fetches the user's reading list and provides those books to `BookList`.
 
-For our book list example, the Dependency Provider could look like this:
+For our book list example, the Data Provider could look like this:
 
 ```swift
 extension BookList {
-  // A Dependency Provider for BookList. This one provides all of the user's favorite books
+  // A Data Provider for BookList. This one provides all of the user's favorite books
   struct Favorites: Provider {
     // A repository, service or manager can be used as an interface with a database or backend or anything else
     @EnvironmentObject private var favoriteBooksRepository: FavoriteBooksRepository
@@ -256,9 +256,9 @@ extension BookList.Favorites {
 }
 ```
 
-One interesting thing to note here is that the Dependency Provider forwards all actions from the View Provider interface. Usually, this is the sensible thing to do, since a Dependency Provider (mostly) only adds dependencies and should not control the behavior of its underlying View Provider. Instead, that should be handled upstream.
+One interesting thing to note here is that the Data Provider forwards all actions from the View Provider interface. Usually, this is the sensible thing to do, since a Data Provider (mostly) only adds dependencies and should not control the behavior of its underlying View Provider. Instead, that should be handled upstream.
 
-Effectively, a Dependency Provider provides a reduced version of a View Provider's initializer:
+Effectively, a Data Provider provides a reduced version of a View Provider's initializer:
 
 ```swift
 BookList(interface:books:) // Books need to be provided
@@ -267,7 +267,7 @@ BookList.Favorites(interface:) // The books are fetched and managed internally
 
 ### Data Interfaces
 
-Sometimes, the View Provider needs to make a request to modify its data. For example, if a reload button has been tapped, or a filter or search query has changed. Since the Dependency Provider usually forwards the View Provider's interface without intercepting it, you can define an additional `dataInterface` that handles all actions around the data.
+Sometimes, the View Provider needs to make a request to modify its data. For example, if a reload button has been tapped, or a filter or search query has changed. Since the Data Provider usually forwards the View Provider's interface without intercepting it, you can define an additional `dataInterface` that handles all actions around the data.
 
 For our example, it could look like this:
 
@@ -288,7 +288,7 @@ extension BookList {
   }
 }
 
-// Dependency Provider
+// Data Provider
 extension BookList {
   struct Favorites: Provider {
     var interface: Interface<BookList.Action>
@@ -321,7 +321,7 @@ struct BooksNavigator: Navigator {
 
    var entryView: some View {
     NavigationStack(path: $path) {
-      // Set the BookList as root, with the favorites Dependency Provider fetching the books
+      // Set the BookList as root, with the favorites Data Provider fetching the books
       BookList.favorites(interface: .consume(handleBookListInterface))
         .navigationDestination(for: Path.self) { path in
           destination(for: path)

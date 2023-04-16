@@ -33,7 +33,7 @@ struct BooksNavigator: Navigator {
 
     var entryView: some View {
         NavigationStack(path: $path) {
-            // Set the BookList as root, with the favorites Dependency Provider fetching the books
+            // Set the BookList as root, with the favorites Data Provider fetching the books
             BookList.Favorites(interface: .consume(handleBookListInterface))
                 .navigationDestination(for: Path.self) { path in
                     destination(for: path)

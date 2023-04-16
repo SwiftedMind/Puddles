@@ -24,7 +24,7 @@ import SwiftUI
 import Puddles
 
 extension BookList {
-    // A Dependency Provider for BookList. This one provides all of the user's favorite books
+    // A Data Provider for BookList. This one provides all of the user's favorite books
     struct Favorites: Provider {
         // A repository, service or manager can be used as an interface with a database or backend or anything else
         @EnvironmentObject private var favoriteBooksRepository: FavoriteBooksRepository
