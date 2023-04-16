@@ -29,7 +29,7 @@ struct BookList: Provider {
     // Interface to send actions to a parent
     var interface: Interface<Action>
 
-    // External dependency passed in from parent, which usually is a data provider (but can be anything, really).
+    // External dependency passed in from parent, which usually is a Dependency Provider (but can be anything, really).
     // This makes this view provider highly reusable, since it does not know anything about the origin of the books
     var books: [Book]
 
