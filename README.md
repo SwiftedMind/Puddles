@@ -64,17 +64,16 @@ Tutorials can be found here:
 
 To get an overview of the architecture, have a look at this article: [The Puddles Architecture](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
 
----
 
 ## Should you use Puddles?
 
 I designed and built Puddles around a few key ideas that fundamentally shaped the architecture with all its advantages, disadvantages and outright problems (I'm looking at you, lack of unit testing support).
 
-First and foremost, I didn't want to over-engineer anything. While it is certainly possible – and totally valid– to solve a lot of problems and trade-offs by building layers upon layers onto what Swift and SwiftUI already provide, I wanted to stay as close to the native ecosystem as possible to not only allow for more flexibility and freedom, but to also keep everything as lightweight as possible. Right now, you could easily fork the repository and modify or maintain it yourself. It's not much code and most of it should be fairly straightforward. I would like to keep it that way, as much as possible.
+First and foremost, **I didn't want to over-engineer anything**. While it is certainly possible – and totally valid– to solve a lot of problems and trade-offs by building layers upon layers onto what Swift and SwiftUI already provide, I wanted to stay as close to the native ecosystem as possible to not only allow for more flexibility and freedom, but to also keep everything as lightweight as possible. Right now, you could easily fork the repository and modify or maintain it yourself. It's not much code and most of it should be fairly straightforward. I would like to keep it that way, as much as possible.
 
-Secondly, I wanted something that's not following the traditional MVVM paradigm. I know this is highly opinionated and possibly very, very wrong. But strict MVVM as we know it in SwiftUI simply doesn't feel right to me. This might change over time – maybe SE-0395 will help with that in some ways – and the good thing is that it should be relatively easy to pivot Puddles if need be. That's another reason why I designed it to be flexible and lightweight.
+Secondly, **I wanted something that's not following the traditional MVVM paradigm**. I know this is highly opinionated and possibly very, very wrong. But strict MVVM as we know it in SwiftUI simply doesn't feel right to me. This might change over time – maybe SE-0395 will help with that in some ways – and the good thing is that it should be relatively easy to pivot Puddles if need be. That's another reason why I designed it to be flexible and lightweight.
 
-Thirdly, I wanted to focus on data encapsulation by making SwiftUI views host their own state. This makes working with the SwiftUI environment much easier. It also creates clear-cut responsibilities for every data point in the app thanks to the nature of read-only properties inside views.
+Thirdly, **I wanted to focus on data encapsulation** by making SwiftUI views host their own state. This makes working with the SwiftUI environment much easier. It also creates clear-cut responsibilities for every data point in the app thanks to the nature of read-only properties inside views.
 
 The flip side of the coin is coupling your UI with your data, which can cause problems. For example, this makes it challenging to restore arbitrary states, which you would need for deep link support – though I do think that I have found a nice solution for that problem via the concept of Target States.
 
