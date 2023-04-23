@@ -65,11 +65,9 @@ The documentation for Puddles can be found here:
 
 ## The Puddles Architecture
 
+To get a more in-depth overview of the architecture, have a look at this article: [**The Puddles Architecture**](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
+
 ![Puddles Architecture](https://user-images.githubusercontent.com/7083109/232222438-ca21b1f8-c87a-4b27-b6f2-05af6aacfc61.png)
-
-**To get a more in-depth overview of the architecture, have a look at this article: [The Puddles Architecture](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).**
-
-
 
 ### The View
 
