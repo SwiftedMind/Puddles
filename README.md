@@ -67,7 +67,222 @@ The documentation for Puddles can be found here:
 
 ![Puddles Architecture](https://user-images.githubusercontent.com/7083109/232222438-ca21b1f8-c87a-4b27-b6f2-05af6aacfc61.png)
 
-To get an overview of the architecture, have a look at this article: [The Puddles Architecture](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
+**To get a more in-depth overview of the architecture, have a look at this article: [The Puddles Architecture](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).**
+
+
+
+### The View
+
+![View Explanation](https://user-images.githubusercontent.com/7083109/232221735-9f21f3ca-669e-46b4-bf95-13a7d70434cf.png)
+
+The View is at the base of the architecture. It contains a traditional SwiftUI `body` and behaves just like any other SwiftUI view. The only difference is that it is usually comprised of only two nonmutating properties, a `ViewState` and an `Interface`. The `ViewState` provides the view with all the data it needs to display itself whereas the `Interface` is a lightweight mechanism to send user interactions – like a button tap – upstream.
+
+```swift
+struct BookListView: View {
+  // Only two properties
+  var interface: Interface<Action> // Upstream communication
+  var state: ViewState // Read-only state
+
+  var body: some View {
+    List {
+      Button("Toggle Descriptions") {
+        interface.fire(.showDescriptionsToggled)
+      }
+      ForEach(state.books) { book in
+        Button {
+          interface.fire(.bookTapped(book))
+        } label: {
+          VStack(alignment: .leading) {
+            Text(book.name)
+            if state.isShowingDescriptions {
+              Text(book.description)
+                .font(.caption)
+            }
+          }
+        }
+        .buttonStyle(.plain)
+      }
+    }
+  }
+}
+
+extension BookListView {
+  // The ViewState contains all the data that the view needs
+  struct ViewState {
+    var books: [Book]
+    var isShowingDescriptions: Bool
+  }
+  enum Action {
+    case showDescriptionsToggled
+    case bookTapped(Book)
+  }
+}
+```
+
+### The View Provider
+
+![View Provider Explanation](https://user-images.githubusercontent.com/7083109/232221825-311d810a-bd3c-407b-b379-5c0bf2a94529.png)
+
+The View Provider is the owner of a View's state and is responsible for its data management. Effectively, this is the view's view model but instead of it being defined _inside_ the view, it is defined _around_ it. That's possible because a View Provider is just another SwiftUI view itself.
+
+```swift
+// This is actually a SwiftUI view. It manages the BookListView's state.
+struct BookList: Provider {
+  // Interface to send actions to a parent
+  var interface: Interface<Action>
+
+  // External dependency passed in from a parent, which is usually a data provider (but can be anything, really).
+  var books: [Book]
+
+  // View state lives here
+  @State private var isShowingDescriptions: Bool = false
+
+  // The entry view will be used to build the Provider's SwiftUI body
+  var entryView: some View {
+    BookListView(
+      interface: .consume(handleViewInterface), // Handle the View's interface
+      state: .init( // Create the View's state
+        books: books,
+        isShowingDescriptions: isShowingDescriptions
+      )
+    )
+  }
+
+  // React to user interaction and update the View's state
+  @MainActor private func handleViewInterface(_ action: BookListView.Action) {
+    switch action {
+    case .showDescriptionsToggled:
+      isShowingDescriptions.toggle()
+    case .bookTapped(let book):
+      // Relay this tap so that a navigator upstream can handle navigation
+      interface.fire(.bookTapped(book))
+    }
+  }
+
+  // Here, you can define target states that you want to access easily by calling applyTargetState(.someState)
+  func applyTargetState(_ state: TargetState) {
+    switch state {
+    case .reset:
+      isShowingDescriptions = false
+    }
+  }
+}
+
+extension BookList {
+  enum TargetState {
+    case reset
+  }
+  enum Action: Hashable {
+    case bookTapped(Book)
+  }
+}
+```
+
+### The Data Provider
+
+![Data Provider Explanation](https://user-images.githubusercontent.com/7083109/232221879-de0a8fe5-4bde-409a-9cdf-297a0c36f51c.png)
+
+Technically, a Data Provider is identical to a View Provider. The difference is only semantic in nature. A Data Provider is meant to wrap around a View Provider to add any kind of dependencies that the View Provider needs.
+
+```swift
+extension BookList {
+  // A data provider for BookList. This one provides all of the user's favorite books
+  struct Favorites: Provider {
+    // A repository, service or manager can be used as an interface with a database or backend or anything else
+    @EnvironmentObject private var favoriteBooksRepository: FavoriteBooksRepository
+
+    // Relay for the BookList interface
+    var interface: Interface<BookList.Action>
+
+    // Here, the books live
+    @State private var books: [Book] = []
+
+    var entryView: some View {
+      BookList(
+        interface: .forward(to: interface), // Forward the interface
+        books: books
+      )
+    }
+
+    func start() async {
+      do {
+        // Fetch the books
+        books = try await favoriteBooksRepository.fetchBooks()
+      } catch {}
+    }
+
+    @MainActor func applyTargetState(_ state: TargetState) {
+      switch state {
+      case .reset:
+        books = []
+      }
+    }
+  }
+}
+
+extension BookList.Favorites {
+  enum TargetState {
+    case reset
+  }
+}
+```
+
+### The Navigator
+
+![Navigator Explanation](https://user-images.githubusercontent.com/7083109/232221932-cfad854b-9ca2-446d-ac0d-467ae665b10f.png)
+
+The Navigator takes care of coordinating the navigation inside a section of your app. It is responsible for managing a `NavigationStack`, `NavigationSplitView` or `TabView`, as well as presenting any kind of views via, for instance, `fullScreenCover`, `sheet`, or `alert`. You can think of each common view hierarchy inside your app having its own Navigator, i.e. a presented sheet would have its own Navigator at its root.
+
+```swift
+struct BooksNavigator: Navigator {
+  @StateObject private var favoriteBooksRepository: FavoriteBooksRepository = .init()
+  @State private var path: [Path] = []
+
+   var entryView: some View {
+    NavigationStack(path: $path) {
+      // Set the BookList as root, with the favorites data provider fetching the books
+      BookList.Favorites(interface: .consume(handleBookListInterface))
+        .navigationDestination(for: Path.self) { path in
+          destination(for: path)
+        }
+    }
+    .environmentObject(favoriteBooksRepository)
+  }
+
+  @ViewBuilder @MainActor
+  private func destination(for path: Path) -> some View {
+    switch path {
+    case .bookDetail(let book):
+      Text(book.name)
+    }
+  }
+
+  @MainActor
+  private func handleBookListInterface(_ action: BookList.Action) {
+    switch action {
+    case .bookTapped(let book):
+      path.append(.bookDetail(book))
+    }
+  }
+
+  func applyTargetState(_ state: TargetState) {
+    switch state {
+    case .reset:
+      path.removeAll()
+    }
+  }
+}
+
+extension BooksNavigator {
+  enum TargetState: Hashable {
+    case reset
+  }
+
+  enum Path: Hashable {
+    case bookDetail(Book)
+  }
+}
+```
 
 ## Should you use Puddles?
 
