@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added landing page for the project: [swiftedmind.com/puddles](https://www.swiftedmind.com/puddles)
 - Added documentation for the Puddles architecture
 - Added full example project: ["Scrumdinger in Puddles"](https://github.com/SwiftedMind/Scrumdinger) – A re-implementation of Apple's Scrumdinger tutorial app.
 - Added support for watchOS 8+ and tvOS 15+.
