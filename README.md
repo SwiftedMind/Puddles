@@ -55,9 +55,6 @@ Go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMi
 The documentation for Puddles can be found here:
 [Documentation](https://swiftedmind.github.io/Puddles/documentation/puddles/)
 
-Tutorials can be found here:
-[Tutorials](https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials)
-
 ## Examples
 
 [**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
@@ -71,7 +68,6 @@ Tutorials can be found here:
 ![Puddles Architecture](https://user-images.githubusercontent.com/7083109/232222438-ca21b1f8-c87a-4b27-b6f2-05af6aacfc61.png)
 
 To get an overview of the architecture, have a look at this article: [The Puddles Architecture](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
-
 
 ## Should you use Puddles?
 
