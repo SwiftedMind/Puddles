@@ -85,7 +85,7 @@ Thirdly, **I wanted to focus on data encapsulation** by making SwiftUI views hos
 
 The flip side of the coin is coupling your UI with your data, which can cause problems. For example, this makes it challenging to restore arbitrary states, which you would need for deep link support – though I do think that I have found a nice solution for that problem via the concept of Target States.
 
-And finally, not separating views from their data source means that unit testing becomes basically impossible, since SwiftUI states only really work in a real SwiftUI environment. However, that might be solvable in the future, when Apple gives releases or exposes more API to work with.
+And finally, not separating views from their data source means that unit testing becomes basically impossible, since SwiftUI states only really work in a real SwiftUI environment. However, that might be solvable in the future, when Apple releases or exposes more API to work with.
 
 With all that said, I'd like to lastly emphasize the fact that Puddles might not be the best way to build your SwiftUI app. You should always consider your needs, constraints and willingness to try something new and possibly risky. If you do decide to give Puddles a try, though, then I genuinely hope you enjoy it and succeed in building a modular and maintainable app.
 
