@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A type that can send actions to a handler, which is usually a ``Puddles/Provider`` or ``Puddles/Navigator``.
+/// A type that can send actions to a handler, which is usually a ``Puddles/Provider`` or ``Puddles/Navigator`` but can be anything.
 public struct Interface<Action> {
     private let actionHandler: @MainActor (_ action: Action) -> Void
 

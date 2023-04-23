@@ -25,9 +25,9 @@ extension EnvironmentValues {
 
 public extension Navigator {
 
-    /// Configures the navigator to receive TargetStateSetters that send target states.
+    /// Configures the navigator to receive target states.
     ///
-    /// - Parameter targetStateSetter: The TargetStateSetter that sends the navigator's `TargetState`.
+    /// - Parameter targetStateSetter: The TargetStateSetter that sends the navigator's target states.
     /// - Returns: A view with a configured TargetStateSetter reception.
     func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
         environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
@@ -38,9 +38,9 @@ public extension Navigator {
 
 public extension Provider {
 
-    /// Configures the provider to receive TargetStateSetters that send target states.
+    /// Configures the provider to receive target states.
     ///
-    /// - Parameter targetStateSetter: The TargetStateSetter that sends the provider's `TargetState`.
+    /// - Parameter targetStateSetter: The TargetStateSetter that sends the provider's target states.
     /// - Returns: A view with a configured TargetStateSetter reception.
     func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
         environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))

@@ -2,6 +2,8 @@ import SwiftUI
 import Combine
 
 /// A type that handles state and data management of a child.
+///
+/// - Important: Do not implement the `body` property yourself. Use ``Puddles/Provider/entryView-swift.property`` instead!
 public protocol Provider<TargetState>: View {
 
     /// The type of the ``Puddles/Provider/entryView-swift.property`` for the ``Puddles/Provider``.
@@ -43,15 +45,14 @@ public protocol Provider<TargetState>: View {
     ///
     /// ```swift
     /// func modify(provider: ProviderContent) -> some View {
-    ///     NavigationView {
+    ///     NavigationStack {
     ///         provider
     ///     }
     ///     .environmentObject(myService)
     /// }
     /// ```
     ///
-    /// When you need to implement a `NavigationSplitView` or need iPad support,
-    /// you need to wrap your root `Provider` in a view that provides the `NavigationSplitView`, as `Provider` currently does not support this in a convenient way.
+    /// For simple use cases, this is fine. If you build more complex components, consider using a ``Puddles/Navigator`` instead and put the `NavigationStack` there.
     ///
     /// - Tip: Due to a Swift Compiler bug, autocomplete will insert the wrong method signature for this method. It will use `FinalBody` as return type, instead of the correct `some View` type. Be aware that you have to manually correct this, or otherwise the code will not compile.
     ///

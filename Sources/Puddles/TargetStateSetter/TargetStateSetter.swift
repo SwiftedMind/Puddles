@@ -1,14 +1,14 @@
 import Combine
 import SwiftUI
 
-/// A property wrapper that lets you send one-time TargetStateSetters down the view hierarchy,
+/// A property wrapper that lets you send one-time signals down the view hierarchy,
 /// which is particularly useful for deep linking and state restoration without exposing all internal states of the child views.
 ///
-/// You can think of this as the opposite of closures, which are TargetStateSetters going from child view to a parent (like a button's action).
+/// You can think of this as the opposite of closures, which act like signals going from child view to a parent (like a button's action).
 ///
 /// To make a ``Puddles/Navigator`` receive TargetStateSetters,
-/// use the `.targetStateSetter(_:)` view modifier and provide a TargetStateSetter whose value is the target navigator's
-/// ``Puddles/Navigator/TargetStateSetter``.
+/// use the `.targetStateSetter(_:)` view modifier on it and provide a TargetStateSetter whose value is the target navigator's
+/// ``Puddles/Navigator/TargetState``.
 @propertyWrapper
 public struct TargetStateSetter<Value>: DynamicProperty {
     @StateObject private var stateHolder = StateHolder()
@@ -54,8 +54,8 @@ public extension TargetStateSetter {
         var onSend: @MainActor (_ value: Value) -> Void
         var removeValue: () -> Void
 
-        /// Sends a TargetStateSetter.
-        /// - Parameter value: The value of the TargetStateSetter.
+        /// Sends a target state.
+        /// - Parameter value: The target state to send.
         @MainActor
         public func `set`(_ value: Value) {
             onSend(value)

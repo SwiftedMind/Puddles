@@ -65,7 +65,7 @@
         The call to `delete()` is still an effect of the `.didTapShowQueryableDemo` action that we handle in `handleRootAction(_:)`.
         The code, however, is split up, since the confirmation dialog with its completion handlers is defined someplace else.
         
-        That's why ``Puddles`` introduces the ``Puddles/Queryable`` property wrapper. A `Queryable` is a type that can be used to trigger a view presentation from an `async` function and `await` its completion.
+        That's why ``Puddles`` makes use of the [Queryable](https://github.com/SwiftedMind/Queryable) property wrapper. A `Queryable` is a type that can be used to trigger a view presentation from an `async` function and `await` its completion.
         
         @Steps {
             
@@ -86,14 +86,14 @@
             }
             
             @Step {
-                Finally, trigger the confirmation alert by calling ``Puddles/Queryable/Trigger/query()`` in an `async` context. 
+                Finally, trigger the confirmation alert by calling `query()` in an `async` context. 
                 
                 The result is identical to the approach from the previous section, but we can now control view presentations from code and await their completion without ever leaving the scope.
                 
                 @Code(name: "RootNavigator.swift", file: "expectations-02-03")
             }
             
-            The entire logical flow caused by the `didTapShowQueryableDemo` action now takes place inside the same call of `queryDeletion()`.
+            The entire logical flow caused by the `didTapShowQueryableDemo` action now takes place inside the same call of `queryDeletion()`. If you want to find out more about `Queryable`, have a look at the [documentation](https://github.com/SwiftedMind/Queryable)
         }
     }
 }

@@ -5,7 +5,7 @@ import Puddles
 ///
 /// - Important: This is only meant to be used within previews!
 ///
-/// For more details on the view interfacing concept, see ``Puddles/Interface``.
+/// For more details on the view interfacing concept, see `Interface`.
 public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
     @State var state: ViewState
 

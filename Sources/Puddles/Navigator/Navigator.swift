@@ -22,10 +22,12 @@
 
 import SwiftUI
 
-/// A type that coordinates the navigation of `Providers`.
+/// A type that coordinates the navigation of `Provider`s.
+///
+/// - Important: Do not implement the `body` property yourself. Use ``Puddles/Navigator/entryView-swift.property`` instead!/// 
 public protocol Navigator: View {
 
-    /// The type of the ``Puddles/Navigator/entryView`` view for a ``Puddles/Navigator``.
+    /// The type of the ``Puddles/Navigator/entryView-swift.property`` view for a ``Puddles/Navigator``.
     ///
     /// This can be inferred by providing an `entryView`.
     associatedtype EntryView: View

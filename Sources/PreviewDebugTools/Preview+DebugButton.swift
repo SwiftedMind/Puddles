@@ -1,11 +1,17 @@
 import SwiftUI
 import Puddles
 
+/// A button that is styled to look like a debug tool.
+///
+/// It has no special functionality. You can use any button you like for your debug overlays.
 public struct DebugButton: View {
 
     var title: String
     var action: () -> Void
 
+    /// A button that is styled to look like a debug tool.
+    ///
+    /// It has no special functionality. You can use any button you like for your debug overlays.
     public init(_ title: String, action: @escaping () -> Void) {
         self.title = title
         self.action = action
