@@ -69,6 +69,8 @@ To get a more in-depth overview of the architecture, have a look at this article
 
 ![Puddles Architecture](https://user-images.githubusercontent.com/7083109/232222438-ca21b1f8-c87a-4b27-b6f2-05af6aacfc61.png)
 
+SwiftUI encourages building views from the ground up, constructing increasingly complex UI by wrapping views in other views. With Puddles, you do the exact same thing, but also include data dependencies and navigational context in the layering.
+
 ### The View
 
 ![View Explanation](https://user-images.githubusercontent.com/7083109/232221735-9f21f3ca-669e-46b4-bf95-13a7d70434cf.png)
