@@ -1,6 +1,6 @@
 @Tutorial(time: 10) {
     @Intro(title: "Queryables") {
-        Closing the gap between actions and their effects.
+        Asynchronously present views and await their data.
         
         @Image(source: "Background1.png", alt: "A colorful, abstract background image") 
     }

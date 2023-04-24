@@ -13,7 +13,6 @@
         @TutorialReference(tutorial: "doc:03-Navigator")
         @TutorialReference(tutorial: "doc:04-PreviewSupport")
         @TutorialReference(tutorial: "doc:05-Queryable")
-        @TutorialReference(tutorial: "doc:06-ProvidingData")
     }
     
 }

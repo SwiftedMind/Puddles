@@ -14,7 +14,7 @@
             @Step {
                 Create a new type `RootNavigator.swift` that conforms to `Navigator`.
                 
-                Its root is the `Root` Provider from the previous tutorials. `TargetState` is a type that defines all states the navigator can be in. To keep it simple, we have a single state `showPage` that we add besides `reset`.
+                Its root is the `Root` Provider from the previous tutorials. `TargetState` is a type that defines shortcuts to specific set of states that you want to be able to set conveniently. To keep it simple, we have a single target state `showPage` that we add besides `reset`.
                  
                 @Code(name: "RootNavigator.swift", file: "03-BasicNavigation-01-01") {
                     @Image(source: "03-BasicNavigation-01-01_image", alt: "A screenshot of an iPhone running the app. It shows the root view.")
@@ -91,7 +91,7 @@
                 }
             }
             
-            To keep views agnostic of their environment and context, and to keep them reusable in different places, it is recommended to put things like `navigationTitle` or a `toolbar` in the responsible `Provider`, in this case `Root`.
+            To keep views agnostic of their environment and context, and to keep them reusable in different places, it is recommended to put things like `navigationTitle` or a `toolbar` in the responsible `View Provider`, in this case `Root`.
             
             @Step {
                 Go back to `Root.swift`

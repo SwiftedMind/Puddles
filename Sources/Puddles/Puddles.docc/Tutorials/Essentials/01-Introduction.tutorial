@@ -19,6 +19,7 @@
                 Add the required property to `entryView`.
                 
                 For now, let's display a simple `Text`.
+                @Code(name: "Root.swift", file: "essentials-01-02")
             }
             
             That's the most basic `Provider` possible. We can now set it as the app's entry point.
