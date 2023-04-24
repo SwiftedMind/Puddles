@@ -61,8 +61,6 @@ The documentation for Puddles can be found here:
 
 [**ExploreAI**](https://github.com/SwiftedMind/GPTPlayground) - A simple app testing out some ideas for OpenAI's ChatGPT API (using my [GPTSwift](https://github.com/SwiftedMind/gptswift) framework as an interface)
 
----
-
 ## The Puddles Architecture
 
 To get a more in-depth overview of the architecture, have a look at this article: [**The Puddles Architecture**](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
