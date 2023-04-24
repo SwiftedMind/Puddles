@@ -1,7 +1,7 @@
 ![slice1](https://user-images.githubusercontent.com/7083109/221624800-f99ad5a9-b875-4f95-a394-3d326c1e151d.png)
 
 > **Note**
-> Puddles 1.0.0 is close to being finished. You can check out the [develop](https://github.com/SwiftedMind/Puddles/tree/develop) branch to see what's changed.
+> Puddles 1.0.0 is close to being finished, I'm just finishin up the documentation. You should check out the [develop](https://github.com/SwiftedMind/Puddles/tree/develop) branch to see what's changed. I don't recommend using the main branch anymore, until 1.0.0 is released.
 
 # Puddles - A SwiftUI Architecture
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/SwiftedMind/Puddles)
