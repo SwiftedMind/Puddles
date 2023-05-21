@@ -11,18 +11,22 @@ import SwiftUI
 /// ``Puddles/Navigator/TargetState``.
 @propertyWrapper
 public struct TargetStateSetter<Value>: DynamicProperty {
-    @StateObject private var stateHolder = StateHolder()
+    @StateObject private var stateHolder: StateHolder
 
     public var wrappedValue: Wrapped {
-        .init(id: stateHolder.id, value: stateHolder.value) { content in
-            stateHolder.send(content)
-        } removeValue: {
-            stateHolder.removeValue()
-        }
+        .init(
+            identity: stateHolder.identity,
+            valueForId: stateHolder.valueForId,
+            onSend: stateHolder.send,
+            removeValue: stateHolder.removeValue
+        )
     }
 
-    public init(initialTargetState value: Value? = nil) {
-        _stateHolder = .init(wrappedValue: .init(value: value))
+    public init(
+        initialTargetState value: Value? = nil,
+        andId id: AnyHashable? = nil
+    ) {
+        _stateHolder = .init(wrappedValue: .init(value: value, id: id))
     }
 }
 
@@ -30,39 +34,43 @@ public extension TargetStateSetter {
 
     @MainActor
     final class StateHolder: ObservableObject {
-        private(set) var value: Value?
-        private(set) var id: UUID = .init()
+        private let emptyId = AnyHashable(UUID())
+        private var value: [AnyHashable: Value] = [:]
+        @Published private(set) var identity: UUID = .init()
 
-        init(value: Value? = nil) {
-            self.value = value
+        init(value: Value? = nil, id: AnyHashable?) {
+            self.value[id ?? emptyId] = value
         }
 
-        func send(_ value: Value) {
-            self.value = value
-            id = .init()
-            objectWillChange.send()
+        func valueForId(_ id: AnyHashable?) -> Value? {
+            value[id ?? emptyId]
         }
 
-        func removeValue() {
-            value = nil
+        func send(_ value: Value, id: AnyHashable?) {
+            self.value[id ?? emptyId] = value
+            identity = .init()
+        }
+
+        func removeValue(id: AnyHashable?) {
+            self.value.removeValue(forKey: id ?? emptyId)
         }
     }
 
     struct Wrapped: Equatable {
-        var id: UUID
-        var value: Value?
-        var onSend: @MainActor (_ value: Value) -> Void
-        var removeValue: () -> Void
+        var identity: UUID
+        var valueForId: (_ id: AnyHashable?) -> Value?
+        var onSend: @MainActor (_ value: Value, _ id: AnyHashable?) -> Void
+        var removeValue: (_ id: AnyHashable?) -> Void
 
         /// Sends a target state.
         /// - Parameter value: The target state to send.
         @MainActor
-        public func `set`(_ value: Value) {
-            onSend(value)
+        public func apply(_ value: Value, id: AnyHashable? = nil) {
+            onSend(value, id)
         }
 
         public static func == (lhs: TargetStateSetter<Value>.Wrapped, rhs: TargetStateSetter<Value>.Wrapped) -> Bool {
-            lhs.id == rhs.id
+            lhs.identity == rhs.identity
         }
     }
 }

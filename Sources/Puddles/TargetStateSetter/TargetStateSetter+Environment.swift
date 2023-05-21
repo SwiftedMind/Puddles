@@ -1,12 +1,13 @@
 import SwiftUI
 
 struct TargetStateSetterWrapper: Equatable {
-    var id: UUID?
+    var identity: UUID
+    var id: AnyHashable?
     var value: Any?
-    var onTargetStateSet: @MainActor () -> Void
+    var onTargetStateSet: @MainActor (_ id: AnyHashable?) -> Void
 
     public static func == (lhs: TargetStateSetterWrapper, rhs: TargetStateSetterWrapper) -> Bool {
-        lhs.id == rhs.id
+        lhs.identity == rhs.identity
     }
 }
 
@@ -21,19 +22,6 @@ extension EnvironmentValues {
     }
 }
 
-// MARK: - Navigator Extension
-
-public extension Navigator {
-
-    /// Configures the navigator to receive target states.
-    ///
-    /// - Parameter targetStateSetter: The TargetStateSetter that sends the navigator's target states.
-    /// - Returns: A view with a configured TargetStateSetter reception.
-    func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
-        environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
-    }
-}
-
 // MARK: - Provider Extension
 
 public extension Provider {
@@ -41,8 +29,20 @@ public extension Provider {
     /// Configures the provider to receive target states.
     ///
     /// - Parameter targetStateSetter: The TargetStateSetter that sends the provider's target states.
+    /// - Parameter id: An identifier to identify the target state's owner.
     /// - Returns: A view with a configured TargetStateSetter reception.
-    func targetStateSetter(_ targetStateSetter: TargetStateSetter<TargetState>.Wrapped) -> some View {
-        environment(\.targetStateSetter, .init(id: targetStateSetter.id, value: targetStateSetter.value, onTargetStateSet: targetStateSetter.removeValue))
+    func applyTargetStates(
+        with targetStateSetter: TargetStateSetter<TargetState>.Wrapped,
+        id: AnyHashable? = nil
+    ) -> some View {
+        return environment(
+            \.targetStateSetter,
+                .init(
+                    identity: targetStateSetter.identity,
+                    id: id,
+                    value: targetStateSetter.valueForId(id),
+                    onTargetStateSet: targetStateSetter.removeValue
+                )
+        )
     }
 }

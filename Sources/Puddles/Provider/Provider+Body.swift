@@ -36,7 +36,7 @@ public struct ProviderBody<C: Provider>: View {
         .lifetimeHandlers {
             if let targetState = targetStateSetter?.value as? C.TargetState {
                 applyTargetStateHandler(targetState)
-                targetStateSetter?.onTargetStateSet()
+                targetStateSetter?.onTargetStateSet(targetStateSetter?.id)
             }
             await firstAppearHandler()
         } onFinalDisappear: {
@@ -45,7 +45,7 @@ public struct ProviderBody<C: Provider>: View {
         .onChange(of: targetStateSetter) { newValue in
             guard let targetState = newValue?.value as? C.TargetState else { return }
             applyTargetStateHandler(targetState)
-            targetStateSetter?.onTargetStateSet()
+            targetStateSetter?.onTargetStateSet(newValue?.id)
         }
     }
 }
