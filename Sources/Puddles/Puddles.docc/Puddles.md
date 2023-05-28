@@ -58,4 +58,4 @@ struct YourApp: App {
 
 - ``Puddles/Provider``
 - ``Puddles/Navigator``
-- ``Puddles/TargetStateSetter``
+- ``Puddles/Signal``

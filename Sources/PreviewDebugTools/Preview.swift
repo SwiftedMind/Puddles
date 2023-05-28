@@ -6,25 +6,26 @@ import Puddles
 /// - Important: This is only meant to be used within previews!
 ///
 /// For more details on the view interfacing concept, see `Interface`.
-public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
-    @State var state: ViewState
+public struct Preview<Action, PreviewState, Content: View, Overlay: View>: View {
+    @State var state: PreviewState
 
-    var content: (_ interface: Interface<Action>, _ state: ViewState) -> Content
-    var actionHandler: (_ action: Action, _ state: Binding<ViewState>) -> Void
-    var onStart: ((_ state: Binding<ViewState>) async -> Void)?
+    var content: (_ interface: Interface<Action>, _ state: PreviewState) -> Content
+    var actionHandler: (_ action: Action, _ state: Binding<PreviewState>) -> Void
+    var onStart: ((_ state: Binding<PreviewState>) async -> Void)?
 
     var maximizedPreviewFrame: Bool = false
 
     var overlayAlignment: Alignment = .bottom
-    var debugOverlay: (_ state: Binding<ViewState>) -> Overlay
+    var debugOverlay: (_ state: Binding<PreviewState>) -> Overlay
 
     /// A SwiftUI previews helper type allowing to take advantage of view interfacing by providing an in-place mechanism of reacting to the view's actions.
     ///
     /// - Important: This is only meant to be used within previews!
     public init(
-        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: ViewState) -> Content,
-        state: @autoclosure @escaping () -> ViewState,
-        actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
+        state: @autoclosure @escaping () -> PreviewState,
+        interfaceAction: Action.Type,
+        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: PreviewState) -> Content,
+        actionHandler: @escaping (_ action: Action, _ state: Binding<PreviewState>) -> Void
     ) where Overlay == EmptyView {
         self._state = .init(wrappedValue: state())
         self.content = { content($0, $1) }
@@ -33,13 +34,13 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
     }
 
     private init(
-        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: ViewState) -> Content,
-        @ViewBuilder debugOverlay: @escaping (_ state: Binding<ViewState>) -> Overlay,
+        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: PreviewState) -> Content,
+        @ViewBuilder debugOverlay: @escaping (_ state: Binding<PreviewState>) -> Overlay,
         overlayAlignment: Alignment,
-        state: @autoclosure () -> ViewState,
+        state: @autoclosure () -> PreviewState,
         maximizedPreviewFrame: Bool,
-        onStart: ((_ state: Binding<ViewState>) async -> Void)?,
-        actionHandler: @escaping (_ action: Action, _ state: Binding<ViewState>) -> Void
+        onStart: ((_ state: Binding<PreviewState>) async -> Void)?,
+        actionHandler: @escaping (_ action: Action, _ state: Binding<PreviewState>) -> Void
     ) {
         self._state = .init(wrappedValue: state())
         self.content = content
@@ -70,7 +71,7 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
         return copy
     }
     
-    public func onStart(perform: @escaping (_ state: Binding<ViewState>) async -> Void) -> Preview {
+    public func onStart(perform: @escaping (_ state: Binding<PreviewState>) async -> Void) -> Preview {
         var copy = self
         copy.onStart = perform
         return copy
@@ -79,8 +80,8 @@ public struct Preview<Action, ViewState, Content: View, Overlay: View>: View {
     public func overlay<OverlayContent: View>(
         alignment: Alignment = .bottom,
         maximizedPreviewFrame: Bool = true,
-        @ViewBuilder overlayContent: @escaping (_ state: Binding<ViewState>) -> OverlayContent
-    ) -> Preview<Action, ViewState, Content, OverlayContent> {
+        @ViewBuilder overlayContent: @escaping (_ state: Binding<PreviewState>) -> OverlayContent
+    ) -> Preview<Action, PreviewState, Content, OverlayContent> {
         Preview<_, _, _, OverlayContent>(
             content,
             debugOverlay: overlayContent,

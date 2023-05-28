@@ -21,7 +21,7 @@
 - Redesigned how `Queryables` work behind the scenes. They should now work more reliably. 
     - `queryableAlert` and `queryableConfirmationDialog` might still glitch in some edge cases when cancelling an ongoing query and then immediately starting a new query. This is due to some strange SwiftUI behavior with replacing presented alerts and confirmation dialogs with new ones. Workaround is adding a small time delay between cancellation and the new query.
 - Renamed `StateConfiguration` to `TargetState` to clarify its purpose.
-- Renamed the `Signal` property wrapper to `TargetStateSetter` to clarify its purpose.
+- Renamed the `Signal` property wrapper to `Signal` to clarify its purpose.
 - Renamed `queryableHandler(controlledBy:queryHandler:)` to `queryableClosure(controlledBy:block:)` to clarify its purpose.
 
 ### Fixed

@@ -20,21 +20,30 @@
 //  SOFTWARE.
 //
 
-import Foundation
-import OSLog
+import SwiftUI
 
-fileprivate(set) var logger: Logger = .init(OSLog.disabled)
+/// An internal helper view that triggers the provided `action` closure exactly once on the first appearance of the view.
+private struct ViewLifetimeHelper: ViewModifier {
+    @StateObject private var lifetimeViewModel: LifetimeViewModel
 
-/// A configuration object for the `Puddles` framework.
-public struct Puddles {
-
-    /// Configures and enables a logger that prints out log messages for events inside Puddles.
-    ///
-    /// This can be useful for debugging.
-    /// - Parameter subsystem: The subsystem. If none is provided, the bundle's identifier will try to be used and if it is specifically set to `nil`, then `Puddles` will be used.
-    public static func configureLog(inSubsystem subsystem: String? = Bundle.main.bundleIdentifier) {
-        logger = .init(subsystem: subsystem ?? "Puddles", category: "Puddles")
+    init(onInit: @escaping () -> Void) {
+        _lifetimeViewModel = .init(wrappedValue: .init(onInit: onInit))
     }
 
-    private init() {}
+    func body(content: Content) -> some View {
+        content
+    }
+}
+
+private final class LifetimeViewModel: ObservableObject {
+    @MainActor init(onInit: () -> Void) {
+        onInit()
+    }
+}
+
+extension View {
+    @MainActor
+    public func onFirstAppear(perform: @escaping () -> Void) -> some View {
+        modifier(ViewLifetimeHelper(onInit: perform))
+    }
 }

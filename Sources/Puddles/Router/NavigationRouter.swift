@@ -20,21 +20,33 @@
 //  SOFTWARE.
 //
 
-import Foundation
-import OSLog
+import SwiftUI
 
-fileprivate(set) var logger: Logger = .init(OSLog.disabled)
+public protocol NavigationRouter: ObservableObject {
+    associatedtype Destination: Hashable
+    @MainActor var path: [Destination] { get set }
 
-/// A configuration object for the `Puddles` framework.
-public struct Puddles {
+    @MainActor func push(_ destination: Destination)
+    @MainActor @discardableResult func pop() -> Destination?
+    @MainActor func popToRoot()
+    @MainActor func setPath(_ stack: [Destination])
+}
 
-    /// Configures and enables a logger that prints out log messages for events inside Puddles.
-    ///
-    /// This can be useful for debugging.
-    /// - Parameter subsystem: The subsystem. If none is provided, the bundle's identifier will try to be used and if it is specifically set to `nil`, then `Puddles` will be used.
-    public static func configureLog(inSubsystem subsystem: String? = Bundle.main.bundleIdentifier) {
-        logger = .init(subsystem: subsystem ?? "Puddles", category: "Puddles")
+public extension NavigationRouter {
+    @MainActor func push(_ destination: Destination) {
+        self.path.append(destination)
     }
 
-    private init() {}
+    @discardableResult
+    @MainActor func pop() -> Destination? {
+        path.popLast()
+    }
+
+    @MainActor func popToRoot() {
+        path.removeAll()
+    }
+
+    @MainActor func setPath(_ stack: [Destination]) {
+        self.path = stack
+    }
 }
