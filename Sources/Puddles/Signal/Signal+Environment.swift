@@ -71,6 +71,8 @@ public extension View {
     }
 }
 
+// MARK: - Resolve Signals
+
 struct SignalResolver<SignalValue>: ViewModifier {
     @Environment(\.signalWrapper) private var signalWrapper
 

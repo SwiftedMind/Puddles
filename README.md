@@ -84,11 +84,11 @@ struct BookListView: View {
   var body: some View {
     List {
       Button("Toggle Descriptions") {
-        interface.fire(.showDescriptionsToggled)
+        interface.send(.showDescriptionsToggled)
       }
       ForEach(state.books) { book in
         Button {
-          interface.fire(.bookTapped(book))
+          interface.send(.bookTapped(book))
         } label: {
           VStack(alignment: .leading) {
             Text(book.name)
@@ -153,7 +153,7 @@ struct BookList: Provider {
       isShowingDescriptions.toggle()
     case .bookTapped(let book):
       // Relay this tap so that a navigator upstream can handle navigation
-      interface.fire(.bookTapped(book))
+      interface.send(.bookTapped(book))
     }
   }
 

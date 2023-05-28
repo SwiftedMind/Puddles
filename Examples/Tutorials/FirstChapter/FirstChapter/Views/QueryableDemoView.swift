@@ -28,7 +28,7 @@ struct QueryableDemoView: View {
 
     var body: some View {
         Button("Delete") {
-            interface.fire(.deleteButtonTapped)
+            interface.send(.deleteButtonTapped)
         }
     }
 }

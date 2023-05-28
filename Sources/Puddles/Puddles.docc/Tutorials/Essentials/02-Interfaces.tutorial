@@ -10,7 +10,7 @@
         
         That's by design. Views should not modify their own public state. Instead, they should define interface actions that their parent `View Provider` can observe and act upon.
         
-        This can be achieved through the ``Puddles/Interface`` type. It exposes a ``Puddles/Interface/fire(_:)`` method that takes an `Action`, which is usually an `enum` defined by a View. A `View Provider` can then observe such an interface,  detect any actions being sent and make modifications to the state or start any necessary other work.
+        This can be achieved through the ``Puddles/Interface`` type. It exposes a ``Puddles/Interface/send(_:)`` method that takes an `Action`, which is usually an `enum` defined by a View. A `View Provider` can then observe such an interface,  detect any actions being sent and make modifications to the state or start any necessary other work.
         
         Adding this to the example app is easy.
         

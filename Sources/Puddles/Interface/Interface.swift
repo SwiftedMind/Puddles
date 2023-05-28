@@ -52,7 +52,7 @@ public struct Interface<Action> {
     /// Sends an action to the interface.
     /// - Parameter action: The action to send.
     @MainActor
-    public func fire(_ action: Action) {
+    public func send(_ action: Action) {
         actionHandler(action)
     }
 

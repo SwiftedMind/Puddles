@@ -22,7 +22,6 @@
 
 import SwiftUI
 import Puddles
-import PreviewDebugTools
 
 struct BookListView: View {
 
@@ -32,11 +31,11 @@ struct BookListView: View {
     var body: some View {
         List {
             Button("Toggle Descriptions") {
-                interface.fire(.showDescriptionsToggled)
+                interface.send(.showDescriptionsToggled)
             }
             ForEach(state.books) { book in
                 Button {
-                    interface.fire(.bookTapped(book))
+                    interface.send(.bookTapped(book))
                 } label: {
                     VStack(alignment: .leading) {
                         Text(book.name)

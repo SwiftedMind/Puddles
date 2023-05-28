@@ -6,23 +6,17 @@
 
 - Added landing page for the project: [swiftedmind.com/puddles](https://www.swiftedmind.com/puddles)
 - Added documentation for the Puddles architecture
-- Added full example project: ["Scrumdinger in Puddles"](https://github.com/SwiftedMind/Scrumdinger) – A re-implementation of Apple's Scrumdinger tutorial app.
-- Added support for watchOS 8+ and tvOS 15+.
-- Added "Target States" functionality to `Providers` (formerly known as `StateConfiguration`, which was only available in a `Navigator`)
+- Added full example project: ["Scrumdinger in Puddles"](https://github.com/SwiftedMind/Scrumdinger) – A re-implementation of Apple's Scrumdinger tutorial app
+- Added support for watchOS 8+ and tvOS 15+
+- Added Signals (previously known as `StateConfiguration`, but now useable in any SwiftUI View)
 
 ### Changed
 
-- Unified `Coordinator` and `Provider`. Those types were almost identical from a technical as well as semantic perspective, so `Coordinator` has been renamed to `Provider`.
+- Removed `Coordinator` and `Provider`. The architecture has evolved to a point where these have become unnecessary overhead and bloat.
 - Removed `Navigator`, as it has moved from being a protocol type to a concept within the Puddles architecture.
 - Renamed `Interface.handled(by:)` to `Interface.consume(_:)` and `Interface.forward(to:)` to clarify functionality
 - Renamed `Interface.unhandled` to `Interface.ignore` to clarify functionality
-- Renamed `Interface.sendAction(_:)` to `Interface.fire(_:)` to de-conflict with Xcode's `.self` auto-complete suggestion, which always forces you to type `sen` to get the correct completion.
-- Unified the`QueryableItem` and `Queryable` property wrappers. Both are now called `Queryable`. Slightly more verbose (since you always have to specify 2 generic arguments, even if the first one is `Void`), but much more clearer and discoverable.
-- Redesigned how `Queryables` work behind the scenes. They should now work more reliably. 
-    - `queryableAlert` and `queryableConfirmationDialog` might still glitch in some edge cases when cancelling an ongoing query and then immediately starting a new query. This is due to some strange SwiftUI behavior with replacing presented alerts and confirmation dialogs with new ones. Workaround is adding a small time delay between cancellation and the new query.
-- Renamed `StateConfiguration` to `TargetState` to clarify its purpose.
-- Renamed the `Signal` property wrapper to `Signal` to clarify its purpose.
-- Renamed `queryableHandler(controlledBy:queryHandler:)` to `queryableClosure(controlledBy:block:)` to clarify its purpose.
+- Removed the `QueryableItem` and `Queryable` property wrappers, since they have moved to a dedicated package: [Queryable](https://github.com/SwiftedMind/Queryable)
 
 ### Fixed
 

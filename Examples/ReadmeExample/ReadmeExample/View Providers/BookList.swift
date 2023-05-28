@@ -57,7 +57,7 @@ struct BookList: Provider {
             isShowingDescriptions.toggle()
         case .bookTapped(let book):
             // Relay this tap so that a navigator upstream can handle navigation
-            interface.fire(.bookTapped(book))
+            interface.send(.bookTapped(book))
         }
     }
 

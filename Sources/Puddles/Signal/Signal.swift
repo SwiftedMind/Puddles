@@ -26,11 +26,9 @@ import SwiftUI
 /// A property wrapper that lets you send one-time signals down the view hierarchy,
 /// which is particularly useful for deep linking and state restoration without exposing all internal states of the child views.
 ///
-/// You can think of this as the opposite of closures, which act like signals going from child view to a parent (like a button's action).
+/// To make a `View` receive and resolve Signals, use the `.resolveSignals(ofType:action:)` view modifier.
 ///
-/// To make a ``Puddles/Navigator`` receive Signals,
-/// use the `.targetStateSetter(_:)` view modifier on it and provide a Signal whose value is the target navigator's
-/// ``Puddles/Navigator/TargetState``.
+/// - Note: A resolved signal is consumed and will not travel further down the view hierarchy.
 @propertyWrapper
 public struct Signal<Value>: DynamicProperty {
     @StateObject private var stateHolder: StateHolder

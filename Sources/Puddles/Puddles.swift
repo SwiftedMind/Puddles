@@ -23,6 +23,7 @@
 import Foundation
 import OSLog
 
+// Internal logger for the framework.
 fileprivate(set) var logger: Logger = .init(OSLog.disabled)
 
 /// A configuration object for the `Puddles` framework.

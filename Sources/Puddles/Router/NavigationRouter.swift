@@ -22,23 +22,42 @@
 
 import SwiftUI
 
+/// A protocol defining helpful methods, including default implementations,
+/// for navigation routers used with a `NavigationStack`.
 public protocol NavigationRouter: ObservableObject {
+
+    /// The destination type, which is usually an enum.
     associatedtype Destination: Hashable
+
+    /// The path that is plugged into the `NavigationStack`.
+    ///
+    /// You should mark this property as `@Published` in your implementation.
     @MainActor var path: [Destination] { get set }
 
+    /// Pushes the destination onto the current path.
+    /// - Parameter destination: The destination to push.
     @MainActor func push(_ destination: Destination)
+
+    /// Pops the last destination from the path.
+    /// - Returns: The popped destination, or `nil` if the path was empty.
     @MainActor @discardableResult func pop() -> Destination?
+
+    /// Removes all destinations from the path.
     @MainActor func popToRoot()
+
+    /// Sets the current path to the given array of destination.s
+    /// - Parameter stack: The destinations that will be set as the new path.
     @MainActor func setPath(_ stack: [Destination])
 }
 
+// MARK: - Default Implementations
+
 public extension NavigationRouter {
     @MainActor func push(_ destination: Destination) {
-        self.path.append(destination)
+        path.append(destination)
     }
 
-    @discardableResult
-    @MainActor func pop() -> Destination? {
+    @MainActor @discardableResult func pop() -> Destination? {
         path.popLast()
     }
 
@@ -47,6 +66,6 @@ public extension NavigationRouter {
     }
 
     @MainActor func setPath(_ stack: [Destination]) {
-        self.path = stack
+        path = stack
     }
 }

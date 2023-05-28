@@ -15,10 +15,6 @@ let package = Package(
         .library(
             name: "Puddles",
             targets: ["Puddles"]
-        ),
-        .library(
-            name: "PreviewDebugTools",
-            targets: ["PreviewDebugTools"]
         )
     ],
     dependencies: [
@@ -28,13 +24,6 @@ let package = Package(
         .target(
             name: "Puddles",
             dependencies: [
-                "Queryable"
-            ]
-        ),
-        .target(
-            name: "PreviewDebugTools",
-            dependencies: [
-                "Puddles",
                 "Queryable"
             ]
         )

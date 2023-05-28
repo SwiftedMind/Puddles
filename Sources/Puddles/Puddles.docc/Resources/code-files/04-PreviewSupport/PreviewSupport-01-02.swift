@@ -1,6 +1,5 @@
 import SwiftUI
 import Puddles
-import PreviewDebugTools
 
 struct HomeView: View {
     var interface: Interface<Action>
@@ -10,7 +9,7 @@ struct HomeView: View {
         VStack {
             Text("Button tapped \(state.buttonTapCount) times.")
             Button("Tap Me") {
-                interface.fire(.buttonTaped)
+                interface.send(.buttonTaped)
             }
         }
     }

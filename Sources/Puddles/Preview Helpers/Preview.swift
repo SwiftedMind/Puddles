@@ -1,5 +1,4 @@
 import SwiftUI
-import Puddles
 
 /// A SwiftUI previews helper type allowing to take advantage of view interfacing by providing an in-place mechanism of reacting to the view's actions.
 ///
