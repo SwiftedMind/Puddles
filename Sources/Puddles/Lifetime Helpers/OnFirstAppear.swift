@@ -26,18 +26,27 @@ import SwiftUI
 private struct ViewLifetimeHelper: ViewModifier {
     @StateObject private var lifetimeViewModel: LifetimeViewModel
 
-    init(onInit: @escaping () -> Void) {
+    init(onInit: @MainActor @escaping () -> Void) {
         _lifetimeViewModel = .init(wrappedValue: .init(onInit: onInit))
     }
 
     func body(content: Content) -> some View {
         content
+            .onAppear {
+                guard !lifetimeViewModel.hasAppeared else { return }
+                lifetimeViewModel.onInit()
+                lifetimeViewModel.hasAppeared = true
+            }
     }
 }
 
+@MainActor
 private final class LifetimeViewModel: ObservableObject {
-    @MainActor init(onInit: () -> Void) {
-        onInit()
+    var hasAppeared: Bool = false
+    let onInit: () -> Void
+
+    init(onInit: @escaping () -> Void) {
+        self.onInit = onInit
     }
 }
 

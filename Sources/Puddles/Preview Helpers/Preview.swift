@@ -8,7 +8,7 @@ import SwiftUI
 public struct Preview<Action, PreviewState, Content: View, Overlay: View>: View {
     @State var state: PreviewState
 
-    var content: (_ interface: Interface<Action>, _ state: PreviewState) -> Content
+    var content: (_ interface: Interface<Action>, _ state: Binding<PreviewState>) -> Content
     var actionHandler: (_ action: Action, _ state: Binding<PreviewState>) -> Void
     var onStart: ((_ state: Binding<PreviewState>) async -> Void)?
 
@@ -23,7 +23,7 @@ public struct Preview<Action, PreviewState, Content: View, Overlay: View>: View 
     public init(
         state: @autoclosure @escaping () -> PreviewState,
         interfaceAction: Action.Type,
-        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: PreviewState) -> Content,
+        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: Binding<PreviewState>) -> Content,
         actionHandler: @escaping (_ action: Action, _ state: Binding<PreviewState>) -> Void
     ) where Overlay == EmptyView {
         self._state = .init(wrappedValue: state())
@@ -33,7 +33,7 @@ public struct Preview<Action, PreviewState, Content: View, Overlay: View>: View 
     }
 
     private init(
-        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: PreviewState) -> Content,
+        @ViewBuilder _ content: @escaping (_ interface: Interface<Action>, _ state: Binding<PreviewState>) -> Content,
         @ViewBuilder debugOverlay: @escaping (_ state: Binding<PreviewState>) -> Overlay,
         overlayAlignment: Alignment,
         state: @autoclosure () -> PreviewState,
@@ -51,7 +51,7 @@ public struct Preview<Action, PreviewState, Content: View, Overlay: View>: View 
     }
     
     public var body: some View {
-        content(.consume { actionHandler($0, $state) }, state)
+        content(.consume { actionHandler($0, $state) }, $state)
             .frame(
                 maxWidth: maximizedPreviewFrame ? .infinity : nil,
                 maxHeight: maximizedPreviewFrame ? .infinity : nil
