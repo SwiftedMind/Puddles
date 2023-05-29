@@ -10,6 +10,9 @@
 
 Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient. However, it doesn't try to lock you into anything. Every project is unique and while it should be generally discouraged, it has to be easy to deviate from existing patterns. Puddles has been designed from the start with this thought in mind.
 
+> **Note**
+> This Readme is a bit outdated. Recently, I have made a lot of fundamental changes to the architecture and I'm working on updating the documentation as fast as possible.
+
 - **[Features](#features)**
 - [Installation](#installation)
 - [Documentation](#documentation)
