@@ -22,6 +22,8 @@
 
 import SwiftUI
 
+// MARK: - SwiftUI Environment Setup
+
 struct SignalWrapper: Equatable {
     var identity: UUID
     var id: AnyHashable?
@@ -49,11 +51,11 @@ extension EnvironmentValues {
 
 public extension View {
 
-    /// Configures the provider to receive target states.
+    /// Configures the view to send signals down the hierarchy until a child view resolves it.
     ///
     /// - Parameter signal: The signal that sends the provider's target states.
-    /// - Parameter id: An identifier to identify the target state's owner.
-    /// - Returns: A view with a configured Signal reception.
+    /// - Parameter id: An identifier to identify a specific signal.
+    /// - Returns: A view with a configured signal reception.
     func sendSignals<Value>(
         _ signal: Signal<Value>.Wrapped,
         id: AnyHashable? = nil

@@ -51,8 +51,13 @@ private final class LifetimeViewModel: ObservableObject {
 }
 
 extension View {
-    @MainActor
-    public func onFirstAppear(perform: @escaping () -> Void) -> some View {
-        modifier(ViewLifetimeHelper(onInit: perform))
+    /// Adds an action to perform before the view appears for the very first time.
+    ///
+    /// This is different from `onAppear(perform:)`, which can be triggered multiple times during the lifetime of the view.
+    ///
+    /// - Parameter perform: The action to perform. It is exactly called once at the very beginning of the view's lifetime.
+    /// - Returns: A view that triggers the given `action` before it appears for the first time.
+    @MainActor public func onFirstAppear(perform action: @escaping () -> Void) -> some View {
+        modifier(ViewLifetimeHelper(onInit: action))
     }
 }

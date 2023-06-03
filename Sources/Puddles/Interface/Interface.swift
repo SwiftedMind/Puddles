@@ -58,8 +58,6 @@ public struct Interface<Action> {
 
     /// Creates a binding to a value, with a setter that sends an action.
     ///
-    /// Use this instead of "classic" @State bindings to adhere to the concept of unidirectional communication.
-    ///
     /// - Parameters:
     ///   - value: The getter for the binding.
     ///   - action: The action to send when setting a new value on the binding.
