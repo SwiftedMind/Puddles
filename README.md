@@ -56,45 +56,35 @@ The documentation for Puddles can be found here:
 ### Dependencies
 Dependencies are for everything that is not directly related to the UI of your app, like _models_, _networking_,_storage_,  _helpful extensions_ and more.
 
-- **Isolated in a Swift package**
-You should define your dependencies in a local Swift package, to make sure the types defined there do not depend on the app.
+- **Isolated in a Swift package** - You should define your dependencies in a local Swift package, to make sure the types defined there do not depend on the app.
 
-- **One target per dependency**
-Each dependency should be inside its own target, allowing consice imports in the app.
+- **One target per dependency** - Each dependency should be inside its own target, allowing consice imports in the app.
 
 ### Providers
 
 Providers act as the connection between the dependencies and the actual app, allowing the app to be entirely agnostic of things like a backend, local storage or other external behavior. They are responsible for fetching, caching and preparing data for the app using one or more dependencies.
 
-- **Mock external data**
-Providers don't access the dependencies directly. Rather, they are initialized with a set of closures that provide them with all the external functionality they need. This makes it easy to initialize them with mock data for testing or previewing.
+- **Mock external data** - Providers don't access the dependencies directly. Rather, they are initialized with a set of closures that provide them with all the external functionality they need. This makes it easy to initialize them with mock data for testing or previewing.
 
-- **Injected into the environment**
-Providers are distributed through the native SwiftUI environment, making them easily accessible for every module in the app.
+- **Injected into the environment** - Providers are distributed through the native SwiftUI environment, making them easily accessible for every module in the app.
 
 ### Views
 Providers act as the connection between the dependencies and the actual app, allowing the app to be entirely agnostic of things like a backend, local storage or other external behavior. They are responsible for fetching, caching and preparing data for the app using one or more dependencies.
 
-- **Mock external data**
-Providers don't access the dependencies directly. Rather, they are initialized with a set of closures that provide them with all the external functionality they need. This makes it easy to initialize them with mock data for testing or previewing.
+- **Mock external data** - Providers don't access the dependencies directly. Rather, they are initialized with a set of closures that provide them with all the external functionality they need. This makes it easy to initialize them with mock data for testing or previewing.
 
-- **Injected into the environment**
-Providers are distributed through the native SwiftUI environment, making them easily accessible for every module in the app.
+- **Injected into the environment** - Providers are distributed through the native SwiftUI environment, making them easily accessible for every module in the app.
 
 ### Modules
 Modules form the actual structure of the app. They access the providers through the environment and pass the data to the UI components.
 
-- **Modules are SwiftUI views**
-To allow access to the environment and other SwiftUI mechanisms as well as to make it easy to place them anywhere, modules are also SwiftUI views.
+- **Modules are SwiftUI views** - To allow access to the environment and other SwiftUI mechanisms as well as to make it easy to place them anywhere, modules are also SwiftUI views.
 
-- **Modules can be nested**
-A root module defines the navigational structure of the module, providing a router to submodules Each logical screen inside a navigational hierarchy (think for example  `NavigationStack`) has its own module that can be nested inside a root module
+- **Modules can be nested** - A root module defines the navigational structure of the module, providing a router to submodules Each logical screen inside a navigational hierarchy (think for example  `NavigationStack`) has its own module that can be nested inside a root module
 
-- **Modules are not generic**
-TODO
+- **Modules are not generic** - TODO
 
-- **Modules define navigation routers**
-For each logical view hierarchy of your app,
+- **Modules define navigation routers** - For each logical view hierarchy of your app,
 
 To get a more in-depth overview of the architecture, have a look at this article: [**The Puddles Architecture**](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
 
