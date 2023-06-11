@@ -13,12 +13,12 @@
 
 Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient. 
 
-- **Native** <br>Powered by what SwiftUI has to offer, extending only what's necessary.
-- **Modular** <br>A project structure that encourages you to build reusable components inside a very flexible app.
-- **Composable** <br>Naturally nest components to build increasingly complex apps, just like SwiftUI intends.
-- **Mockable** <br>A setup that makes mocking data easy, unleashing the power of previews and more.
-- **Adoptable** <br>Designed to work in every project, partially or fully. No huge commitment, easy to opt out.
-- **Lightweight** <br>Small Swift package companion, building on native mechanisms that SwiftUI provides.
+- **Native** - Powered by what SwiftUI has to offer, extending only what's necessary.
+- **Modular** - A project structure that encourages you to build reusable components inside a very flexible app.
+- **Composable** - Naturally nest components to build increasingly complex apps, just like SwiftUI intends.
+- **Mockable** - A setup that makes mocking data easy, unleashing the power of previews and more.
+- **Adoptable** - Designed to work in every project, partially or fully. No huge commitment, easy to opt out.
+- **Lightweight** - Small Swift package companion, building on native mechanisms that SwiftUI provides.
 
 ## Content
 
