@@ -9,16 +9,18 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SwiftedMind/Puddles)
 ![GitHub](https://img.shields.io/github/license/SwiftedMind/Puddles)
 
+![Architecture Overview Neu](https://github.com/SwiftedMind/Puddles/assets/7083109/02720cd6-170b-4027-be4f-f406449dffe2)
+
 Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient. 
 
-- **Native** - Powered by what SwiftUI has to offer, extending only what's necessary.
-- **Modular** - A project structure that encourages you to build reusable components inside a very flexible app.
-- **Composable** - Naturally nest components to build increasingly complex apps, just like SwiftUI intends.
-- **Mockable** - A setup that makes mocking data easy, unleashing the power of previews and more.
-- **Adoptable** - Designed to work in every project, partially or fully. No huge commitment, easy to opt out.
-- **Lightweight** - Small Swift package companion, building on native mechanisms that SwiftUI provides.
+- **Native** <br>Powered by what SwiftUI has to offer, extending only what's necessary.
+- **Modular** <br>A project structure that encourages you to build reusable components inside a very flexible app.
+- **Composable** <br>Naturally nest components to build increasingly complex apps, just like SwiftUI intends.
+- **Mockable** <br>A setup that makes mocking data easy, unleashing the power of previews and more.
+- **Adoptable** <br>Designed to work in every project, partially or fully. No huge commitment, easy to opt out.
+- **Lightweight** <br>Small Swift package companion, building on native mechanisms that SwiftUI provides.
 
----
+## Content
 
 - [Installation](#installation)
 - [Documentation](#documentation)
