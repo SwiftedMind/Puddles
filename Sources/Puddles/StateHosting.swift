@@ -10,7 +10,7 @@ public struct StateHosting<Observable, Content: View>: View {
 
     public init(
         _ hostedState: @escaping () -> Observable,
-        @ViewBuilder content: @escaping (_ hostedState: Binding<Observable>) -> Content
+        @ViewBuilder content: @escaping (Binding<Observable>) -> Content
     ) {
         self._observable = .init(wrappedValue: hostedState())
         self.content = content
@@ -18,7 +18,7 @@ public struct StateHosting<Observable, Content: View>: View {
 
     public init(
         _ hostedState: Observable,
-        @ViewBuilder content: @escaping (_ hostedState: Binding<Observable>) -> Content
+        @ViewBuilder content: @escaping (Binding<Observable>) -> Content
     ) {
         self._observable = .init(wrappedValue: hostedState)
         self.content = content
@@ -28,7 +28,7 @@ public struct StateHosting<Observable, Content: View>: View {
     @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
     public init(
         _ hostedState: @escaping () -> Observable,
-        @ViewBuilder content: @escaping (_ hostedState: Binding<Observable>) -> Content
+        @ViewBuilder content: @escaping (Binding<Observable>) -> Content
     ) where Observable: AnyObject, Observable: Observation.Observable {
         self._observable = .init(wrappedValue: hostedState())
         self.content = content
