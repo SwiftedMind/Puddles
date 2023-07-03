@@ -37,7 +37,7 @@ extension HomeView {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        Preview(HomeView.init, state: .mock) { action, $state in
+        ViewPreview(HomeView.init, state: .mock) { action, $state in
             switch action {
             case .buttonTaped:
                 state.buttonTapCount += 1

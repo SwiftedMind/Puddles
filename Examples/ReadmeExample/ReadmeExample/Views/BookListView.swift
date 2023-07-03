@@ -70,7 +70,7 @@ extension BookListView {
 
 struct BookListView_Previews: PreviewProvider {
     static var previews: some View {
-        Preview(BookListView.init, state: .mock) { action, $state in
+        ViewPreview(BookListView.init, state: .mock) { action, $state in
             switch action {
             case .showDescriptionsToggled:
                 state.isShowingDescriptions.toggle()

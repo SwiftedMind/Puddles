@@ -47,7 +47,7 @@ extension QueryableDemoView {
 
 struct QueryableDemoView_Previews: PreviewProvider {
     static var previews: some View {
-        Preview(QueryableDemoView.init, state: .init()) { action, $state in
+        ViewPreview(QueryableDemoView.init, state: .init()) { action, $state in
 
         }
     }
