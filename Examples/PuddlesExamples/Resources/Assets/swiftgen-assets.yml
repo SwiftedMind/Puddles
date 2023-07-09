@@ -1,0 +1,6 @@
+xcassets:
+  - inputs:
+    - Assets.xcassets
+    outputs:
+      - templatePath: swiftgen-assets-template.stencil
+        output: ../../Generated/Assets.swift

@@ -1,0 +1,64 @@
+//
+//  Copyright © 2023 Dennis Müller and all collaborators
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+//
+
+// MARK: - Basic
+"add" = "Add";
+"edit" = "Edit";
+"dismiss" = "Dismiss";
+"cancel" = "Cancel";
+"save" = "Save";
+"end" = "End";
+
+// MARK: - Edit Meeting
+"edit-meeting.info-section.title" = "Meeting Info";
+"edit-meeting.info-section.name-field.placeholder" = "Title";
+"edit-meeting.info-section.length-slider.value" = "%@ minutes";
+"edit-meeting.info-section.theme-picker.title" = "Theme";
+"edit-meeting.attendees-section.title" = "Attendees";
+"edit-meeting.attendees-section.attendees-field.placeholder" = "New Attendee";
+"edit-meeting.attendees-section.attendees-field.submit-button.accessibility-label" = "Add attendee";
+
+// MARK: - Scrum List
+"scrum-list.title" = "Daily Scrums";
+"scrum-list.item.leading-action.title" = "Copy Id";
+
+// MARK: - Scrum Detail
+"scrum-detail.info-section.title" = "Meeting Info";
+"scrum-detail.info-section.start-button" = "Start Meeting";
+"scrum-detail.info-section.length.title" = "Length";
+"scrum-detail.info-section.length.value" = "%@ minutes";
+"scrum-detail.info-section.theme" = "Theme";
+"scrum-detail.attendees-section.title" = "Attendees";
+"scrum-detail.history-section.title" = "History";
+"scrum-detail.history-section.empty-info" = "No meetings yet";
+"scrum-detail.footer-section.title.1" = "Scrum Id";
+"scrum-detail.footer-section.title.2" = "Long press to copy";
+
+// MARK: - Meeting View
+"meeting.elapsed-seconds" = "Seconds Elapsed";
+"meeting.remaining-seconds" = "Seconds Remaining";
+"meeting.is-speaking" = "is speaking";
+"meeting.speaker-x-of-y" = "Speaker %@ of %@";
+"meeting.last-speaker" = "Last Speaker";
+"meeting.discard" = "Discard Meeting";
+"meeting.save" = "Save Meeting";
+"meeting.end-dialog-message" = "Do you want to end the meeting?";
