@@ -23,56 +23,21 @@
 import SwiftUI
 import Puddles
 
-struct ExampleListView: View {
-
-    var interface: Interface<Action>
-
+struct FavoriteNumbersView: View {
     var body: some View {
         List {
             Section {
-                Button("Static Example") {
-                    interface.send(.openStaticExample)
-                }
-                Button("Provider Example") {
-                    interface.send(.openBasicProviderExample)
-                }
-                Button("Interaction Example") {
-                    interface.send(.openViewInteractionExample)
-                }
-            } header: {
-                Text("Basic")
-            }
-            Section {
-                Button("Adapters") {
-                    interface.send(.openAdapterExample)
-                }
-                Button("Queryables") {
-                    interface.send(.openQueryableExample)
-                }
-                Button("Signals") {
-                    interface.send(.openSignalExample)
-                }
-            } header: {
-                Text("Basic")
+                LabeledContent("42", value: "Obviously")
+                LabeledContent("73", value: "Sheldon says so")
+                LabeledContent("\(Int.random(in: 100...1000).formatted())", value: "Because why not?")
             }
         }
     }
 }
 
-extension ExampleListView {
-    enum Action: Hashable {
-        case openStaticExample
-        case openBasicProviderExample
-        case openViewInteractionExample
-        case openAdapterExample
-        case openQueryableExample
-        case openSignalExample
-    }
-}
-
-struct ExampleListView_Previews: PreviewProvider {
+struct FavoriteNumbersView_Previews: PreviewProvider {
     static var previews: some View {
-        ExampleListView(interface: .ignore)
+        FavoriteNumbersView()
     }
 }
 

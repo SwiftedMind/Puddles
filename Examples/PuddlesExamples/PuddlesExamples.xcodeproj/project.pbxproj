@@ -35,6 +35,7 @@
 		95E9CFAE2A5A986A00315BFA /* AdapterExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E9CFAD2A5A986A00315BFA /* AdapterExample.swift */; };
 		95E9CFB02A5A987300315BFA /* QueryableExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E9CFAF2A5A987300315BFA /* QueryableExample.swift */; };
 		95E9CFB22A5A987A00315BFA /* SignalExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E9CFB12A5A987A00315BFA /* SignalExample.swift */; };
+		95E9CFB52A5A9BF400315BFA /* FavoriteNumbersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E9CFB42A5A9BF400315BFA /* FavoriteNumbersView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		95E9CFAD2A5A986A00315BFA /* AdapterExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdapterExample.swift; sourceTree = "<group>"; };
 		95E9CFAF2A5A987300315BFA /* QueryableExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryableExample.swift; sourceTree = "<group>"; };
 		95E9CFB12A5A987A00315BFA /* SignalExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalExample.swift; sourceTree = "<group>"; };
+		95E9CFB42A5A9BF400315BFA /* FavoriteNumbersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteNumbersView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +213,7 @@
 			children = (
 				95EC65852A18071A005BDDC0 /* Shared */,
 				953D02B82A5A81F200D1A377 /* ExampleListView.swift */,
+				95E9CFB42A5A9BF400315BFA /* FavoriteNumbersView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				95CCB9242A21E8B500E94681 /* Root.swift in Sources */,
+				95E9CFB52A5A9BF400315BFA /* FavoriteNumbersView.swift in Sources */,
 				953D02B32A5A719300D1A377 /* Router.swift in Sources */,
 				95E9CFB22A5A987A00315BFA /* SignalExample.swift in Sources */,
 				95E9CFA82A5A982100315BFA /* StaticExample.swift in Sources */,

@@ -28,7 +28,7 @@ struct StaticExample: View {
 
     var body: some View {
         NavigationStack {
-            Text("A")
+            FavoriteNumbersView()
                 .navigationTitle("Favorite Numbers")
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
