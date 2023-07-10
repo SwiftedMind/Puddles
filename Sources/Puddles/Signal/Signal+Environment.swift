@@ -106,6 +106,11 @@ struct SignalResolver<SignalValue>: ViewModifier {
 }
 
 extension View {
+    /// Configures the view to receive and resolve signals by calling the provided `action` closure with the signal value.
+    /// - Parameters:
+    ///   - signalValueType: The type of signal that should be resolved.
+    ///   - action: The action to perform to resolve the signal.
+    /// - Returns: A view that is configured to receive and resolve signals.
     public func resolveSignals<SignalValue>(ofType signalValueType: SignalValue.Type, action: @escaping (_ value: SignalValue) -> Void) -> some View {
         modifier(SignalResolver(action: action))
     }

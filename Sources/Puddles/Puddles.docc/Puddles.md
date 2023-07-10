@@ -49,13 +49,3 @@ struct YourApp: App {
 ```
 
 ## Topics
-
-### The Puddles Architecture
-
-- <doc:PuddlesTutorials>
-
-### Core Types
-
-- ``Puddles/Provider``
-- ``Puddles/Navigator``
-- ``Puddles/Signal``
