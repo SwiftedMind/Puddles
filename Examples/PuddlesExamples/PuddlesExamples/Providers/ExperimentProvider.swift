@@ -21,35 +21,46 @@
 //
 
 import SwiftUI
-import Puddles
-import Extensions
-import IdentifiedCollections
-import MockData
+import Models
 
-typealias IdentifiedArrayOf = IdentifiedCollections.IdentifiedArrayOf
-typealias Mock = MockData.Mock
+@MainActor final class ExperimentProvider: ObservableObject {
 
-@MainActor
-struct AppProviders {
-    static let shared: AppProviders = .init()
-    let cultureMinds = CultureMindsProvider.live
-    let numberFact = NumberFactProvider.live
-    let experiment = ExperimentProvider.live
+    struct Dependencies {
+        var experiments: () -> IdentifiedArrayOf<Experiment>
+    }
+
+    private let dependencies: Dependencies
+
+    @Published var experiments: IdentifiedArrayOf<Experiment>
+
+    init(dependencies: Dependencies) {
+        self.dependencies = dependencies
+        self.experiments = dependencies.experiments()
+    }
+
+    func delete(_ experiment: Experiment) {
+        experiments.remove(experiment)
+    }
 }
 
-@main
-struct PuddlesExamplesApp: App {
+// MARK: - Live
 
-    init() {
-        Puddles.configureLog()
-    }
+extension ExperimentProvider {
+    static var live: ExperimentProvider = {
+        .mock // In this simple case, we can use the mock version
+    }()
+}
 
-    var body: some Scene {
-        WindowGroup {
-            Root()
-                .environmentObject(AppProviders.shared.cultureMinds)
-                .environmentObject(AppProviders.shared.numberFact)
-                .environmentObject(AppProviders.shared.experiment)
-        }
-    }
+// MARK: - Mock
+
+extension ExperimentProvider {
+    static var mock: ExperimentProvider = {
+        return .init(
+            dependencies: .init(
+                experiments: {
+                    Mock.Experiment.all
+                }
+            )
+        )
+    }()
 }

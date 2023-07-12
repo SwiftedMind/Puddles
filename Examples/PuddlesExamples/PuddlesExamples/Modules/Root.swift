@@ -20,31 +20,26 @@
 //  SOFTWARE.
 //
 
-import Puddles
 import SwiftUI
+import Puddles
 
-struct ViewInteractionExample: View {
-    @Environment(\.dismiss) private var dismiss
-
+/// The root view of the app.
+struct Root: View {
     var body: some View {
-        NavigationStack {
-            Text("A")
-                .navigationTitle("Favorite Numbers")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Close") {
-                            dismiss()
-                        }
-                    }
+        Home()
+            .onOpenURL { url in
+                // To test, run this in a console (replace the domain with a case from Router.Destination):
+                // xcrun simctl openurl booted "puddlesExample://adapterExample"
+                if let destination = Router.Destination(rawValue: url.host() ?? "") {
+                    Router.shared.navigate(to: destination)
                 }
-        }
+            }
     }
 }
 
-struct ViewInteractionExample_Previews: PreviewProvider {
+struct Root_Previews: PreviewProvider {
     static var previews: some View {
-        ViewInteractionExample()
+        Root()
             .withMockProviders()
     }
 }
-

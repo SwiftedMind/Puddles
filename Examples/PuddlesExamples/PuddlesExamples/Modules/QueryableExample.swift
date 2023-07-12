@@ -22,29 +22,59 @@
 
 import Puddles
 import SwiftUI
+import Queryable
+import Models
 
 struct QueryableExample: View {
+    @EnvironmentObject private var experimentProvider: ExperimentProvider
     @Environment(\.dismiss) private var dismiss
+    @Queryable<Void, Bool> var buttonConfirmation
 
     var body: some View {
         NavigationStack {
-            Text("A")
-                .navigationTitle("Favorite Numbers")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Close") {
-                            dismiss()
-                        }
+            List {
+                if experimentProvider.experiments.isEmpty {
+                    Text("Finally, some silence!")
+                }
+                ForEach(experimentProvider.experiments) { experiment in
+                    ExperimentListSection(experiment: experiment) {
+                        requestDeletion(of: experiment)
                     }
                 }
+            }
+            .animation(.default, value: experimentProvider.experiments)
+            .queryableAlert(controlledBy: buttonConfirmation, title: "Delete this experiment?") { _, query in
+                Button("Yes") { query.answer(with: true) }
+                Button("No") { query.answer(with: false) }
+            } message: {_ in}
+            .navigationTitle("Experiment Ideas")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
         }
     }
+
+    private func requestDeletion(of experiment: Experiment) {
+        Task {
+            do {
+                if try await buttonConfirmation.query() {
+                    experimentProvider.delete(experiment)
+                }
+            } catch {}
+        }
+    }
+
 }
 
 struct QueryableExample_Previews: PreviewProvider {
     static var previews: some View {
         QueryableExample()
             .withMockProviders()
+            .preferredColorScheme(.dark)
     }
 }
 

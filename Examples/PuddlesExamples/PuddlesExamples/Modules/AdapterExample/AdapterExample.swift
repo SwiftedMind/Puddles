@@ -24,26 +24,53 @@ import Puddles
 import SwiftUI
 
 struct AdapterExample: View {
+    @ObservedObject var adapter: ExampleAdapter
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            Text("A")
-                .navigationTitle("Favorite Numbers")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Close") {
-                            dismiss()
-                        }
+            List {
+                Button("Add Random Number Fact") {
+                    adapter.fetchRandomFact()
+                }
+                Section {
+                    Button("Sort") {
+                        adapter.sort()
+                    }
+                    NumberFactStackView(numberFacts: adapter.facts, interface: .consume(handleViewInterface))
+                } footer: {
+                    Text("Data provided by [NumbersAPI.com](https://numbersapi.com)")
+                }
+            }
+            .animation(.default, value: adapter.facts)
+            .navigationTitle("Random Facts")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        dismiss()
                     }
                 }
+                ToolbarItem {
+                    Button("Remove All", role: .destructive) {
+                        adapter.reset()
+                    }
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func handleViewInterface(_ action: NumberFactStackView.Action) {
+        switch action {
+        case .deleteFacts(let indexSet):
+            adapter.facts.remove(atOffsets: indexSet)
         }
     }
 }
 
 struct AdapterExample_Previews: PreviewProvider {
     static var previews: some View {
-        AdapterExample()
+        AdapterExample(adapter: .init(numberFactProvider: .mock))
             .withMockProviders()
     }
 }

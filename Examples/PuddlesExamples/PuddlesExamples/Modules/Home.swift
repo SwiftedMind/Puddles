@@ -27,12 +27,16 @@ import Queryable
 import Models
 
 struct Home: View {
+    @EnvironmentObject private var numberFactProvider: NumberFactProvider
     @ObservedObject private var homeRouter = Router.shared.home
 
     var body: some View {
         NavigationStack(path: $homeRouter.path) {
-            ExampleListView(interface: .consume(handleHomeViewInterface))
-                .navigationTitle("Home")
+            List {
+                SimpleExamplesSection(interface: .consume(handleSimpleExamplesInterface))
+                AdvancedExamplesSection(interface: .consume(handleAdvancedExamplesInterface))
+            }
+            .navigationTitle("Home")
         }
         .fullScreenCover(isPresented: $homeRouter.isShowingStaticExample) {
             StaticExample()
@@ -40,11 +44,13 @@ struct Home: View {
         .fullScreenCover(isPresented: $homeRouter.isShowingBasicProviderExample) {
             BasicProviderExample()
         }
-        .fullScreenCover(isPresented: $homeRouter.isShowingViewInteractionExample) {
-            ViewInteractionExample()
-        }
         .fullScreenCover(isPresented: $homeRouter.isShowingAdapterExample) {
-            AdapterExample()
+            StateObjectHosting {
+                // Will be initialized as `@StateObject` inside `StateObjectHosting` and passed to the content closure
+                ExampleAdapter(numberFactProvider: numberFactProvider)
+            } content: { adapter in
+                AdapterExample(adapter: adapter)
+            }
         }
         .fullScreenCover(isPresented: $homeRouter.isShowingQueryableExample) {
             QueryableExample()
@@ -55,14 +61,18 @@ struct Home: View {
     }
 
     @MainActor
-    private func handleHomeViewInterface(_ action: ExampleListView.Action) {
+    private func handleSimpleExamplesInterface(_ action: SimpleExamplesSection.Action) {
         switch action {
         case .openStaticExample:
             Router.shared.navigate(to: .staticExample)
         case .openBasicProviderExample:
             Router.shared.navigate(to: .basicProviderExample)
-        case .openViewInteractionExample:
-            Router.shared.navigate(to: .viewInteractionExample)
+        }
+    }
+
+    @MainActor
+    private func handleAdvancedExamplesInterface(_ action: AdvancedExamplesSection.Action) {
+        switch action {
         case .openAdapterExample:
             Router.shared.navigate(to: .adapterExample)
         case .openQueryableExample:
@@ -70,11 +80,6 @@ struct Home: View {
         case .openSignalExample:
             Router.shared.navigate(to: .signalExample)
         }
-    }
-}
-
-extension Home {
-    enum SignalValue {
     }
 }
 

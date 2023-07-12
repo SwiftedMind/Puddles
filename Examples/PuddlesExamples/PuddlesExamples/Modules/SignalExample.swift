@@ -25,19 +25,70 @@ import SwiftUI
 
 struct SignalExample: View {
     @Environment(\.dismiss) private var dismiss
+    @Signal<SubModule.Action> private var signal
 
     var body: some View {
         NavigationStack {
-            Text("A")
-                .navigationTitle("Favorite Numbers")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Close") {
-                            dismiss()
-                        }
+            List {
+                Section {
+                    Button("I Demand An Answer!") {
+                        signal.send(.showTheAnswer)
+                    }
+                } header: {
+                    Text("Parent view")
+                }
+
+                Section {
+                    SubModule()
+                } header: {
+                    Text("Nested view")
+                }
+            }
+            .sendSignals(signal)
+            .navigationTitle("Q&A")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        dismiss()
                     }
                 }
+            }
         }
+    }
+}
+
+struct SubModule: View {
+    // This view has its own state, not a binding.
+    // With signals you can give parent views controlled access to the state, without the parents having to own it themselves and pass it in.
+    @State private var showMyPrivateLittleSecret: Bool = false
+
+    var body: some View {
+        content
+            .animation(.default, value: showMyPrivateLittleSecret)
+            .resolveSignals(ofType: Action.self) { action in
+                switch action {
+                case .showTheAnswer:
+                    showMyPrivateLittleSecret = true
+                }
+            }
+    }
+
+    @ViewBuilder @MainActor
+    private var content: some View {
+        Text("Why did the bicycle fall over?")
+        if showMyPrivateLittleSecret {
+            Text("Because it was two-tired!")
+        }
+        Button("Toggle Visibility") {
+            showMyPrivateLittleSecret.toggle()
+        }
+    }
+
+}
+
+extension SubModule {
+    enum Action: Hashable {
+        case showTheAnswer
     }
 }
 

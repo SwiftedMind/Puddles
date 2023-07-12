@@ -10,14 +10,15 @@ let package = Package(
             name: "Core",
             targets: [
                 "Models",
-                "ScrumStore",
-                "AudioRecording",
-                "MockData",
-                "Extensions"
+                "Extensions",
+                "NumbersAPI",
+                "CultureMinds",
+                "MockData"
             ]),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "0.7.1")
+        .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "0.7.1"),
+        .package(url: "https://github.com/kean/Get", from: "2.1.6"),
     ],
     targets: [
         .target(
@@ -31,24 +32,26 @@ let package = Package(
             dependencies: [
                 .product(name: "IdentifiedCollections", package: "swift-identified-collections")
             ]
-        ),
-        .target(
-            name: "AudioRecording",
-            dependencies: [
-                .product(name: "IdentifiedCollections", package: "swift-identified-collections")
-            ]
-        ),
-        .target(
+        ),.target(
             name: "MockData",
-            dependencies: [
-                .product(name: "IdentifiedCollections", package: "swift-identified-collections")
-            ]
-        ),
-        .target(
-            name: "ScrumStore",
             dependencies: [
                 .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
                 "Models"
+            ]
+        ),
+        .target(
+            name: "CultureMinds",
+            dependencies: [
+                .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+                "MockData"
+            ]
+        ),
+        .target(
+            name: "NumbersAPI",
+            dependencies: [
+                .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+                "Get",
+                "MockData"
             ]
         )
     ]

@@ -23,24 +23,21 @@
 import SwiftUI
 import Puddles
 
-/// The root view of the app.
-struct Root: View {
-    @Signal<Home.SignalValue>(debugIdentifier: "Root.HomeSignal") private var home
-
+struct FavoriteNumbersSection: View {
     var body: some View {
-        Home()
-            .sendSignals(home)
-            .onOpenURL { url in
-                // Receive urls, resolve them and send a signal to the main home module to apply the deeplink.
-//                guard let targetState = deepLinkResolver.homeSignal(for: url) else { return }
-//                home.send(targetState)
+            Section {
+                LabeledContent("42", value: "Obviously")
+                LabeledContent("73", value: "Sheldon says so")
+                LabeledContent("\(Int.random(in: 100...1000).formatted())", value: "Because why not?")
             }
     }
 }
 
-struct Root_Previews: PreviewProvider {
+struct FavoriteNumbersSection_Previews: PreviewProvider {
     static var previews: some View {
-        Root()
-            .withMockProviders()
+        List {
+            FavoriteNumbersSection()
+        }
     }
 }
+

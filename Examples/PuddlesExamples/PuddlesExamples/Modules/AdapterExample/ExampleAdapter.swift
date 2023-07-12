@@ -21,35 +21,43 @@
 //
 
 import SwiftUI
-import Puddles
-import Extensions
-import IdentifiedCollections
-import MockData
+import Models
 
-typealias IdentifiedArrayOf = IdentifiedCollections.IdentifiedArrayOf
-typealias Mock = MockData.Mock
+@MainActor final class ExampleAdapter: ObservableObject {
 
-@MainActor
-struct AppProviders {
-    static let shared: AppProviders = .init()
-    let cultureMinds = CultureMindsProvider.live
-    let numberFact = NumberFactProvider.live
-    let experiment = ExperimentProvider.live
-}
+    @Published var facts: IdentifiedArrayOf<NumberFact> = []
+    private let numberFactProvider: NumberFactProvider
+    private var availableNumbers: Set<Int> = Set(0...200)
 
-@main
-struct PuddlesExamplesApp: App {
-
-    init() {
-        Puddles.configureLog()
+    init(numberFactProvider: NumberFactProvider) {
+        self.numberFactProvider = numberFactProvider
     }
 
-    var body: some Scene {
-        WindowGroup {
-            Root()
-                .environmentObject(AppProviders.shared.cultureMinds)
-                .environmentObject(AppProviders.shared.numberFact)
-                .environmentObject(AppProviders.shared.experiment)
+    func fetchFactAboutRandomNumber() async throws {
+        if let number = randomAvailableNumber() {
+            let fact = NumberFact(number: number)
+            facts.insert(fact, at: 0)
+            let content = try await numberFactProvider.factAboutNumber(number)
+            facts[id: fact.id]?.content = content
         }
+    }
+
+    func fetchRandomFact() {
+        Task { try? await fetchFactAboutRandomNumber() }
+    }
+
+    func reset() {
+        facts.removeAll()
+        availableNumbers = Set(0...200)
+    }
+
+    func sort() {
+        facts.sort(by: { $0.number < $1.number })
+    }
+
+    private func randomAvailableNumber() -> Int? {
+        guard !availableNumbers.isEmpty else { return nil }
+        availableNumbers = Set(availableNumbers.shuffled())
+        return availableNumbers.removeFirst()
     }
 }

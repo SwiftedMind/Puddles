@@ -22,22 +22,38 @@
 
 import SwiftUI
 import Puddles
+import MockData
 
-struct FavoriteNumbersView: View {
+// View component without context of Providers or data sources.
+// This component simply accepts the data it needs to display itself and nothing more.
+// It does not know where it is in the app or what its purpose is.
+struct CultureMindNameStackView: View {
+    var names: [String]
+
     var body: some View {
-        List {
-            Section {
-                LabeledContent("42", value: "Obviously")
-                LabeledContent("73", value: "Sheldon says so")
-                LabeledContent("\(Int.random(in: 100...1000).formatted())", value: "Because why not?")
-            }
+        ForEach(names, id: \.self) { name in
+            Text(name)
         }
     }
 }
 
-struct FavoriteNumbersView_Previews: PreviewProvider {
-    static var previews: some View {
-        FavoriteNumbersView()
-    }
+private struct PreviewState {
+    var names: [String] = [Mock.cultureMindNames.randomElement()!]
 }
 
+struct CultureMindNameStackView_Previews: PreviewProvider {
+    static var previews: some View {
+        StateHosting(PreviewState()) { $state in
+            List {
+                CultureMindNameStackView(names: state.names)
+            }
+            .overlay(alignment: .bottom) {
+                Button("Add Random") {
+                    state.names.append(Mock.cultureMindNames.randomElement()!)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .preferredColorScheme(.dark)
+    }
+}

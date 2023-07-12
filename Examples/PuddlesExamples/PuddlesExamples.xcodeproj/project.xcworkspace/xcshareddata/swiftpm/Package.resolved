@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "get",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Get",
+      "state" : {
+        "revision" : "12830cc64f31789ae6f4352d2d51d03a25fc3741",
+        "version" : "2.1.6"
+      }
+    },
+    {
       "identity" : "queryable",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SwiftedMind/Queryable",

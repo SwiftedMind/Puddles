@@ -22,57 +22,51 @@
 
 import SwiftUI
 import Puddles
+import MockData
+import Models
 
-struct ExampleListView: View {
-
+struct NumberFactStackView: View {
+    var numberFacts: IdentifiedArrayOf<NumberFact>
     var interface: Interface<Action>
 
     var body: some View {
-        List {
-            Section {
-                Button("Static Example") {
-                    interface.send(.openStaticExample)
-                }
-                Button("Provider Example") {
-                    interface.send(.openBasicProviderExample)
-                }
-                Button("Interaction Example") {
-                    interface.send(.openViewInteractionExample)
-                }
-            } header: {
-                Text("Basic")
-            }
-            Section {
-                Button("Adapters") {
-                    interface.send(.openAdapterExample)
-                }
-                Button("Queryables") {
-                    interface.send(.openQueryableExample)
-                }
-                Button("Signals") {
-                    interface.send(.openSignalExample)
-                }
-            } header: {
-                Text("Basic")
-            }
+        ForEach(numberFacts) { fact in
+            NumberFactView(numberFact: fact)
+        }
+        .onDelete { indexSet in
+            interface.send(.deleteFacts(indexSet: indexSet))
         }
     }
 }
 
-extension ExampleListView {
+extension NumberFactStackView {
+
     enum Action: Hashable {
-        case openStaticExample
-        case openBasicProviderExample
-        case openViewInteractionExample
-        case openAdapterExample
-        case openQueryableExample
-        case openSignalExample
+        case deleteFacts(indexSet: IndexSet)
     }
 }
 
-struct ExampleListView_Previews: PreviewProvider {
+private struct PreviewState {
+    var numberFacts: IdentifiedArrayOf<NumberFact> = [.init(number: 42, content: "Test")]
+}
+
+struct NumberFactListView_Previews: PreviewProvider {
     static var previews: some View {
-        ExampleListView(interface: .ignore)
+        StateHosting(PreviewState()) { $state in
+            NumberFactStackView(numberFacts: state.numberFacts, interface: .consume({ action in
+                switch action {
+                case .deleteFacts(let indexSet):
+                    state.numberFacts.remove(atOffsets: indexSet)
+                }
+            }))
+            .overlay(alignment: .bottom) {
+                Button("Add Fact") {
+                    let number = Int.random(in: 0...10)
+                    state.numberFacts.insert(.init(number: number, content: Mock.factAboutNumber(number)), at: 0)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .preferredColorScheme(.dark)
     }
 }
-

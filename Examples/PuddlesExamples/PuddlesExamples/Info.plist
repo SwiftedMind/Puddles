@@ -11,9 +11,14 @@
 			<string>PuddlesExamples Scheme</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>scrumdinger</string>
+				<string>puddlesExample</string>
 			</array>
 		</dict>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

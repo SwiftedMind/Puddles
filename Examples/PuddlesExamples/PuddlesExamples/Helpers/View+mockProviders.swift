@@ -25,5 +25,8 @@ import SwiftUI
 extension View {
     @MainActor func withMockProviders() -> some View {
         self
+            .environmentObject(CultureMindsProvider.mock)
+            .environmentObject(NumberFactProvider.mock)
+            .environmentObject(ExperimentProvider.mock)
     }
 }

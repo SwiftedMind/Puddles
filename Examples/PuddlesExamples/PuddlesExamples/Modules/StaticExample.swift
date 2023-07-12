@@ -28,15 +28,17 @@ struct StaticExample: View {
 
     var body: some View {
         NavigationStack {
-            FavoriteNumbersView()
-                .navigationTitle("Favorite Numbers")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Close") {
-                            dismiss()
-                        }
+            List {
+                FavoriteNumbersSection()
+            }
+            .navigationTitle("Favorite Numbers")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        dismiss()
                     }
                 }
+            }
         }
     }
 }

@@ -27,11 +27,10 @@ import SwiftUI
 
     var home: HomeRouter = .init()
 
-    enum Destination: Hashable {
+    enum Destination: String, Hashable {
         case root
         case staticExample
         case basicProviderExample
-        case viewInteractionExample
         case adapterExample
         case queryableExample
         case signalExample
@@ -47,9 +46,6 @@ import SwiftUI
         case .basicProviderExample:
             home.reset()
             home.isShowingBasicProviderExample = true
-        case .viewInteractionExample:
-            home.reset()
-            home.isShowingViewInteractionExample = true
         case .adapterExample:
             home.reset()
             home.isShowingAdapterExample = true

@@ -31,7 +31,6 @@ import SwiftUI
     @Published var path: [Destination] = []
     @Published var isShowingStaticExample: Bool = false
     @Published var isShowingBasicProviderExample: Bool = false
-    @Published var isShowingViewInteractionExample: Bool = false
     @Published var isShowingAdapterExample: Bool = false
     @Published var isShowingQueryableExample: Bool = false
     @Published var isShowingSignalExample: Bool = false
@@ -40,7 +39,6 @@ import SwiftUI
         path.removeAll()
         isShowingStaticExample = false
         isShowingBasicProviderExample = false
-        isShowingViewInteractionExample = false
         isShowingAdapterExample = false
         isShowingQueryableExample = false
         isShowingSignalExample = false

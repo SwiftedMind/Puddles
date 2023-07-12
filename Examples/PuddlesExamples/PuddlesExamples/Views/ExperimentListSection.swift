@@ -20,28 +20,27 @@
 //  SOFTWARE.
 //
 
-import Foundation
+import SwiftUI
+import Models
 
-/// A simple `Error` implementation for easy mock errors.
-public struct MockError: Error {
+struct ExperimentListSection: View {
+    var experiment: Experiment
+    var onDelete: () -> Void
 
-    /// A message describing the error.
-    var message: String
-
-    /// A simple `Error` implementation for easy mock errors.
-    public init(message: String = "Mock Error") {
-        self.message = message
+    var body: some View {
+        Section {
+            Text(experiment.title)
+                .font(.headline)
+            Text(experiment.description)
+            Button("Delete this nonsense!", role: .destructive, action: onDelete)
+        }
     }
-
-    public var localizedDescription: String {
-        message
-    }
-
 }
 
-public extension Error where Self == MockError {
-    /// A simple `Error` implementation for easy mock errors.
-    static var mock: Self {
-        .init()
+struct ExperimentListSection_Previews: PreviewProvider {
+    static var previews: some View {
+        List {
+            ExperimentListSection(experiment: Mock.Experiment.mock(), onDelete: {})
+        }
     }
 }
