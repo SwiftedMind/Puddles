@@ -20,12 +20,24 @@
 //  SOFTWARE.
 //
 
-import Foundation
+import SwiftUI
 
-@MainActor
-final class FavoriteBooksRepository: ObservableObject {
-    func fetchBooks() async throws -> [Book] {
-        try await Task.sleep(for: .seconds(2))
-        return [.leviathanWakes, .calibansWar]
+/// A view wrapper that initializes the given hosted state as `StateObject` and passes it to the `content` view builder closure.
+public struct StateObjectHosting<Observable: ObservableObject, Content: View>: View {
+
+    @StateObject var observable: Observable
+    var content: (Observable) -> Content
+
+    /// A view wrapper that initializes the given hosted state as `StateObject` and passes it to the `content` view builder closure.
+    public init(
+        _ hostedState: @escaping () -> Observable,
+        @ViewBuilder content: @escaping (_ hostedState: Observable) -> Content
+    ) {
+        self._observable = .init(wrappedValue: hostedState())
+        self.content = content
+    }
+
+    public var body: some View {
+        content(observable)
     }
 }
