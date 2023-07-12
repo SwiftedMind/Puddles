@@ -85,7 +85,6 @@ struct Home: View {
 
 struct HomeHome_Previews: PreviewProvider {
     static var previews: some View {
-        Home()
-            .withMockProviders()
+        Home().withMockProviders()
     }
 }

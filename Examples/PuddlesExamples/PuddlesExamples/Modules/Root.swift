@@ -23,7 +23,6 @@
 import SwiftUI
 import Puddles
 
-/// The root view of the app.
 struct Root: View {
     var body: some View {
         Home()
@@ -39,7 +38,6 @@ struct Root: View {
 
 struct Root_Previews: PreviewProvider {
     static var previews: some View {
-        Root()
-            .withMockProviders()
+        Root().withMockProviders()
     }
 }

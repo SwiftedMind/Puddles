@@ -55,6 +55,14 @@ import CultureMinds
 
 extension CultureMindsProvider {
     static var live: CultureMindsProvider = {
+        .mock // In this simple case, we can use the mock version
+    }()
+}
+
+// MARK: - Mock
+
+extension CultureMindsProvider {
+    static var mock: CultureMindsProvider = {
         let cultureMinds = CultureMinds()
         return .init(
             dependencies: .init(
@@ -67,13 +75,5 @@ extension CultureMindsProvider {
                 }
             )
         )
-    }()
-}
-
-// MARK: - Mock
-
-extension CultureMindsProvider {
-    static var mock: CultureMindsProvider = {
-        .live // In this simple case, we can use the live version for the mocks as well
     }()
 }

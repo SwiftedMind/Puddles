@@ -112,8 +112,8 @@
 			isa = PBXGroup;
 			children = (
 				95E9CFB62A5ADD4500315BFA /* CultureMindsProvider.swift */,
-				95B746DD2A5F0CBB00615C9A /* ExperimentProvider.swift */,
 				95E9CFB82A5AE07C00315BFA /* NumberFactProvider.swift */,
+				95B746DD2A5F0CBB00615C9A /* ExperimentProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
