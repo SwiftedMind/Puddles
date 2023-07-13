@@ -252,7 +252,7 @@ struct NumberModule: View {
 
 ## Example Apps
 
-[**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/develop/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles, including a globally shared Router for navigation.
+[**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/main/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles, including a globally shared Router for navigation.
 
 [**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
 
