@@ -2,7 +2,6 @@ import Foundation
 import Get
 
 public final class Numbers {
-
     private let client: APIClient
 
     public init() {

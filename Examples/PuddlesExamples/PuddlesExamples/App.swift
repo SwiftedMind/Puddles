@@ -47,9 +47,9 @@ struct PuddlesExamplesApp: App {
     var body: some Scene {
         WindowGroup {
             Root()
-                .environmentObject(AppProviders.shared.cultureMinds)
-                .environmentObject(AppProviders.shared.numberFact)
-                .environmentObject(AppProviders.shared.experiment)
+                .environmentObject(CultureMindsProvider.live)
+                .environmentObject(NumberFactProvider.live)
+                .environmentObject(ExperimentProvider.live)
         }
     }
 }

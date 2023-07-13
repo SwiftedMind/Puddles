@@ -154,7 +154,7 @@
 				953D02B12A5A718700D1A377 /* Router */,
 				954FA2642A17F5B4006F26FC /* Providers */,
 				95EC659A2A1A0B51005BDDC0 /* Modules */,
-				95EC65842A180717005BDDC0 /* Views */,
+				95EC65842A180717005BDDC0 /* Components */,
 				95868C8D29C8520C001F8629 /* Helpers */,
 				95868C7A29C851C7001F8629 /* Preview Content */,
 			);
@@ -225,10 +225,11 @@
 			path = AdapterExample;
 			sourceTree = "<group>";
 		};
-		95EC65842A180717005BDDC0 /* Views */ = {
+		95EC65842A180717005BDDC0 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				95EC65852A18071A005BDDC0 /* Shared */,
+				95868CC629C863A5001F8629 /* TrailingIconLabelStyle.swift */,
+				95C154B129C86A4700224B4B /* DisclosureItem.swift */,
 				953D02B82A5A81F200D1A377 /* ExampleSections.swift */,
 				95E9CFB42A5A9BF400315BFA /* FavoriteNumbersSection.swift */,
 				9539F6DB2A5AF7A3009D3679 /* NumberFactView.swift */,
@@ -236,16 +237,7 @@
 				9539F6DD2A5B1538009D3679 /* NumberFactStackView.swift */,
 				957850AD2A5F1469002C3EDC /* ExperimentListSection.swift */,
 			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		95EC65852A18071A005BDDC0 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				95868CC629C863A5001F8629 /* TrailingIconLabelStyle.swift */,
-				95C154B129C86A4700224B4B /* DisclosureItem.swift */,
-			);
-			path = Shared;
+			path = Components;
 			sourceTree = "<group>";
 		};
 		95EC659A2A1A0B51005BDDC0 /* Modules */ = {

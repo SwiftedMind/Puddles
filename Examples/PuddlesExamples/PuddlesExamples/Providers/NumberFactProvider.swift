@@ -51,15 +51,13 @@ import NumbersAPI
 extension NumberFactProvider {
     static var live: NumberFactProvider = {
         let numbers = Numbers()
-        return .init(
-            dependencies: .init(
+        return .init(dependencies: .init(
                 factAboutRandomNumber: {
                     try await numbers.factAboutRandomNumber()
                 }, factAboutNumber: { number in
                     try await numbers.factAboutNumber(number)
                 }
-            )
-        )
+            ))
     }()
 }
 
