@@ -1,116 +1,282 @@
-![slice1](https://user-images.githubusercontent.com/7083109/221624800-f99ad5a9-b875-4f95-a394-3d326c1e151d.png)
 
-> **Note**
-> Puddles 1.0.0 is close to being finished, I'm just finishing up the documentation. You should check out the [develop](https://github.com/SwiftedMind/Puddles/tree/develop) branch to see what's changed. I don't recommend using the main branch anymore, until 1.0.0 is released. If you want to see an example project using the current Puddles 1.0.0 "release candidate", have a look at [Scrumdinger](https://github.com/SwiftedMind/Scrumdinger).
+<p align="center">
+  <img width="200" height="200" src="https://user-images.githubusercontent.com/7083109/231764991-1de9f379-2f2a-41e4-b396-d7592508b6ed.png">
+</p>
 
-# Puddles - A SwiftUI Architecture
+
+# A Native SwiftUI Architecture
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/SwiftedMind/Puddles)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSwiftedMind%2FPuddles%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SwiftedMind/Puddles)
+![GitHub](https://img.shields.io/github/license/SwiftedMind/Puddles)
 
-Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building flexible, modular and scalable apps by providing a set of simple tools and patterns that make development easier and more convenient. However, it doesn't try to lock you into anything. Every project is unique and while it should be generally discouraged, it has to be easy to deviate from existing patterns. Puddles has been designed from the start with this thought in mind.
+![Define dependencies, inject them into observable data providers, build your generic UI components and integrate everything into the screens of your app](https://github.com/SwiftedMind/Puddles/assets/7083109/cbc93859-932f-4005-a16b-49b4f6a6aa2a)
+
+Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building native, modular and composable apps by providing a set of simple tools and patterns that make development easier and more convenient. 
+
+- **Native** - Powered by what SwiftUI has to offer, extending only what's necessary.
+- **Modular** - A project structure that encourages you to build reusable components inside a very flexible app.
+- **Composable** - Naturally nest components to build increasingly complex apps, just like SwiftUI intends.
+- **Mockable** - A setup that makes mocking data easy, unleashing the power of previews and more.
+- **Adoptable** - Designed to work in every project, partially or fully. No huge commitment, easy to opt out.
+- **Lightweight** - Small Swift package companion, building on native mechanisms that SwiftUI provides.
+
 
 ## Content
 
-- [Features](#features)
-- [Getting Started](#getting-started)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-  - [First Steps](#first-steps)
+- [Installation](#installation)
 - [Documentation](#documentation)
-- [Why use Puddles?](#why-use-puddles)
-- [Why not to use Puddles?](#why-not-to-use-puddles)
+- **[The Puddles Architecture](#the-puddles-architecture)**
+- [Examples](#examples)
+- **[Should you use Puddles?](#should-you-use-puddles)**
 - [License](#license)
 
-## Features
+## Installation
 
-🕊️ **Designed to Feel Native** - Puddles has been designed from the ground up to fit right in with the existing SwiftUI API. The framework does not use any kind of hack, workaround or SwiftUI internal methods. Everything is built using standard functionality. Many implementations are just convenient wrappers around existing interfaces.
+Puddles supports iOS 15+, macOS 12+, watchOS 8+ and tvOS 15+.
 
-🪙 **Architecture** - Though it might be a controversial opinion, I am not convinced that MVVM is the right pattern to use within SwiftUI. You lose a lot of functionality and often have to work against the framework. That's why Puddles' main structures – `Coordinator` and `Navigator` – are just plain old SwiftUI views. They act as a wrapper around the views that actually describe your app's UI and handle logic and data management. This allows you to make use of *all* the cool features and techniques SwiftUI provides.
+### Swift Package
 
-✨ **Flexibility** - `Coordinator` and `Navigator` being SwiftUI views has another huge advantage. They can be placed *anywhere* you could place any SwiftUI view, so you are not locked into the architecture. If you need to implement something that doesn't properly fit within the Puddles architecture, simply build it using different techniques and plug it in. **No problem!**.
-
-📁 **Modularity** - Puddles is designed to encourage highly modular code by layering logic and dependencies in nested `Coordinators`, which can be swapped out easily and even be moved across different projects!
-
-♻️ **Unidirectional Data Flow** - While not strictly enforced by the framework, Puddles is designed around one-way communication between components. This greatly reduces complexity while increasing modularity and ease of use in SwiftUI Previews. To do this, Puddles provides an easy to use `Interface` type that lets you send `actions` to an interface observer.
-
-⚓ **Deep Link Support** - Support for deep linking and arbitrary state restoration is built-in from the start and does not require much extra work or setup.
-
-⁉️ **Queryables** - Queryables allow you to trigger a view presentation with a simple `async` function call that suspends until the presentation has concluded and produced a result. For example, you can trigger a "deletion confirmation" alert and `await` its result with one call, without ever leaving the scope.
-
-🚦 **Signals** - In SwiftUI, you can send data from a child view to a parent view through the use of closures, which are one-time events that trigger an action. Puddles provides a `Signal` type that does the exact same thing, but in the other direction. It lets you send data down the view hierarchy, without forcing a permanent new state. This is highly useful for deep linking and state restoration, where you just want to signify a needed state change from outside a view, without locking any new state from the parent.
-
-## Getting Started
-
-> **Warning**
-> Puddles is still in early development. Things will break, so please use this carefully and at your own risk. Feedback is always appreciated.
-
-### Requirements
-
-Puddles supports the following platforms:
-
-- iOS 15+
-- macOS 12+
-
-You will also need Swift 5.7 to compile the package.
-
-> **Note**
-> iOS 16 completely revamped navigation in SwiftUI and fixed countless bugs. Therefore, if you want to achieve the best results with the smallest amount of work, and have the ability to make that decision, a deployment target of iOS 16 is highly recommended.
-
-### Installation
-
-The package is installed through the Swift Package Manager. Simply add the following line to your `Package.swift` dependencies:
+Add the following line to the dependencies in your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/SwiftedMind/Puddles", branch: "main")
+.package(url: "https://github.com/SwiftedMind/Puddles", from: "1.0.0")
 ```
 
-Alternatively, if you want to add the package to an Xcode project, go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
+### Xcode project
 
-### First Steps
-
-It is easy to build an app with Puddles. The entire basic setup looks like this:
-
-```swift
-import SwiftUI
-import Puddles
-
-struct Root: Coordinator {
-  var entryView: some View {
-    Text("Hello, World")
-  }
-}
-
-@main
-struct YourApp: App {
-  var body: some Scene {
-    WindowGroup {
-      Root()
-    }
-  }
-}
-```
+Go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMind/Puddles" into the search field at the top right. Puddles should appear in the list. Select it and click "Add Package" in the bottom right.
 
 ## Documentation
 
 The documentation for Puddles can be found here:
-https://swiftedmind.github.io/Puddles/documentation/puddles/
+[Documentation](https://swiftedmind.github.io/Puddles/documentation/puddles/)
 
-Tutorials can be found here:
-https://swiftedmind.github.io/Puddles/tutorials/puddlestutorials
 
-## Why use Puddles?
+## The Puddles Architecture
 
-Finding a solid foundation to build well-structured apps based on the SwiftUI lifecycle has been a challenging problem since the framework's release. While SwiftUI excels at fast paced composition of view hierarchies, it is surprisingly easy to create lots of hard couplings between logic and UI, making it virtually impossible to keep a project modular and flexible. 
+Puddles separates your project into 4 distinct layers. The **Core** defines the app's business logic, the **Providers** distribute a stable API to that logic through the SwiftUI environment, the **Components** define a set of generic, reusable views and the **Modules** glue everything together to form and present the actual screens of the app.
 
-Navigation and data management in particular have been troublesome. Both should not be part of UI code since a view is supposed to be agnostic of its context. However, moving the logic too far away means losing out on all the great features that SwiftUI has to offer, like the `Environment` or automatic lifetime management of data. Puddles strives to strike a balance.
+### ♦︎ The Core
 
-Puddles is trying to be as flexible and dynamic as possible. Every app is unique and requires specific ways of doing things, and being locked into a very strict architecture can quickly become frustrating. 
+The _Core_ layer forms the backbone of Puddles. It is implemented as a local Swift package that contains the app's entire business logic in the form of (mostly) isolated data components, divided into individual targets. Everything that is not directly related to the UI belongs in here, encouraging building modular types that are easily and independently modifiable and replaceable.
 
-Puddles attempts to offer a helpful guidance and structure for your app, but does not force you into anything. It is built to be fully compatible with any other SwiftUI project, allowing you to incrementally adopt Puddles in existing projects, as well as link to any traditional SwiftUI view from within the scope of a Puddle `Coordinator` or `Navigator`.
+The app's data models are also defined inside this package, so that each feature component can use and expose _them_, instead of leaking implementation details in the form of DTO objects or something similar. 
 
-## Why not to use Puddles?
+The app should be able to consume everything in a way that, for example, makes swapping a local database for a backend as easy as possible.
 
-Puddles is still in early development and things will break regularly. Also, one of the major shortcomings right now is the lack of proper support for unit testing. If you need that, Puddles is not the right choice for now. I will look into it once the rest of the framework has stabilized.
+```swift
+let package = Package(
+    name: "Core",
+    dependencies: [/* ... */],
+    products: [/* ... */],
+    targets: [
+        .target(name: "Models"), // App Models
+        .target(name: "Extensions"), // Useful extensions and helpers
+        .target(name: "MockData"), // Mock data 
+        .target(name: "BackendConnector", dependencies: ["Models"]), // Connects to a backend
+        .target(name: "LocalStore", dependencies: ["Models"]), // Manages a local database
+        .target(name: "CultureMinds", dependencies: ["MockData"]), // Data Provider for Iain Banks's Culture book universe
+        .target(name: "NumbersAPI", dependencies: ["MockData", "Get"]) // API connector for numbersAPI.com
+    ]
+)
+```
+
+#### Example
+Here is a simple class defined in the `NumbersAPI` target, whose sole purpose it is to provide an interface for the app to access random facts about numbers from [NumbersAPI](http://numbersapi.com).
+
+```swift
+import Get
+
+public final class Numbers {
+    private let client: APIClient
+    public init() {/* ... */}
+    public func factAboutNumber(_ number: Int) async throws -> String {
+        let request = Request<String>(path: "/\(number)")
+        return try await client.send(request).value
+    }
+}
+```
+
+
+### ♦︎ Providers
+
+Views in Puddles never access any of the Core's components directly. Rather, they do so through  _Providers_. They are observable objects distributed through the SwiftUI environment. Their purpose is to provide the app with a stable API that fully hides any kinds of implementation details, allowing us to freely inject mock data into any part of the view hierarchy.
+
+#### Example
+
+Here is a Provider that allows the app to access random facts about numbers. Important to note is the `Dependencies` struct that is passed on initialization. This allows us to initialize the Provider with mock data, in addition to the live data fetched from an API:
+
+```swift
+@MainActor final class NumberFactProvider: ObservableObject {
+    struct Dependencies {
+        var factAboutNumber: (_ number: Int) async throws -> String
+    }
+    private let dependencies: Dependencies
+    init(dependencies: Dependencies) {/* ... */
+    func factAboutNumber(_ number: Int) async throws -> String {/* ... */}
+}
+```
+
+With this, we can define a mock and a live variant of the Provider:
+
+```swift
+extension NumberFactProvider {
+    static var mock: NumberFactProvider = {/* ... */}()
+    static var live: NumberFactProvider = {
+        let numbers = Numbers() // From the Core Swift package
+        return .init(
+            dependencies: .init(factAboutNumber: { number in
+                try await numbers.factAboutNumber(number)
+            })
+        )
+    }()
+}
+```
+
+And finally, we can inject the Providers into the environment so that the entire app can easily access them, while still making it possible to override them for specific parts of the view hierarchy.
+
+```swift
+struct YourApp: App {
+    var body: some Scene {
+        WindowGroup {
+            Root() // App's entry view
+                .environmentObject(NumberFactProvider.live)
+                /* Other Providers ... */
+        }
+    }
+}
+```
+
+Additionally, it is now easy to mock any view by simply giving it a set of mock Providers:
+
+```swift
+struct Root_Previews: PreviewProvider {
+    static var previews: some View {
+        Root().withMockProviders()
+    }
+}
+```
+
+
+### ♦︎ Components
+
+The Components layer is made up of generic SwiftUI views that should be as primitive and compact as possible. Ideally, they never access external data from the environment - except for "native" information like `dynamicTypeSize` or `isEnabled` - or contain any kind of contextual implementation that specifies their place and position in the app. You should think of them as small, flexible building blocks that are only pieced together inside the Module layer, which creates the actual screens of the app using those blocks (see the explanation below).
+
+View components can communicate user interactions to their parent (which is usually a Module) via any number of means but Puddles comes with a nice little helper type called `Interface<Action>` that lets you send actions defined in an enum upstream:
+
+```swift
+struct MyModule: View {
+    var body: some View {
+        MyView(interface: .consume({ action in
+            switch action {
+            case .didTap: print("Did Tap!")
+            }
+        }))
+    }
+}
+struct MyView: View {
+    var interface: Interface<Action>
+    var body: some View {
+        Button("Tap Me") { interface.send(.didTap) }
+    }
+
+    enum Action {
+        case didTap
+    }
+}
+```
+
+#### Example
+
+Here is an example of a simple view component as well as an interactive preview of it:
+
+```swift
+struct NumberFactView: View {
+    var numberFact: NumberFact // The view needs a single model to display itself
+    var body: some View {/* ... */}
+}
+
+// MARK: - Preview
+private struct PreviewState {
+    var numberFact: NumberFact = .init(number: 5, content: Mock.factAboutNumber(5))
+}
+
+struct NumberFactView_Previews: PreviewProvider {
+    static var previews: some View {
+        StateHosting(PreviewState()) { $state in // Binding to the preview state
+            List {
+                NumberFactView(numberFact: state.numberFact)
+                Section {/* Debug Controls ... */}
+            }
+        }
+    }
+}
+```
+
+### ♦︎ Modules
+
+Just like the view components, Modules are plain old SwiftUI views but with a different semantic applied. They take the components and piece them together, providing structure, context and data from the Providers, to form the actual screens of the app.
+
+It is important to understand that Modules themselves are not components, they are not generic at all. They know about their specific place and context in the app, like navigation and view hierarchies. It's inside these Modules where you usually implement things like `List`, `NavigationStack`, `.navigationTitle` or `.toolbar` because those define whole screens, as opposed to only parts of it.
+
+While not necessarily always the case, you can assume that each screen of your app corresponds to some Module.
+
+#### Example
+Here's a simple module showing a list with a button and a list. Tapping the button generates a random number and fetches a random fact about it.
+
+```swift
+struct NumberModule: View {
+    @EnvironmentObject var numberFactProvider: NumberFactProvider // Access to the number fact provider from the environment
+    @State private var numberFacts: [NumberFact] = [] // Local state to store fetched data
+
+    var body: some View {
+        List {
+            Button("Add Random Number Fact") { addRandomFact() }
+            Section {
+                ForEach(numberFacts) { fact in
+                    NumberFactView(numberFact: fact)
+               }
+            }
+        }
+    }
+
+    private func addRandomFact() {
+        Task {
+            let number = Int.random(in: 0...100)
+            try await numberFacts.append(.init(number: number, content: numberFactProvider.factAboutNumber(number)))
+        }
+    }
+}
+```
+
+## Example Apps
+
+[**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/develop/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles, including a globally shared Router for navigation.
+
+[**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
+
+## Should you use Puddles?
+
+I designed and built Puddles around a few key ideas that fundamentally shaped the architecture with all its advantages, disadvantages.
+
+1.  There should only be  **minimal commitment**  to use Puddles. It has to be easy to integrate into existing projects and just as easy to remove if it doesn't work out.
+2.  It should  **never restrain you**. It has to be possible to deviate from the given patterns and techniques.
+3.  It should  **feel like native SwiftUI**  with as little abstraction as possible.
+4.  It should be  **mockable and previewable**  without effort, throughout every part of the app.
+
+It is possible to find the (subjective) perfect solution for each and every one of these ideas. But it is surprisingly hard to find one that satisfies _all of them_. Puddles is my attempt at finding a compromise, suggesting an architecture as close to my personal ideal solution as possible.
+
+I also didn't want to over-engineer anything. While it is certainly possible – and absolutely valid– to solve a lot of problems and trade-offs by building layers upon layers onto what Swift and SwiftUI already provide, I wanted to stay as close to the native ecosystem as possible to not only allow for more flexibility and freedom, but to also keep everything as lightweight as possible. Right now, you could easily fork the repository and modify or maintain it yourself. It's not much code and most of it should be fairly straightforward. I would like to keep it that way, as much as possible.
+
+Another key point in the design of Puddles was that I didn't want to build on the traditional MVVM pattern that has become quite popular with SwiftUI. I know this is highly opinionated, but strict MVVM as we know it in SwiftUI simply doesn't feel right to me. It restricts you in a lot of ways and renders many of the amazing tools that SwiftUI offers almost unusable or at least makes them very tedious to use. Extracting all the view's logic outside the `View` struct feels like working against the framework. My opinion about this might change over time and the good thing is that it should be relatively easy to pivot Puddles if need be. That's another reason why I designed it to be flexible and lightweight.
+
+The way Puddles is designed has a few shortcomings. The most significant one: Unit testing. While you can test the components in the Core package, as well as the implementation of the Providers, it becomes really hard to properly and thoroughly test Modules, since they are SwiftUI views and there's currently no way of accessing a view's state outside the SwiftUI environment.
+
+With all that said, I'd like to answer this section's question by saying: **Maybe. But maybe not.**. Puddles might not be the best way to build your SwiftUI app. You should always consider your needs, constraints and willingness to try something new and possibly risky. If you do decide to give Puddles a try, though, then I genuinely hope you enjoy it and succeed in building a modular and maintainable app - and have fun along the way.
+
+\- Dennis
+
 
 ## License
 

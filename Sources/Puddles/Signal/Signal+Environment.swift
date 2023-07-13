@@ -1,33 +1,117 @@
+//
+//  Copyright © 2023 Dennis Müller and all collaborators
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+//
+
 import SwiftUI
 
+// MARK: - SwiftUI Environment Setup
+
 struct SignalWrapper: Equatable {
-    var id: UUID?
+    var identity: UUID
+    var id: AnyHashable?
+    var debugIdentifier: String?
     var value: Any?
-    var onSignalHandled: () -> Void
+    var signalResolved: @MainActor (_ id: AnyHashable?) -> Void
 
     public static func == (lhs: SignalWrapper, rhs: SignalWrapper) -> Bool {
-        lhs.id == rhs.id
+        lhs.identity == rhs.identity
     }
 }
 
-private struct SignalKey: EnvironmentKey {
+private struct SignalWrapperKey: EnvironmentKey {
     static let defaultValue: SignalWrapper? = nil
 }
 
 extension EnvironmentValues {
-    var signal: SignalWrapper? {
-        get { self[SignalKey.self] }
-        set { self[SignalKey.self] = newValue }
+    var signalWrapper: SignalWrapper? {
+        get { self[SignalWrapperKey.self] }
+        set { self[SignalWrapperKey.self] = newValue }
     }
 }
 
-public extension Navigator {
+// MARK: - Provider Extension
 
-    /// Configures the navigator to receive signals that send state configurations. The received signals are automatically applied by calling ``Puddles/Navigator/applyStateConfiguration(_:)``.
+public extension View {
+
+    /// Configures the view to send signals down the hierarchy until a child view resolves it.
     ///
-    /// - Parameter signal: The signal that sends the navigator's `StateConfiguration`.
+    /// - Parameter signal: The signal that sends the provider's target states.
+    /// - Parameter id: An identifier to identify a specific signal.
     /// - Returns: A view with a configured signal reception.
-    func updatingStateConfiguration(on signal: Signal<StateConfiguration>.Wrapped) -> some View {
-        environment(\.signal, .init(id: signal.id, value: signal.value, onSignalHandled: signal.removeValue))
+    func sendSignals<Value>(
+        _ signal: Signal<Value>.Wrapped,
+        id: AnyHashable? = nil
+    ) -> some View {
+        return environment(
+            \.signalWrapper,
+                .init(
+                    identity: signal.identity,
+                    id: id,
+                    debugIdentifier: signal.debugIdentifier,
+                    value: signal.valueForId(id),
+                    signalResolved: signal.removeValue
+                )
+        )
+    }
+}
+
+// MARK: - Resolve Signals
+
+struct SignalResolver<SignalValue>: ViewModifier {
+    @Environment(\.signalWrapper) private var signalWrapper
+
+    var action: (_ value: SignalValue) -> Void
+
+    init(action: @escaping (_ value: SignalValue) -> Void) {
+        self.action = action
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .onFirstAppear {
+                if let signalValue = signalWrapper?.value as? SignalValue {
+                    action(signalValue)
+                    logSignal(debugIdentifier: signalWrapper?.debugIdentifier, value: signalValue)
+                    signalWrapper?.signalResolved(signalWrapper?.id)
+                }
+            }
+            .onChange(of: signalWrapper) { newValue in
+                guard let targetState = newValue?.value as? SignalValue else { return }
+                action(targetState)
+                signalWrapper?.signalResolved(newValue?.id)
+            }
+    }
+
+    private func logSignal(debugIdentifier: String?, value: SignalValue) {
+        logger.debug("Signal resolved: ».\(String(describing: value), privacy: .public)«")
+    }
+}
+
+extension View {
+    /// Configures the view to receive and resolve signals by calling the provided `action` closure with the signal value.
+    /// - Parameters:
+    ///   - signalValueType: The type of signal that should be resolved.
+    ///   - action: The action to perform to resolve the signal.
+    /// - Returns: A view that is configured to receive and resolve signals.
+    public func resolveSignals<SignalValue>(ofType signalValueType: SignalValue.Type, action: @escaping (_ value: SignalValue) -> Void) -> some View {
+        modifier(SignalResolver(action: action))
     }
 }

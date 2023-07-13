@@ -1,0 +1,8 @@
+strings:
+  inputs:
+    - Localizable.strings
+  outputs:
+    - templatePath: swiftgen-localization-template.stencil
+      output: ../../Generated/Strings.swift
+      params:
+          enumName: Strings
