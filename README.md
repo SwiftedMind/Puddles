@@ -21,6 +21,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 - **Adoptable** - Designed to work in every project, partially or fully. No huge commitment, easy to opt out.
 - **Lightweight** - Small Swift package companion, building on native mechanisms that SwiftUI provides.
 
+
 ## Content
 
 - [Installation](#installation)
@@ -54,20 +55,110 @@ The documentation for Puddles can be found here:
 
 ## The Puddles Architecture
 
-### ♦︎ Dependencies
-Dependencies are for everything that is not directly related to the UI of your app, like _models_, _networking_,_storage_,  _helpful extensions_ and more.
+Puddles separates your project into 4 distinct layers.
 
-- **Isolated in a Swift package** - You should define your dependencies in a local Swift package, to make sure the types defined there do not depend on the app.
+### ♦︎ The Core
 
-- **One target per dependency** - Each dependency should be inside its own target, allowing consice imports in the app.
+The _Core_ layer forms the backbone of Puddles. It is implemented as a local Swift package that contains the app's entire business logic in the form of (mostly) isolated data components, divided into individual targets. Everything that is not directly related to the UI belongs in here, encouraging building modular types that are easily and independently modifiable and replaceable.
+
+The app's data models are also defined inside this package, so that each feature component can use and expose _them_, instead of leaking implementation details in the form of DTO objects or something similar. 
+
+The app should be able to consume everything in a way that, for example, makes swapping a local database for a backend as easy as possible.<
+
+```swift
+let package = Package(
+    name: "Core",
+    dependencies: [/* ... */],
+    products: [/* ... */],
+    targets: [
+        .target(name: "Models"), // App Models
+        .target(name: "Extensions"), // Useful extensions and helpers
+        .target(name: "MockData"), // Mock data 
+        .target(name: "BackendConnector", dependencies: ["Models"]), // Connects to a backend
+        .target(name: "LocalStore", dependencies: ["Models"]), // Manages a local database
+        .target(name: "CultureMinds", dependencies: ["MockData"]), // Data Provider for Iain Banks's Culture book universe
+        .target(name: "NumbersAPI", dependencies: ["MockData", "Get"]) // API connector for numbersAPI.com
+    ]
+)
+```
+
+#### Example
+Here is a simple class defined in the `NumbersAPI` target, whose sole purpose it is to provide an interface for the app to access random facts about numbers from [NumbersAPI](http://numbersapi.com).
+
+```swift
+import Get
+
+public final class Numbers {
+    private let client: APIClient
+    public init() {/* ... */}
+    public func factAboutNumber(_ number: Int) async throws -> String {
+        let request = Request<String>(path: "/\(number)")
+        return try await client.send(request).value
+    }
+}
+```
+
 
 ### ♦︎ Providers
 
-Providers act as the connection between the dependencies and the actual app, allowing the app to be entirely agnostic of things like a backend, local storage or other external behavior. They are responsible for fetching, caching and preparing data for the app using one or more dependencies.
+Views in Puddles never access any of the Core's components directly. Rather, they do so through  _Providers_. They are observable objects distributed through the SwiftUI environment. Their purpose is to provide the app with a stable API that fully hides any kinds of implementation details, allowing us to freely inject mock data into any part of the view hierarchy.
 
-- **Mock external data** - Providers don't access the dependencies directly. Rather, they are initialized with a set of closures that provide them with all the external functionality they need. This makes it easy to initialize them with mock data for testing or previewing.
+#### Example
 
-- **Injected into the environment** - Providers are distributed through the native SwiftUI environment, making them easily accessible for every module in the app.
+Here is a Provider that allows the app to access random facts about numbers. Important to note is the `Dependencies` struct that is passed on initialization. This allows us to initialize the Provider with mock data, in addition to the live data fetched from an API:
+
+```swift
+@MainActor final class NumberFactProvider: ObservableObject {
+    struct Dependencies {
+        var factAboutNumber: (_ number: Int) async throws -> String
+    }
+    private let dependencies: Dependencies
+    init(dependencies: Dependencies) {/* ... */
+    func factAboutNumber(_ number: Int) async throws -> String {/* ... */}
+}
+```
+
+With this, we can define a mock and a live variant of the Provider:
+
+```swift
+// MARK: - Inject Live Data
+extension NumberFactProvider {
+    static var mock: NumberFactProvider = {/* ... */}()
+    static var live: NumberFactProvider = {
+        let numbers = Numbers() // From the Core Swift package
+        return .init(
+            dependencies: .init(factAboutNumber: { number in
+                try await numbers.factAboutNumber(number)
+            })
+        )
+    }()
+}
+```
+
+And finally, we can inject the Providers into the environment so that the entire app can easily access them, while still making it possible to override them for specific parts of the view hierarchy.
+
+```swift
+struct YourApp: App {
+    var body: some Scene {
+        WindowGroup {
+            Root() // App's entry view
+                .environmentObject(NumberFactProvider.live)
+                /* Other Providers ... */
+        }
+    }
+}
+```
+
+Additionally, it is now easy to mock any view by simply giving it a set of mock Providers:
+
+```swift
+struct Root_Previews: PreviewProvider {
+    static var previews: some View {
+        Root().withMockProviders()
+    }
+}
+```
+
 
 ### ♦︎ Views
 Providers act as the connection between the dependencies and the actual app, allowing the app to be entirely agnostic of things like a backend, local storage or other external behavior. They are responsible for fetching, caching and preparing data for the app using one or more dependencies.
@@ -89,7 +180,10 @@ Modules form the actual structure of the app. They access the providers through 
 
 To get a more in-depth overview of the architecture, have a look at this article: [**The Puddles Architecture**](https://www.swiftedmind.com/blog/posts/introducing-puddles/01_architecture_intro).
 
+
 ## Examples
+
+[**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/develop/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles.
 
 [**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
 
@@ -101,11 +195,15 @@ First and foremost, **I didn't want to over-engineer anything**. While it is cer
 
 Secondly, **I wanted something that's not following the traditional MVVM paradigm**. I know this is highly opinionated and possibly very, very wrong. But strict MVVM as we know it in SwiftUI simply doesn't feel right to me. This might change over time – maybe [SE-0395](https://forums.swift.org/t/se-0395-observability/64342) will help with that in some ways – and the good thing is that it should be relatively easy to pivot Puddles if need be. That's another reason why I designed it to be flexible and lightweight.
 
-Thirdly, **I wanted to focus on data encapsulation** by making SwiftUI views host their own state. This makes working with the SwiftUI environment much easier. It also creates clear-cut responsibilities for every data point in the app thanks to the nature of read-only properties inside views.
+TODO!
+---
+Lastly, I wanted to **explicitly allow views to host their own state**. This makes working with the tools SwiftUI offers much easier.
 
 The flip side of the coin is coupling your UI with your data, which can cause problems. For example, this makes it challenging to restore arbitrary states, which you would need for deep link support – though I do think that I have found a nice solution for that problem via the concept of Target States.
 
 And finally, not separating views from their data source means that unit testing becomes basically impossible, since SwiftUI states only really work in a real SwiftUI environment. However, that might be solvable in the future, when Apple releases or exposes more API to work with.
+
+---
 
 With all that said, I'd like to lastly emphasize the fact that **Puddles might not be the best way to build your SwiftUI app**. You should always consider your needs, constraints and willingness to try something new and possibly risky. If you do decide to give Puddles a try, though, then I genuinely hope you enjoy it and succeed in building a modular and maintainable app.
 
