@@ -121,7 +121,6 @@ Here is a Provider that allows the app to access random facts about numbers. Imp
 With this, we can define a mock and a live variant of the Provider:
 
 ```swift
-// MARK: - Inject Live Data
 extension NumberFactProvider {
     static var mock: NumberFactProvider = {/* ... */}()
     static var live: NumberFactProvider = {
