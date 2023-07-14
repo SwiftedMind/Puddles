@@ -50,7 +50,7 @@ Go to `File` > `Add Packages...` and enter the URL "https://github.com/SwiftedMi
 ## Documentation
 
 The documentation for Puddles can be found here:
-[Documentation](https://swiftedmind.github.io/Puddles/documentation/puddles/)
+[Documentation](https://swiftpackageindex.com/SwiftedMind/Puddles/documentation/puddles)
 
 
 ## The Puddles Architecture
