@@ -49,7 +49,7 @@ struct QueryableExample: View {
             } message: {_ in}
             .navigationTitle("Experiment Ideas")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
                         dismiss()
                     }

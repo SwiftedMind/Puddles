@@ -33,7 +33,7 @@ struct StaticExample: View {
             }
             .navigationTitle("Favorite Numbers")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
                         dismiss()
                     }
