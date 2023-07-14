@@ -47,7 +47,7 @@ struct SignalExample: View {
             .sendSignals(signal)
             .navigationTitle("Q&A")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("Close") {
                         dismiss()
                     }

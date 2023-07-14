@@ -29,14 +29,6 @@ import MockData
 typealias IdentifiedArrayOf = IdentifiedCollections.IdentifiedArrayOf
 typealias Mock = MockData.Mock
 
-@MainActor
-struct AppProviders {
-    static let shared: AppProviders = .init()
-    let cultureMinds = CultureMindsProvider.live
-    let numberFact = NumberFactProvider.live
-    let experiment = ExperimentProvider.live
-}
-
 @main
 struct PuddlesExamplesApp: App {
 
