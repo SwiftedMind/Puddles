@@ -45,7 +45,7 @@ struct AdapterExample: View {
             .animation(.default, value: adapter.facts)
             .navigationTitle("Random Facts")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("Close") {
                         dismiss()
                     }
