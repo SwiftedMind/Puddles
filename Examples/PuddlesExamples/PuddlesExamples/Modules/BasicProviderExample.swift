@@ -42,12 +42,12 @@ struct BasicProviderExample: View {
             }
             .navigationTitle("List of Culture Minds")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Close") {
                         dismiss()
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("Restart") {
                         restart()
                     }
