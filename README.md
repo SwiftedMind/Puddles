@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <img width="200" height="200" src="https://user-images.githubusercontent.com/7083109/231764991-1de9f379-2f2a-41e4-b396-d7592508b6ed.png">
 </p>
@@ -27,7 +28,7 @@ Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries
 - [Installation](#installation)
 - [Documentation](#documentation)
 - **[The Puddles Architecture](#the-puddles-architecture)**
-- [Example Apps](#example-app)
+- [Example Apps](#example-apps)
 - **[Should you use Puddles?](#should-you-use-puddles)**
 - [License](#license)
 
@@ -57,196 +58,297 @@ The documentation for Puddles can be found here:
 
 Puddles separates your project into 4 distinct layers. The **Core** defines the app's business logic, the **Providers** distribute a stable API to that logic through the SwiftUI environment, the **Components** define a set of generic, reusable views and the **Modules** glue everything together to form and present the actual screens of the app.
 
-### ♦︎ The Core
+### 》Modules
 
-The _Core_ layer forms the backbone of Puddles. It is implemented as a local Swift package that contains the app's entire business logic in the form of (mostly) isolated data components, divided into individual targets. Everything that is not directly related to the UI belongs in here, encouraging building modular types that are easily and independently modifiable and replaceable.
+#### 〉The Structure of the App
 
-The app's data models are also defined inside this package, so that each feature component can use and expose _them_, instead of leaking implementation details in the form of DTO objects or something similar. 
-
-The app should be able to consume everything in a way that, for example, makes swapping a local database for a backend as easy as possible.
+Apps in Puddles are made up of Modules, which generally can be thought of as individual screens - for example,  `Home` is a Module responsible for showing the home screen while `NumbersExample` is responsible for a screen showing facts about random numbers. Modules are SwiftUI views, so they can be composed together in a natural and familiar way to form the overall structure of the app.
 
 ```swift
-let package = Package(
-    name: "Core",
-    dependencies: [/* ... */],
-    products: [/* ... */],
-    targets: [
-        .target(name: "Models"), // App Models
-        .target(name: "Extensions"), // Useful extensions and helpers
-        .target(name: "MockData"), // Mock data 
-        .target(name: "BackendConnector", dependencies: ["Models"]), // Connects to a backend
-        .target(name: "LocalStore", dependencies: ["Models"]), // Manages a local database
-        .target(name: "CultureMinds", dependencies: ["MockData"]), // Data Provider for Iain Banks's Culture book universe
-        .target(name: "NumbersAPI", dependencies: ["MockData", "Get"]) // API connector for numbersAPI.com
-    ]
-)
-```
+/// The Root Module - the entry point of a simple example app.
+struct Root: View {
 
-#### Example
-Here is a simple class defined in the `NumbersAPI` target, whose sole purpose it is to provide an interface for the app to access random facts about numbers from [NumbersAPI](http://numbersapi.com).
+  /// A global router instance that centralizes the app's navigational states for performant and convenient access across the app.
+  @ObservedObject var rootRouter = Router.shared.root
 
-```swift
-import Get
-
-public final class Numbers {
-    private let client: APIClient
-    public init() {/* ... */}
-    public func factAboutNumber(_ number: Int) async throws -> String {
-        let request = Request<String>(path: "/\(number)")
-        return try await client.send(request).value
-    }
+  var body: some View {
+    Home()
+      .sheet(isPresented: $rootRouter.isShowingLogin) {
+          Login()
+      }
+      .sheet(isPresented: $rootRouter.isShowingNumbersExample) {
+          NumbersExample()
+      }
+  }
 }
 ```
 
+#### 〉Composing the User Interface
 
-### ♦︎ Providers
-
-Views in Puddles never access any of the Core's components directly. Rather, they do so through  _Providers_. They are observable objects distributed through the SwiftUI environment. Their purpose is to provide the app with a stable API that fully hides any kinds of implementation details, allowing us to freely inject mock data into any part of the view hierarchy.
-
-#### Example
-
-Here is a Provider that allows the app to access random facts about numbers. Important to note is the `Dependencies` struct that is passed on initialization. This allows us to initialize the Provider with mock data, in addition to the live data fetched from an API:
+Modules define the screens and behavior of the app by composing simple, generic components together. They have access to the environment where they can get access to a controlled, abstract interface that drives the app's interaction with external data and other frameworks.
 
 ```swift
-@MainActor final class NumberFactProvider: ObservableObject {
-    struct Dependencies {
-        var factAboutNumber: (_ number: Int) async throws -> String
-    }
-    private let dependencies: Dependencies
-    init(dependencies: Dependencies) {/* ... */
-    func factAboutNumber(_ number: Int) async throws -> String {/* ... */}
-}
-```
+/// A Module rendering a screen where you can fetch and display facts about random numbers.
+struct NumbersExample: View {
 
-With this, we can define a mock and a live variant of the Provider:
+  /// A Provider granting access to external data and other business logic around number facts.
+  @EnvironmentObject var numberFactProvider: NumberFactProvider
 
-```swift
-extension NumberFactProvider {
-    static var mock: NumberFactProvider = {/* ... */}()
-    static var live: NumberFactProvider = {
-        let numbers = Numbers() // From the Core Swift package
-        return .init(
-            dependencies: .init(factAboutNumber: { number in
-                try await numbers.factAboutNumber(number)
-            })
-        )
-    }()
-}
-```
+  /// A local state managing the list of already fetched number facts.
+  @State private var numberFacts: [NumberFact] = []
 
-And finally, we can inject the Providers into the environment so that the entire app can easily access them, while still making it possible to override them for specific parts of the view hierarchy.
-
-```swift
-struct YourApp: App {
-    var body: some Scene {
-        WindowGroup {
-            Root() // App's entry view
-                .environmentObject(NumberFactProvider.live)
-                /* Other Providers ... */
+  // The Module's body, composing the UI and UX from various generic view components.
+  var body: some View {
+    NavigationStack {
+      List {
+        Button("Add Random Number Fact") { addRandomFact() }
+        Section {
+          ForEach(numberFacts) { fact in
+            NumberFactView(numberFact: fact)
+          }
         }
+      }
+      .navigationTitle("Number Facts")
     }
+  }
+
+  private func addRandomFact() {
+    Task {
+      let number = Int.random(in: 0...100)
+      try await numberFacts.append(.init(number: number, content: numberFactProvider.factAboutNumber(number)))
+    }
+  }
 }
 ```
 
-Additionally, it is now easy to mock any view by simply giving it a set of mock Providers:
+#### 〉Modules are not Components
+
+Modules describe the overall structure of the app, so they are not reusable. They have a fixed and predetermined position in the app and can therefore hardwire specific behavioral and navigational actions inside them. You can define multiple Modules in different places of the view hierarchy, that use the same underlying components, but apply different behaviors to them.
 
 ```swift
-struct Root_Previews: PreviewProvider {
-    static var previews: some View {
-        Root().withMockProviders()
+/// A (slightly contrived) example of a Module similar to NumbersExample, rendering a screen where you can shuffle all the number facts provided by a parent module.
+struct ShuffleNumbersExample: View {
+
+  /// A list of number facts that can be passed in
+  @Binding var numberFacts: [NumberFact] = []
+
+  // The Module's body, composing the UI and UX from various generic view components.
+  var body: some View {
+    NavigationStack {
+      List {
+        Button("Shuffle Everything") { shuffleFacts() }
+        Section {
+          ForEach(numberFacts) { fact in
+            NumberFactView(numberFact: fact)
+          }
+        }
+      }
+      .navigationTitle("Shuffle Your Facts")
     }
+  }
+
+  private func shuffleFacts() {
+    numberFacts = numberFacts.shuffled()
+  }
 }
 ```
 
+### 》Components
 
-### ♦︎ Components
+#### 〉Generic SwiftUI views
 
-The Components layer is made up of generic SwiftUI views that should be as primitive and compact as possible. Ideally, they never access external data from the environment - except for "native" information like `dynamicTypeSize` or `isEnabled` - or contain any kind of contextual implementation that specifies their place and position in the app. You should think of them as small, flexible building blocks that are only pieced together inside the Module layer, which creates the actual screens of the app using those blocks (see the explanation below).
-
-View components can communicate user interactions to their parent (which is usually a Module) via any number of means but Puddles comes with a nice little helper type called `Interface<Action>` that lets you send actions defined in an enum upstream:
-
-```swift
-struct MyModule: View {
-    var body: some View {
-        MyView(interface: .consume({ action in
-            switch action {
-            case .didTap: print("Did Tap!")
-            }
-        }))
-    }
-}
-struct MyView: View {
-    var interface: Interface<Action>
-    var body: some View {
-        Button("Tap Me") { interface.send(.didTap) }
-    }
-
-    enum Action {
-        case didTap
-    }
-}
-```
-
-#### Example
-
-Here is an example of a simple view component as well as an interactive preview of it:
+The Components layer is made up of many small, generic SwiftUI views that, put together, form the UI of your app. They don't own any data or have access to external business logic. Their only purpose is to take pieces of information and describe how they should be displayed.
 
 ```swift
+/// A simple component that displays a number fact.
 struct NumberFactView: View {
-    var numberFact: NumberFact // The view needs a single model to display itself
-    var body: some View {/* ... */}
+  var numberFact: NumberFact // Data model
+  var body: some View {
+    if let content = numberFact.content {
+      VStack(alignment: .leading) {
+        Text("Number: \(numberFact.number)")
+          .font(.caption)
+          .fixedSize()
+        Text(content)
+          .fixedSize(horizontal: false, vertical: true)
+          .multilineTextAlignment(.leading)
+          .frame(maxWidth: .infinity, alignment: .leading)
+      }
+    } else {
+      ProgressView()
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+    }
+  }
 }
+```
 
-// MARK: - Preview
+#### 〉They Are Building Blocks
+
+View components are the fundamental building blocks that naturally cause a powerful modularity by allowing you to combine them in different ways, creating a vast range of possible user interfaces and experiences in the Modules.
+
+#### 〉They Don't Make Assumptions
+
+View components don't make any assumptions about the context in which they are used. Ideally, they are built in a way that makes them reusable in _any_ context, by letting their parent views supply the data and interpretation of user interactions.
+
+#### 〉Build Interactive Previews
+
+Puddles comes with a set of tools that make it easy to add fully interactive previews to your view components.
+
+```swift
 private struct PreviewState {
-    var numberFact: NumberFact = .init(number: 5, content: Mock.factAboutNumber(5))
+  var numberFact: NumberFact = .init(number: 5, content: Mock.factAboutNumber(5))
 }
 
 struct NumberFactView_Previews: PreviewProvider {
-    static var previews: some View {
-        StateHosting(PreviewState()) { $state in // Binding to the preview state
-            List {
-                NumberFactView(numberFact: state.numberFact)
-                Section {/* Debug Controls ... */}
-            }
-        }
+  static var previews: some View {
+    StateHosting(PreviewState()) { $state in // Binding to the preview state
+      List {
+        NumberFactView(numberFact: state.numberFact)
+        Section {/* Debug Controls ... */}
+      }
     }
+  }
 }
 ```
 
-### ♦︎ Modules
+### 》Providers
 
-Just like the view components, Modules are plain old SwiftUI views but with a different semantic applied. They take the components and piece them together, providing structure, context and data from the Providers, to form the actual screens of the app.
+#### 〉Control Data Access and Interaction
 
-It is important to understand that Modules themselves are not components, they are not generic at all. They know about their specific place and context in the app, like navigation and view hierarchies. It's inside these Modules where you usually implement things like `List`, `NavigationStack`, `.navigationTitle` or `.toolbar` because those define whole screens, as opposed to only parts of it.
-
-While not necessarily always the case, you can assume that each screen of your app corresponds to some Module.
-
-#### Example
-Here's a simple module showing a list with a button and a list. Tapping the button generates a random number and fetches a random fact about it.
+The Providers drive the app's interaction with external data and other frameworks by exposing a controlled and stable interface to the Modules. This fully hides any implementation details and logic specific to the nature and origin of the provided data, allowing you to swap dependencies without ever touching the Modules relying on them.
 
 ```swift
-struct NumberModule: View {
-    @EnvironmentObject var numberFactProvider: NumberFactProvider // Access to the number fact provider from the environment
-    @State private var numberFacts: [NumberFact] = [] // Local state to store fetched data
+/// Provides access to facts about numbers.
+@MainActor final class NumberFactProvider: ObservableObject {
+  struct Dependencies {
+    var factAboutNumber: (_ number: Int) async throws -> String
+  }
 
-    var body: some View {
-        List {
-            Button("Add Random Number Fact") { addRandomFact() }
-            Section {
-                ForEach(numberFacts) { fact in
-                    NumberFactView(numberFact: fact)
-               }
-            }
-        }
-    }
+  private let dependencies: Dependencies
+  init(dependencies: Dependencies) {/* ... */}
 
-    private func addRandomFact() {
-        Task {
-            let number = Int.random(in: 0...100)
-            try await numberFacts.append(.init(number: number, content: numberFactProvider.factAboutNumber(number)))
-        }
+  // The views only ever use the public interface and know nothing about the dependencies
+  func factAboutNumber(_ number: Int) async throws -> String {
+    try await dependencies.factAboutNumber(number)
+  }
+}
+```
+
+#### 〉Inject Dependencies during Initialization
+
+Providers use dependency injection to enable full control over what data the Provider is distributing to the app. You can define variants using real data for the live app and mocked data for testing and previewing purposes.
+
+```swift
+extension NumberFactProvider {
+  static var mock: NumberFactProvider = {/* Provide mocked data */}()
+  static var live: NumberFactProvider = {
+    let numbers = Numbers() // From the Core Swift package
+    return .init(
+      dependencies: .init(factAboutNumber: { number in
+        try await numbers.factAboutNumber(number)
+      })
+    )
+  }()
+}
+```
+
+#### 〉Distribute through the SwiftUI Environment
+
+Providers are distributed through the SwiftUI environment, allowing you to inject them at any point in the view hierarchy and even override parts of it with mocked variants .
+
+```swift
+struct YourApp: App {
+  var body: some Scene {
+    WindowGroup {
+      Root()
+        .environmentObject(NumberFactProvider.live)
     }
+  }
+}
+```
+
+```swift
+struct Root: View {
+  var body: some View {
+    List {
+      SectionA() // SectionA will interact with real data
+      SectionB()
+        .environmentObject(NumberFactProvider.mock) // SectionB will interact with mocked data
+    }
+  }
+}
+```
+
+#### 〉Unleash the Power of Previews
+
+This way of working with business logic and external data access allows you to build _fully interactive_ and functional SwiftUI Previews with ease, for every single view in your app, by simply injecting mocked data into the previews provider.
+
+```swift
+struct Root_Previews: PreviewProvider {
+  static var previews: some View {
+    Root().withMockProviders()
+  }
+}
+```
+
+
+### 》The Core
+
+#### 〉Isolate Business Logic
+
+The Core layer forms the backbone of Puddles. It is implemented as a local Swift package that contains the app's entire business logic in the form of (mostly) isolated data components, divided into individual targets. Everything that is not directly related to the UI belongs in here, encouraging building modular types that are easily and independently modifiable and replaceable.
+
+```swift
+let package = Package(
+  name: "Core",
+  dependencies: [/* ... */],
+  products: [/* ... */],
+  targets: [
+    .target(name: "Models"), // App Models
+    .target(name: "Extensions"), // Useful extensions and helpers
+    .target(name: "MockData"), // Mock data
+    .target(name: "BackendConnector", dependencies: ["Models"]), // Connects to a backend
+    .target(name: "LocalStore", dependencies: ["Models"]), // Manages a local database
+    .target(name: "CultureMinds", dependencies: ["MockData"]), // Data Provider for Iain Banks's Culture book universe
+    .target(name: "NumbersAPI", dependencies: ["MockData", "Get"]) // API connector for numbersAPI.com
+  ]
+)
+```
+
+#### 〉Connect External Dependencies
+
+Build targets that connect to your backend, local database or any external framework dependency and provide an interface for the app to connect to them.
+
+```swift
+import Get // https://github.com/kean/Get
+
+/// Fetches random facts about numbers from https://numbersapi.com
+public final class Numbers {
+  private let client: APIClient
+  public init() {/* ... */}
+
+  public func factAboutNumber(_ number: Int) async throws -> String {
+    let request = Request<String>(path: "/\(number)")
+    return try await client.send(request).value
+  }
+}
+```
+
+#### 〉Define App Models
+
+The app's data models are also defined inside this package, so that each feature component can use and expose them, instead of leaking implementation details in the form of DTO objects or something similar.
+
+```swift
+public struct NumberFact: Identifiable, Equatable {
+  public var id: Int { number }
+  public var number: Int
+  public var content: String?
+
+  public init(number: Int, content: String? = nil) {
+    self.number = number
+    self.content = content
+  }
 }
 ```
 
