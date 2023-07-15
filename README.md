@@ -13,7 +13,7 @@
 
 ![Define dependencies, inject them into observable data providers, build your generic UI components and integrate everything into the screens of your app](https://github.com/SwiftedMind/Puddles/assets/7083109/cbc93859-932f-4005-a16b-49b4f6a6aa2a)
 
-Puddles is an app architecture for apps built on the SwiftUI lifecycle. It tries to encourage building native, modular and composable apps by providing a set of simple tools and patterns that make development easier and more convenient. 
+Puddles is an architecture for SwiftUI apps with a focus on using as many native mechanisms and patterns as possible, while ony adding abstractions and custom types when absolutely necessary.
 
 - **Native** - Powered by what SwiftUI has to offer, extending only what's necessary.
 - **Modular** - A project structure that encourages you to build reusable components inside a very flexible app.
