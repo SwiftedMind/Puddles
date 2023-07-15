@@ -56,7 +56,7 @@ The documentation for Puddles can be found here:
 
 ## The Puddles Architecture
 
-Puddles separates your project into 4 distinct layers. The **Core** defines the app's business logic, the **Providers** distribute a stable API to that logic through the SwiftUI environment, the **Components** define a set of generic, reusable views and the **Modules** glue everything together to form and present the actual screens of the app.
+Puddles separates your project into 4 distinct layers, the **Modules**, the **Components**, the **Providers** and the **Core**.
 
 ### 》Modules
 
