@@ -29,7 +29,7 @@ Puddles is an architecture for SwiftUI apps with a focus on using as many native
 - [Documentation](#documentation)
 - **[The Puddles Architecture](#the-puddles-architecture)**
 - [Example Apps](#example-apps)
-- **[Should you use Puddles?](#should-you-use-puddles)**
+- **[A Few Words On Puddles](#a-few-words-on-puddles)**
 - [License](#license)
 
 ## Installation
@@ -358,24 +358,24 @@ public struct NumberFact: Identifiable, Equatable {
 
 [**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
 
-## Should you use Puddles?
+## A Few Words On Puddles
 
-I designed and built Puddles around a few key ideas that fundamentally shaped the architecture with all its advantages, disadvantages.
+I designed and built Puddles around a few key ideas that fundamentally shaped the architecture with all its advantages and disadvantages.
 
-1.  There should only be  **minimal commitment**  to use Puddles. It has to be easy to integrate into existing projects and just as easy to remove if it doesn't work out.
-2.  It should  **never restrain you**. It has to be possible to deviate from the given patterns and techniques.
-3.  It should  **feel like native SwiftUI**  with as little abstraction as possible.
-4.  It should be  **mockable and previewable**  without effort, throughout every part of the app.
+1.  It should take **minimal commitment** to use Puddles. It has to be easy to integrate into existing projects and just as easy to remove if it doesn't work out.
+2.  It should **never restrain you**. It has to be possible to deviate from the suggested patterns and techniques.
+3.  It should **feel like native SwiftUI** with as little abstraction as possible.
+4.  It should be **mockable and previewable** without effort, throughout every part of the app.
 
 It is possible to find the (subjective) perfect solution for each and every one of these ideas. But it is surprisingly hard to find one that satisfies _all of them_. Puddles is my attempt at finding a compromise, suggesting an architecture as close to my personal ideal solution as possible.
 
-I also didn't want to over-engineer anything. While it is certainly possible – and absolutely valid– to solve a lot of problems and trade-offs by building layers upon layers onto what Swift and SwiftUI already provide, I wanted to stay as close to the native ecosystem as possible to not only allow for more flexibility and freedom, but to also keep everything as lightweight as possible. Right now, you could easily fork the repository and modify or maintain it yourself. It's not much code and most of it should be fairly straightforward. I would like to keep it that way, as much as possible.
+I also didn't want to over-engineer anything. While it is certainly possible – and absolutely valid – to solve a lot of problems and trade-offs by building layers upon layers onto what Swift and SwiftUI already provide, I wanted to stay as close to the native ecosystem as possible to not only allow for more flexibility and freedom, but to also keep everything as lightweight as possible. Right now, you could easily fork the repository and modify or maintain it yourself. It's not much code and most of it should be fairly straightforward. I would like to keep it that way, as much as possible.
 
 Another key point in the design of Puddles was that I didn't want to build on the traditional MVVM pattern that has become quite popular with SwiftUI. I know this is highly opinionated, but strict MVVM as we know it in SwiftUI simply doesn't feel right to me. It restricts you in a lot of ways and renders many of the amazing tools that SwiftUI offers almost unusable or at least makes them very tedious to use. Extracting all the view's logic outside the `View` struct feels like working against the framework. My opinion about this might change over time and the good thing is that it should be relatively easy to pivot Puddles if need be. That's another reason why I designed it to be flexible and lightweight.
 
-The way Puddles is designed has a few shortcomings. The most significant one: Unit testing. While you can test the components in the Core package, as well as the implementation of the Providers, it becomes really hard to properly and thoroughly test Modules, since they are SwiftUI views and there's currently no way of accessing a view's state outside the SwiftUI environment.
+The way Puddles is designed has a few shortcomings. The most significant one: Unit testing. While you *can* test the components in the Core layer, as well as the implementation of the Providers, it becomes really hard to properly and thoroughly test Modules, since they are SwiftUI views and there's currently no way of accessing a view's state outside the SwiftUI environment. That is a trade-off you have to be willing to accept when deciding to try building an app with Puddles.
 
-With all that said, I'd like to answer this section's question by saying: **Maybe. But maybe not.**. Puddles might not be the best way to build your SwiftUI app. You should always consider your needs, constraints and willingness to try something new and possibly risky. If you do decide to give Puddles a try, though, then I genuinely hope you enjoy it and succeed in building a modular and maintainable app - and have fun along the way.
+With all that said, I'd like to emphasize that **Puddles might not be the best way to build your SwiftUI app** and you might even lightly or strongly dislike it. It is an attempt at coming up with an alternative to traditional MVVM. You should always consider your needs, constraints and willingness to try something new and possibly risky. If you do decide to give Puddles a try, though, then I genuinely hope that you succeed in building a modular and maintainable app - and have fun along the way.
 
 \- Dennis
 
