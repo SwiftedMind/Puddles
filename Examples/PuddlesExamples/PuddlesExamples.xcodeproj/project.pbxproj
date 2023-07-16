@@ -601,8 +601,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/HavingThought/Puddles";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 		95868C8729C851F2001F8629 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
