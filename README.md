@@ -352,6 +352,109 @@ public struct NumberFact: Identifiable, Equatable {
 }
 ```
 
+### 》Navigation
+
+#### 〉Globally Accessible Router
+
+Since Modules are anchored in a fixed and predetermined location of the app, navigation can be hardwired into them. Therefore, a globally accessible `Router` singleton makes it easy to jump from one place in the app to any other, with a simple call.
+
+```swift
+/// The home Module.
+struct Home: View {
+
+  var body: some View {
+    List {
+      Button("Login") {
+        // Easy access to a globally shared router
+        Router.shared.showLogin()
+      }
+      Button("Numbers Example") {
+        Router.shared.navigate(to: .numbersExample)
+      }
+    }
+  }
+}
+```
+
+#### 〉Centralized Navigation State
+
+The Router` class is a singleton that is responsible for managing the entire navigation state for every part of the app. That allows it to navigate to any point in the view hierarchy and expose simple and convenient methods for the Modules to do so.
+
+```swift
+/// An object that holds the entire navigational state of the app.
+@MainActor final class Router {
+  static let shared: Router = .init()
+
+  /// An observable object holding all the navigational state of the root Module.
+  var root: RootRouter = .init()
+  var home: HomeRouter = .init()
+
+  /// An enum that represents all the possible destinations in the app.
+  enum Destination: Hashable {
+    case root
+    case numbersExample
+  }
+
+  /// Navigates to a destination.
+  func navigate(to destination: Destination) {
+    switch destination {
+    case .root:
+      root.reset()
+      home.reset()
+    case .numbersExample: // Shows the numbers example after resetting the app's navigation state.
+      root.reset()
+      home.reset()
+      showNumbersExample()
+    }
+  }
+
+  /// Presents the login modally over the current context.
+  func showLogin() {
+    root.isShowingLogin = true
+  }
+
+  /// Dismisses the login.
+  func dismissLogin() {
+    root.isShowingLogin = false
+  }
+
+  /// Presents the numbers example modally over the current context.
+  func showNumbersExample() {
+    root.isShowingNumbersExample = true
+  }
+
+  /// Dismisses the numbers example.
+  func dismissNumbersExample() {
+    root.isShowingNumbersExample = false
+  }
+}
+```
+
+#### 〉Observed Only Where Needed
+
+The only place a Router is marked as @ObservedObject is inside the Modules that implement the view modifiers driven by the Router's published state. This way, changing the navigation state will only ever update the Modules that are actually affected by the change.
+
+```swift
+/// The Root Module - the entry point of a simple example app.
+struct Root: View {
+
+  /// A global router instance that centralizes the app's navigational states for performant and convenient access across the app.
+  @ObservedObject var rootRouter = Router.shared.root
+
+  var body: some View {
+    Home()
+      .sheet(isPresented: $rootRouter.isShowingLogin) {
+        Login()
+      }
+      .sheet(isPresented: $rootRouter.isShowingNumbersExample) {
+        NumbersExample()
+      }
+  }
+}
+```
+
+---
+
 ## Example Apps
 
 [**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/main/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles, including a globally shared Router for navigation.
