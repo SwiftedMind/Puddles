@@ -31,7 +31,7 @@ import SwiftUI
 /// - Note: A resolved signal is consumed and will not travel further down the view hierarchy.
 @propertyWrapper
 public struct Signal<Value>: DynamicProperty {
-    @StateObject private var stateHolder: StateHolder
+    @StateObject private var stateHolder: SignalQueue<Value>
 
     public var wrappedValue: Wrapped {
         .init(
@@ -48,53 +48,11 @@ public struct Signal<Value>: DynamicProperty {
         id: AnyHashable? = nil,
         debugIdentifier: String? = nil
     ) {
-        _stateHolder = .init(wrappedValue: .init(value: value, id: id, debugIdentifier: debugIdentifier))
+        _stateHolder = .init(wrappedValue: .init(initialValue: value, id: id, debugIdentifier: debugIdentifier))
     }
 }
 
 public extension Signal {
-
-    @MainActor
-    final class StateHolder: ObservableObject {
-        private let emptyId = AnyHashable(UUID())
-        private var value: [AnyHashable: Value] = [:]
-        let debugIdentifier: String?
-        @Published private(set) var identity: UUID = .init()
-
-        init(
-            value: Value? = nil,
-            id: AnyHashable?,
-            debugIdentifier: String?
-        ) {
-            self.value[id ?? emptyId] = value
-            self.debugIdentifier = debugIdentifier
-
-            if let value {
-                logSignal(value: value, isInitial: true)
-            }
-        }
-
-        func valueForId(_ id: AnyHashable?) -> Value? {
-            value[id ?? emptyId]
-        }
-
-        func send(_ value: Value, id: AnyHashable?) {
-            logSignal(value: value, isInitial: false)
-            self.value[id ?? emptyId] = value
-            identity = .init()
-        }
-
-        func removeValue(id: AnyHashable?) {
-            self.value.removeValue(forKey: id ?? emptyId)
-        }
-
-        private func logSignal(value: Value, isInitial: Bool) {
-            let loggerPrefix = debugIdentifier == nil ? "" : debugIdentifier! + " - "
-            let type = "\(isInitial ? "Initial" : "Sending")"
-            logger.debug("\(loggerPrefix)\(type) Signal: ».\(String(describing: value), privacy: .public)«")
-        }
-    }
-
     struct Wrapped: Equatable {
         var identity: UUID
         var debugIdentifier: String?

@@ -15,6 +15,7 @@
 		953D02B52A5A71F800D1A377 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953D02B42A5A71F800D1A377 /* RootRouter.swift */; };
 		953D02B72A5A732400D1A377 /* View+mockProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953D02B62A5A732400D1A377 /* View+mockProviders.swift */; };
 		953D02B92A5A81F200D1A377 /* ExampleSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953D02B82A5A81F200D1A377 /* ExampleSections.swift */; };
+		954E6CAA2A6966C000083ABA /* QueryableExampleRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954E6CA92A6966C000083ABA /* QueryableExampleRouter.swift */; };
 		955E513329CB1B1E00202BBA /* ding.wav in Resources */ = {isa = PBXBuildFile; fileRef = 955E513229CB1B1E00202BBA /* ding.wav */; };
 		955E513729CB416700202BBA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955E513629CB416700202BBA /* Strings.swift */; };
 		95602F1729C8DDDC008EB800 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95602F1629C8DDDC008EB800 /* Home.swift */; };
@@ -55,8 +56,10 @@
 		953D02B42A5A71F800D1A377 /* RootRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
 		953D02B62A5A732400D1A377 /* View+mockProviders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+mockProviders.swift"; sourceTree = "<group>"; };
 		953D02B82A5A81F200D1A377 /* ExampleSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleSections.swift; sourceTree = "<group>"; };
+		954E6CA92A6966C000083ABA /* QueryableExampleRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryableExampleRouter.swift; sourceTree = "<group>"; };
 		955E513229CB1B1E00202BBA /* ding.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ding.wav; sourceTree = "<group>"; };
 		955E513629CB416700202BBA /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		955FE6FF2A6449EC00C0DC16 /* Queryable */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Queryable; path = ../../../Queryable; sourceTree = "<group>"; };
 		95602F1629C8DDDC008EB800 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		957850AD2A5F1469002C3EDC /* ExperimentListSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentListSection.swift; sourceTree = "<group>"; };
 		95868C7129C851C6001F8629 /* PuddlesExamples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuddlesExamples.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +107,7 @@
 			children = (
 				953D02B22A5A719300D1A377 /* Router.swift */,
 				953D02B42A5A71F800D1A377 /* RootRouter.swift */,
+				954E6CA92A6966C000083ABA /* QueryableExampleRouter.swift */,
 			);
 			path = Router;
 			sourceTree = "<group>";
@@ -128,6 +132,7 @@
 		95868C6829C851C6001F8629 = {
 			isa = PBXGroup;
 			children = (
+				955FE6FF2A6449EC00C0DC16 /* Queryable */,
 				95E9CFA62A5A97F300315BFA /* Puddles */,
 				953D02AE2A5993C200D1A377 /* Core */,
 				95868C7329C851C6001F8629 /* PuddlesExamples */,
@@ -380,6 +385,7 @@
 				953D02B52A5A71F800D1A377 /* RootRouter.swift in Sources */,
 				95868C7529C851C6001F8629 /* App.swift in Sources */,
 				95E9CFB72A5ADD4500315BFA /* CultureMindsProvider.swift in Sources */,
+				954E6CAA2A6966C000083ABA /* QueryableExampleRouter.swift in Sources */,
 				95868CC729C863A5001F8629 /* TrailingIconLabelStyle.swift in Sources */,
 				95868CB129C857A9001F8629 /* Assets.swift in Sources */,
 				95E9CFB92A5AE07C00315BFA /* NumberFactProvider.swift in Sources */,

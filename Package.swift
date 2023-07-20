@@ -18,7 +18,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/SwiftedMind/Queryable", from: "1.0.0")
+        .package(url: "https://github.com/SwiftedMind/Queryable", branch: "develop")
     ],
     targets: [
         .target(

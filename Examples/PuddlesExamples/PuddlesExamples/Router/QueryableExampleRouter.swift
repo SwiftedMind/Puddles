@@ -21,47 +21,15 @@
 //
 
 import SwiftUI
-import Puddles
 import Queryable
 
-@MainActor final class Router: ObservableObject {
-    static let shared: Router = .init()
+@MainActor final class QueryableExampleRouter: ObservableObject {
 
-    var home: HomeRouter = .init()
-    var queryableExample: QueryableExampleRouter = .init()
+    let deletionConfirmation = Queryable<Void, Bool>()
 
-    enum Destination: String, Hashable {
-        case root
-        case staticExample
-        case basicProviderExample
-        case adapterExample
-        case queryableExample
-        case signalExample
-    }
-
-    func navigate(to destination: Destination) {
-        switch destination {
-        case .root:
-            home.reset()
-        case .staticExample:
-            home.reset()
-            home.isShowingStaticExample = true
-        case .basicProviderExample:
-            home.reset()
-            home.isShowingBasicProviderExample = true
-        case .adapterExample:
-            home.reset()
-            home.isShowingAdapterExample = true
-        case .queryableExample:
-            home.reset()
-            home.isShowingQueryableExample = true
-        case .signalExample:
-            home.reset()
-            home.isShowingSignalExample = true
-        }
-    }
-
-    func navigateRoot(to destination: HomeRouter.Destination) {
-
+    func queryDeletionConfirmation() async throws -> Bool {
+        // Here, you could make sure that nothing blocks the presentation of the deletion confirmation query
+        try await deletionConfirmation.query()
     }
 }
+

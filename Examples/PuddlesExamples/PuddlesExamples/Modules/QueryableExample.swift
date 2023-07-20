@@ -28,7 +28,7 @@ import Models
 struct QueryableExample: View {
     @EnvironmentObject private var experimentProvider: ExperimentProvider
     @Environment(\.dismiss) private var dismiss
-    @Queryable<Void, Bool> var buttonConfirmation
+    @ObservedObject private var queryableExampleRouter = Router.shared.queryableExample
 
     var body: some View {
         NavigationStack {
@@ -43,7 +43,7 @@ struct QueryableExample: View {
                 }
             }
             .animation(.default, value: experimentProvider.experiments)
-            .queryableAlert(controlledBy: buttonConfirmation, title: "Delete this experiment?") { _, query in
+            .queryableAlert(controlledBy: queryableExampleRouter.deletionConfirmation, title: "Delete this experiment?") { _, query in
                 Button("Yes") { query.answer(with: true) }
                 Button("No") { query.answer(with: false) }
             } message: {_ in}
@@ -61,7 +61,7 @@ struct QueryableExample: View {
     private func requestDeletion(of experiment: Experiment) {
         Task {
             do {
-                if try await buttonConfirmation.query() {
+                if try await queryableExampleRouter.queryDeletionConfirmation() {
                     experimentProvider.delete(experiment)
                 }
             } catch {}

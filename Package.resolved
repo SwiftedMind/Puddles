@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SwiftedMind/Queryable",
       "state" : {
-        "revision" : "7677089e3f0db3544ed657c18ed051a18f6dd781",
-        "version" : "1.0.2"
+        "branch" : "develop",
+        "revision" : "07483be6c97222cd00c3d6fd677f67c098459aa9"
       }
     }
   ],
