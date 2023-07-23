@@ -43,10 +43,10 @@ struct QueryableExample: View {
                 }
             }
             .animation(.default, value: experimentProvider.experiments)
-            .queryableAlert(controlledBy: queryableExampleRouter.deletionConfirmation, title: "Delete this experiment?") { _, query in
+            .queryableAlert(controlledBy: queryableExampleRouter.deletionConfirmation, title: "Delete this experiment?") { query in
                 Button("Yes") { query.answer(with: true) }
                 Button("No") { query.answer(with: false) }
-            } message: {_ in}
+            } message: {}
             .navigationTitle("Experiment Ideas")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
