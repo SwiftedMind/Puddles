@@ -17,15 +17,10 @@ let package = Package(
             targets: ["Puddles"]
         )
     ],
-    dependencies: [
-        .package(url: "https://github.com/SwiftedMind/Queryable", from: "2.0.0")
-    ],
+    dependencies: [],
     targets: [
         .target(
-            name: "Puddles",
-            dependencies: [
-                "Queryable"
-            ]
+            name: "Puddles"
         )
     ]
 )

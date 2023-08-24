@@ -57,14 +57,11 @@ struct AdvancedExamplesSection: View {
 
     var body: some View {
         Section {
-            Button("Adapters") {
-                interface.send(.openAdapterExample)
+            Button("Containers") {
+                interface.send(.openContainerExample)
             }
             Button("Queryables") {
                 interface.send(.openQueryableExample)
-            }
-            Button("Signals") {
-                interface.send(.openSignalExample)
             }
         } header: {
             Text("Basic")
@@ -74,9 +71,8 @@ struct AdvancedExamplesSection: View {
 
 extension AdvancedExamplesSection {
     enum Action: Hashable {
-        case openAdapterExample
+        case openContainerExample
         case openQueryableExample
-        case openSignalExample
     }
 }
 

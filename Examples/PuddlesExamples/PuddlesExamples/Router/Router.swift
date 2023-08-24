@@ -34,9 +34,8 @@ import Queryable
         case root
         case staticExample
         case basicProviderExample
-        case adapterExample
+        case containerExample
         case queryableExample
-        case signalExample
     }
 
     func navigate(to destination: Destination) {
@@ -49,15 +48,12 @@ import Queryable
         case .basicProviderExample:
             home.reset()
             home.isShowingBasicProviderExample = true
-        case .adapterExample:
+        case .containerExample:
             home.reset()
-            home.isShowingAdapterExample = true
+            home.isShowingContainerExample = true
         case .queryableExample:
             home.reset()
             home.isShowingQueryableExample = true
-        case .signalExample:
-            home.reset()
-            home.isShowingSignalExample = true
         }
     }
 

@@ -22,79 +22,64 @@
 
 import Puddles
 import SwiftUI
+import Models
 
-struct SignalExample: View {
+@MainActor
+struct ContainerExample: View {
     @Environment(\.dismiss) private var dismiss
-    @Signal<SubModule.Action> private var signal
+    
+    /// A "container" that accesses the NumberFactProvider from the current
+    /// environment and provides additional states and methods to store and
+    /// sort number facts.
+    ///
+    /// This logic could be place inside this view, but extracting it makes it reusable, while still staying fully mockable (since it can access
+    /// the environment itself. We don't have to pass it in.)
+    var numberFacts = SortableNumberFacts()
 
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Button("I Demand An Answer!") {
-                        signal.send(.showTheAnswer)
-                    }
-                } header: {
-                    Text("Parent view")
+                Button("Add Random Number Fact") {
+                    numberFacts.fetchRandomFact()
                 }
-
                 Section {
-                    SubModule()
-                } header: {
-                    Text("Nested view")
+                    Button("Sort") {
+                        numberFacts.sort()
+                    }
+                    NumberFactStackView(numberFacts: numberFacts.facts, interface: .consume(handleViewInterface))
+                } footer: {
+                    Text("Data provided by [NumbersAPI.com](https://numbersapi.com)")
                 }
             }
-            .sendSignals(signal)
-            .navigationTitle("Q&A")
+            .animation(.default, value: numberFacts.facts)
+            .navigationTitle("Random Facts")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Close") {
                         dismiss()
                     }
                 }
-            }
-        }
-    }
-}
-
-struct SubModule: View {
-    // This view has its own state, not a binding.
-    // With signals you can give parent views controlled access to the state, without the parents having to own it themselves and pass it in.
-    @State private var showMyPrivateLittleSecret: Bool = false
-
-    var body: some View {
-        content
-            .animation(.default, value: showMyPrivateLittleSecret)
-            .resolveSignals(ofType: Action.self) { action in
-                switch action {
-                case .showTheAnswer:
-                    showMyPrivateLittleSecret = true
+                ToolbarItem {
+                    Button("Remove All", role: .destructive) {
+                        numberFacts.reset()
+                    }
                 }
             }
-    }
-
-    @ViewBuilder @MainActor
-    private var content: some View {
-        Text("Why did the bicycle fall over?")
-        if showMyPrivateLittleSecret {
-            Text("Because it was two-tired!")
-        }
-        Button("Toggle Visibility") {
-            showMyPrivateLittleSecret.toggle()
         }
     }
 
-}
-
-extension SubModule {
-    enum Action: Hashable {
-        case showTheAnswer
+    @MainActor
+    private func handleViewInterface(_ action: NumberFactStackView.Action) {
+        switch action {
+        case .deleteFacts(let indexSet):
+            numberFacts.facts.remove(atOffsets: indexSet)
+        }
     }
 }
 
-struct SignalExample_Previews: PreviewProvider {
+struct ContainerExample_Previews: PreviewProvider {
     static var previews: some View {
-        SignalExample()
+        ContainerExample()
             .withMockProviders()
     }
 }

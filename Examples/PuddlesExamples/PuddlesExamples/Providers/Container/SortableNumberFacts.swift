@@ -20,18 +20,14 @@
 //  SOFTWARE.
 //
 
+import Puddles
 import SwiftUI
 import Models
 
-@MainActor final class ExampleAdapter: ObservableObject {
-
-    @Published var facts: IdentifiedArrayOf<NumberFact> = []
-    private let numberFactProvider: NumberFactProvider
-    private var availableNumbers: Set<Int> = Set(0...200)
-
-    init(numberFactProvider: NumberFactProvider) {
-        self.numberFactProvider = numberFactProvider
-    }
+struct SortableNumberFacts: DynamicProperty {
+    @EnvironmentObject private var numberFactProvider: NumberFactProvider
+    @State var facts: IdentifiedArrayOf<NumberFact> = []
+    @State private var availableNumbers: Set<Int> = Set(0...200)
 
     func fetchFactAboutRandomNumber() async throws {
         if let number = randomAvailableNumber() {
