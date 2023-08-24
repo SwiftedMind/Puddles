@@ -44,19 +44,11 @@ struct Home: View {
         .fullScreenCover(isPresented: $homeRouter.isShowingBasicProviderExample) {
             BasicProviderExample()
         }
-        .fullScreenCover(isPresented: $homeRouter.isShowingAdapterExample) {
-            StateObjectHosting {
-                // Will be initialized as `@StateObject` inside `StateObjectHosting` and passed to the content closure
-                ExampleAdapter(numberFactProvider: numberFactProvider)
-            } content: { adapter in
-                AdapterExample(adapter: adapter)
-            }
+        .fullScreenCover(isPresented: $homeRouter.isShowingContainerExample) {
+            ContainerExample()
         }
         .fullScreenCover(isPresented: $homeRouter.isShowingQueryableExample) {
             QueryableExample()
-        }
-        .fullScreenCover(isPresented: $homeRouter.isShowingSignalExample) {
-            SignalExample()
         }
     }
 
@@ -73,12 +65,10 @@ struct Home: View {
     @MainActor
     private func handleAdvancedExamplesInterface(_ action: AdvancedExamplesSection.Action) {
         switch action {
-        case .openAdapterExample:
-            Router.shared.navigate(to: .adapterExample)
+        case .openContainerExample:
+            Router.shared.navigate(to: .containerExample)
         case .openQueryableExample:
             Router.shared.navigate(to: .queryableExample)
-        case .openSignalExample:
-            Router.shared.navigate(to: .signalExample)
         }
     }
 }

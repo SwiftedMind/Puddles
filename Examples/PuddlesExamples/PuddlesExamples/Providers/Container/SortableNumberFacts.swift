@@ -20,44 +20,40 @@
 //  SOFTWARE.
 //
 
-import SwiftUI
 import Puddles
-import Queryable
+import SwiftUI
+import Models
 
-@MainActor final class Router: ObservableObject {
-    static let shared: Router = .init()
+struct SortableNumberFacts: DynamicProperty {
+    @EnvironmentObject private var numberFactProvider: NumberFactProvider
+    @State var facts: IdentifiedArrayOf<NumberFact> = []
+    @State private var availableNumbers: Set<Int> = Set(0...200)
 
-    var home: HomeRouter = .init()
-    var queryableExample: QueryableExampleRouter = .init()
-
-    enum Destination: String, Hashable {
-        case root
-        case staticExample
-        case basicProviderExample
-        case containerExample
-        case queryableExample
-    }
-
-    func navigate(to destination: Destination) {
-        switch destination {
-        case .root:
-            home.reset()
-        case .staticExample:
-            home.reset()
-            home.isShowingStaticExample = true
-        case .basicProviderExample:
-            home.reset()
-            home.isShowingBasicProviderExample = true
-        case .containerExample:
-            home.reset()
-            home.isShowingContainerExample = true
-        case .queryableExample:
-            home.reset()
-            home.isShowingQueryableExample = true
+    func fetchFactAboutRandomNumber() async throws {
+        if let number = randomAvailableNumber() {
+            let fact = NumberFact(number: number)
+            facts.insert(fact, at: 0)
+            let content = try await numberFactProvider.factAboutNumber(number)
+            facts[id: fact.id]?.content = content
         }
     }
 
-    func navigateRoot(to destination: HomeRouter.Destination) {
+    func fetchRandomFact() {
+        Task { try? await fetchFactAboutRandomNumber() }
+    }
 
+    func reset() {
+        facts.removeAll()
+        availableNumbers = Set(0...200)
+    }
+
+    func sort() {
+        facts.sort(by: { $0.number < $1.number })
+    }
+
+    private func randomAvailableNumber() -> Int? {
+        guard !availableNumbers.isEmpty else { return nil }
+        availableNumbers = Set(availableNumbers.shuffled())
+        return availableNumbers.removeFirst()
     }
 }

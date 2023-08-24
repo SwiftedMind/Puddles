@@ -21,43 +21,15 @@
 //
 
 import SwiftUI
-import Models
+import Queryable
 
-@MainActor final class ExampleAdapter: ObservableObject {
+@MainActor final class QueryableExampleRouter: ObservableObject {
 
-    @Published var facts: IdentifiedArrayOf<NumberFact> = []
-    private let numberFactProvider: NumberFactProvider
-    private var availableNumbers: Set<Int> = Set(0...200)
+    let deletionConfirmation = Queryable<Void, Bool>()
 
-    init(numberFactProvider: NumberFactProvider) {
-        self.numberFactProvider = numberFactProvider
-    }
-
-    func fetchFactAboutRandomNumber() async throws {
-        if let number = randomAvailableNumber() {
-            let fact = NumberFact(number: number)
-            facts.insert(fact, at: 0)
-            let content = try await numberFactProvider.factAboutNumber(number)
-            facts[id: fact.id]?.content = content
-        }
-    }
-
-    func fetchRandomFact() {
-        Task { try? await fetchFactAboutRandomNumber() }
-    }
-
-    func reset() {
-        facts.removeAll()
-        availableNumbers = Set(0...200)
-    }
-
-    func sort() {
-        facts.sort(by: { $0.number < $1.number })
-    }
-
-    private func randomAvailableNumber() -> Int? {
-        guard !availableNumbers.isEmpty else { return nil }
-        availableNumbers = Set(availableNumbers.shuffled())
-        return availableNumbers.removeFirst()
+    func queryDeletionConfirmation() async throws -> Bool {
+        // Here, you could make sure that nothing blocks the presentation of the deletion confirmation query
+        try await deletionConfirmation.query()
     }
 }
+

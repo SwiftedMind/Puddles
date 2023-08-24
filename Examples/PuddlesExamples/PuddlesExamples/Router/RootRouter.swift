@@ -31,16 +31,14 @@ import SwiftUI
     @Published var path: [Destination] = []
     @Published var isShowingStaticExample: Bool = false
     @Published var isShowingBasicProviderExample: Bool = false
-    @Published var isShowingAdapterExample: Bool = false
+    @Published var isShowingContainerExample: Bool = false
     @Published var isShowingQueryableExample: Bool = false
-    @Published var isShowingSignalExample: Bool = false
 
     func reset() {
         path.removeAll()
         isShowingStaticExample = false
         isShowingBasicProviderExample = false
-        isShowingAdapterExample = false
+        isShowingContainerExample = false
         isShowingQueryableExample = false
-        isShowingSignalExample = false
     }
 }
