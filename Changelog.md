@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.0.0
+
+This release mainly removes the dependency to `Queryable` because that should be treated as a fully separate package. Check it out at [https://github.com/SwiftedMind/Queryable](https://github.com/SwiftedMind/Queryable).
+
+Removing this should make it less likely to force major releases on Puddles. 
+
+### Changed
+
+- Renamed the concept of adapters to containers since now they are simple `DynamicProperty` structs with a lot more power and generalized use! A detailed explanation will be provided on swiftedmind.com.
+
+### Removed
+
+- Removed `Signal`. This will be coming as a separate Swift package.
+- Removed the dependency to `Queryable`, since that is fully separate and makes breaking changes harder to control. Simply add `Queryable` to your project, to keep using it. 
+
 ## 1.0.0
 
 ### Added
