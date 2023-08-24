@@ -459,8 +459,6 @@ struct Root: View {
 
 [**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/main/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles, including a globally shared Router for navigation.
 
-[**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
-
 ## A Few Words On Puddles
 
 I designed and built Puddles around a few key ideas that fundamentally shaped the architecture with all its advantages and disadvantages.
