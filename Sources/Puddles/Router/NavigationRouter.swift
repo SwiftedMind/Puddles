@@ -24,7 +24,7 @@ import SwiftUI
 
 /// A protocol defining helpful methods, including default implementations,
 /// for navigation routers used with a `NavigationStack`.
-public protocol NavigationRouter: ObservableObject {
+public protocol NavigationRouter: BaseRouter {
 
     /// The destination type, which is usually an enum.
     associatedtype Destination: Hashable
