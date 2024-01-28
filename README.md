@@ -1,9 +1,4 @@
-
-
-<p align="center">
-  <img width="200" height="200" src="https://user-images.githubusercontent.com/7083109/231764991-1de9f379-2f2a-41e4-b396-d7592508b6ed.png">
-</p>
-
+<img width="100" height="100" src="https://user-images.githubusercontent.com/7083109/231764991-1de9f379-2f2a-41e4-b396-d7592508b6ed.png">
 
 # A Native SwiftUI Architecture
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/SwiftedMind/Puddles?label=Latest%20Release)
@@ -13,7 +8,7 @@
 
 ![Define dependencies, inject them into observable data providers, build your generic UI components and integrate everything into the screens of your app](https://github.com/SwiftedMind/Puddles/assets/7083109/cbc93859-932f-4005-a16b-49b4f6a6aa2a)
 
-Puddles is an architecture for SwiftUI apps with a focus on using as many native mechanisms and patterns as possible, while ony adding abstractions and custom types when absolutely necessary.
+Puddles is an architecture for SwiftUI apps with a focus on using as many native mechanisms and patterns as possible, while only adding abstractions and custom types when absolutely necessary.
 
 - **Native** - Powered by what SwiftUI has to offer, extending only what's necessary.
 - **Modular** - A project structure that encourages you to build reusable components inside a very flexible app.
@@ -458,8 +453,6 @@ struct Root: View {
 ## Example Apps
 
 [**Puddles Examples**](https://github.com/SwiftedMind/Puddles/tree/main/Examples/PuddlesExamples) - A simple app demonstrating the basic patterns of Puddles, including a globally shared Router for navigation.
-
-[**Scrumdinger**](https://github.com/SwiftedMind/Scrumdinger) - Apple's tutorial app re-implemented in Puddles (An awesome idea by the [Pointfree](https://www.pointfree.co/) guys to use Apple's tutorial app to test new ways of building SwiftUI apps).
 
 ## A Few Words On Puddles
 
